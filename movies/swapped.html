@@ -1,73 +1,66 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Swapped - Deep Analysis</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
-:root { --bg: #000000; --surface: #121212; --primary: #F5C518; --text: #ffffff; --text-muted: #aaaaaa; }
-body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 50px; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swapped | Cinematic Database</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/3d-force-graph"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
 
-/* Navbar */
-.navbar { background: var(--surface); padding: 15px 40px; display: flex; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
-.navbar .logo { background: var(--primary); color: #000; font-weight: 900; font-size: 24px; padding: 4px 8px; border-radius: 4px; letter-spacing: -0.5px; text-decoration: none; }
-.navbar .logo span { color: #fff; background: transparent; font-weight: 500; margin-left: 5px; }
+    <style>
+        :root { --color-primary: #0f5ad1; --color-bg: #050505; --color-text: #e0e0e0; --glass-bg: rgba(10, 10, 15, 0.6); }
+        body, html { margin: 0; padding: 0; background-color: var(--color-bg); color: var(--color-text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        
+        /* WebGL Background */
+        #webgl-matrix { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.4; }
+        
+        .trailer-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.15; object-fit: cover; filter: blur(5px); }
 
-/* Container & Typography */
-.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-.section-title { font-size: 28px; font-weight: 700; display: flex; align-items: center; gap: 12px; margin-bottom: 25px; color: var(--text); }
-.section-title::before { content: ''; display: inline-block; width: 4px; height: 28px; background: var(--primary); border-radius: 2px; }
-
-/* 🚀 Horizontal Scroll (The IMDb Slider) */
-.movie-scroller { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; scroll-snap-type: x mandatory; }
-.movie-scroller::-webkit-scrollbar { height: 8px; }
-.movie-scroller::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
-.movie-scroller::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-.movie-scroller::-webkit-scrollbar-thumb:hover { background: var(--primary); }
-
-/* Premium Card Design */
-.card { flex: 0 0 auto; width: 220px; background: #1a1a1a; border-radius: 6px; overflow: hidden; transition: transform 0.3s ease; scroll-snap-align: start; border: 1px solid transparent; display: flex; flex-direction: column; }
-.card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-.card-img-wrapper { position: relative; width: 100%; height: 330px; }
-.card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-
-/* The IMDb Bookmark Ribbon */
-.bookmark { position: absolute; top: -5px; left: -5px; width: 35px; height: 45px; background: rgba(0,0,0,0.7); clip-path: polygon(100% 0, 100% 100%, 50% 80%, 0 100%, 0 0); display: flex; justify-content: center; color: white; font-size: 24px; padding-top: 5px; transition: 0.2s; }
-.card:hover .bookmark { background: var(--primary); color: #000; }
-
-.card-content { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
-.rating { display: flex; align-items: center; gap: 5px; font-size: 14px; color: var(--text-muted); margin-bottom: 10px; }
-.star { color: var(--primary); font-size: 16px; }
-.card-title { font-size: 16px; font-weight: 500; margin-bottom: 15px; color: #fff; text-decoration: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.card-title:hover { text-decoration: underline; }
-
-.card-btn { margin-top: auto; display: block; width: 100%; text-align: center; background: #2c2c2c; color: #57b5f9; padding: 10px 0; text-decoration: none; border-radius: 4px; font-weight: 600; transition: 0.2s; font-size: 14px; }
-.card-btn:hover { background: #333; color: white; }
-</style>
-
-<style>
-.movie-header { display: flex; gap: 30px; margin-bottom: 40px; background: #181818; padding: 30px; border-radius: 10px; border: 1px solid #222; }
-.poster-large { width: 300px; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
-.video-container { flex-grow: 1; border-radius: 8px; overflow: hidden; position: relative; padding-bottom: 40%; }
-.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-.article-box { padding: 0 20px; line-height: 1.8; font-size: 1.1rem; color: #ccc; }
-.article-box h1, .article-box h2 { color: var(--primary); margin-top: 30px; }
-.back-link { color: #57b5f9; text-decoration: none; font-size: 1rem; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 20px; font-weight: 500;}
-.back-link:hover { text-decoration: underline; }
-@media (max-width: 800px) { .movie-header { flex-direction: column; } .poster-large { width: 100%; height: auto; } .video-container{ padding-bottom: 56.25%; } }
-</style>
+        /* Glassmorphic UI */
+        .bento-container { display: grid; grid-template-columns: 1fr; gap: 2rem; padding: 5vw; margin-top: 60vh; position: relative; z-index: 10; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 3rem; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; letter-spacing: -1px; margin-top: 0; }
+        .hero-title { position: absolute; top: 20vh; left: 5vw; font-size: clamp(3rem, 8vw, 6rem); font-weight: 700; color: #fff; text-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 5; }
+        
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-top: 20px; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        .article-text { line-height: 1.8; font-size: 1.1rem; color: #ccc; }
+        .article-text h1, .article-text h2 { color: var(--color-primary); font-size: 1.8rem; margin-top: 40px; }
+        
+        .back-btn { position: fixed; top: 20px; left: 20px; z-index: 100; color: #fff; text-decoration: none; font-family: 'Space Grotesk'; font-weight: 700; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px; backdrop-filter: blur(10px); transition: 0.3s; border: 1px solid rgba(255,255,255,0.2); }
+        .back-btn:hover { background: var(--color-primary); }
+    </style>
 </head>
-        <body>
-            <div class="navbar"><a href="../index.html" class="logo">IMDb<span>_KILLER</span></a></div>
-            <div class="container">
-                <a href="../index.html" class="back-link">← Back to Database</a>
-                <h1 style="font-size: 2.8rem; margin: 0 0 20px 0; font-weight: 900;">Swapped <span style="color:#888; font-size: 1.5rem; font-weight: 400;">(2026)</span></h1>
-                
-                <div class="movie-header">
-                    <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="poster-large">
-                    <div class="video-container">
-                        <iframe src="" allowfullscreen></iframe>
-                    </div>
-                </div>
-                
-                <div class="article-box">
-                    <h1>'Swapped': A Soaring Tale of Feathers, Fur, and Unlikely Friendship That Redefines the Animated Epic</h1>
+<body>
+
+    <a href="../index.html" class="back-btn">← RETURN TO HUB</a>
+    
+    <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="trailer-bg">
+    <div id="webgl-matrix"></div>
+    
+    <div class="hero-title gs-reveal">Swapped</div>
+
+    <div class="bento-container">
+        
+        <div class="glass-card gs-reveal">
+            <h3>Visual & Auditory Acquisition (Trailer)</h3>
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/?autoplay=0&controls=1" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="glass-card gs-reveal">
+            <h3>Master Critic Analysis</h3>
+            <div class="article-text">
+                <h1>'Swapped': A Soaring Tale of Feathers, Fur, and Unlikely Friendship That Redefines the Animated Epic</h1>
 
 <p>Every so often, a film emerges from the animated realm that not only captivates the imagination of children but resonates profoundly with adults, offering layers of meaning and breathtaking artistry. 'Swapped,' the latest triumph from visionary director Elara Vance and Everwood Studios, is precisely that film. It’s an exhilarating, emotionally rich adventure that takes a familiar premise and elevates it into a genuine masterpiece, setting a new benchmark for storytelling in the genre. Prepare to be swept away into the vibrant, peril-laden Whisperwind Valley, where two sworn enemies discover that true understanding often comes from walking, or flying, a mile in another's paws or talons.</p>
 
@@ -84,6 +77,54 @@ body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sa
 <h2>Extreme Trivia & Behind-the-Scenes Insights</h2>
 
 <p>Beyond its narrative brilliance, 'Swapped' is laden with fascinating trivia that deepens its allure. Director Elara Vance revealed in a post-screening Q&A that the initial concept for the film involved a human child swapping places with an alien, a much grander but ultimately less intimate idea. The decision to scale it down to two natural enemies in a confined ecosystem proved to be a stroke of genius. The animation team at Everwood Studios pioneered new fur and feather rendering techniques, allowing for unprecedented detail and realistic movement, particularly evident in Skye’s majestic flights and Pip’s frantic scurrying. Reportedly, Jaxson Bellwether spent weeks observing squirrels in their natural habitat, even attempting to climb trees with weights strapped to his body to better understand Pip's physical comedy and challenges. Seraphina Thorne, conversely, spent time at a raptor rehabilitation center, studying eagle calls and wing movements to inform her performance and understand the 'spirit' of Skye. The film's score, composed by the prodigious Lira Nightingale, incorporates traditional folk instruments alongside a full orchestra, creating a unique soundscape that perfectly balances the humor, tension, and wonder of the valley. Keen-eyed viewers might spot an Easter egg: a fleeting glimpse of a carved totem pole that resembles a previous Everwood Studios character, a subtle nod to their animated legacy. 'Swapped' is not just a film; it's a testament to the power of animation to tell stories that are both universally appealing and deeply personal.</p>
-                </div>
             </div>
-        </body></html>
+        </div>
+        
+    </div>
+
+    <script>
+        // 1. Smooth Scrolling (Lenis)
+        const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        // 2. GSAP Parallax Reveal
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.utils.toArray('.gs-reveal').forEach(elem => {
+            gsap.fromTo(elem, 
+                { autoAlpha: 0, y: 100 },
+                { duration: 1.5, autoAlpha: 1, y: 0, ease: "expo.out",
+                   scrollTrigger: { trigger: elem, start: "top 85%", scrub: false }
+                }
+            );
+        });
+
+        // 3. 3D WebGL Matrix Node Generation (Three.js Force Graph)
+        // Creating dummy nodes to simulate the semantic universe
+        const gData = {
+            nodes: [...Array(50).keys()].map(i => ({ id: i })),
+            links: [...Array(50).keys()].filter(id => id).map(id => ({
+              source: id,
+              target: Math.round(Math.random() * (id - 1))
+            }))
+        };
+
+        const Graph = ForceGraph3D()
+            (document.getElementById('webgl-matrix'))
+            .graphData(gData)
+            .nodeRelSize(4)
+            .nodeColor(() => 'rgba(15, 90, 209, 0.6)')
+            .linkWidth(1)
+            .linkColor(() => 'rgba(255,255,255,0.1)')
+            .backgroundColor('rgba(0,0,0,0)');
+
+        // Cinematic Dive Camera Parallax
+        ScrollTrigger.create({
+            trigger: "body", start: "top top", end: "bottom bottom", scrub: 1,
+            onUpdate: self => {
+                Graph.cameraPosition({ z: 400 - (self.progress * 300) });
+            }
+        });
+    </script>
+</body>
+</html>
