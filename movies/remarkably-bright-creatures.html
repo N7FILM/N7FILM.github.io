@@ -1,66 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Remarkably Bright Creatures | Cinematic Database</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://unpkg.com/3d-force-graph"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
-
-    <style>
-        :root { --color-primary: #0f5ad1; --color-bg: #050505; --color-text: #e0e0e0; --glass-bg: rgba(10, 10, 15, 0.6); }
-        body, html { margin: 0; padding: 0; background-color: var(--color-bg); color: var(--color-text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        
-        /* WebGL Background */
-        #webgl-matrix { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.4; }
-        
-        .trailer-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.15; object-fit: cover; filter: blur(5px); }
-
-        /* Glassmorphic UI */
-        .bento-container { display: grid; grid-template-columns: 1fr; gap: 2rem; padding: 5vw; margin-top: 60vh; position: relative; z-index: 10; max-width: 1200px; margin-left: auto; margin-right: auto; }
-        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 3rem; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        
-        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; letter-spacing: -1px; margin-top: 0; }
-        .hero-title { position: absolute; top: 20vh; left: 5vw; font-size: clamp(3rem, 8vw, 6rem); font-weight: 700; color: #fff; text-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 5; }
-        
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-top: 20px; }
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Remarkably Bright Creatures | Deep Data</title>
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=Inter:wght@400;600&display=swap');
+        body { margin: 0; padding: 0; background-color: #050505; color: #e0e0e0; font-family: 'Inter', sans-serif; }
+        .trailer-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.15; object-fit: cover; filter: blur(10px); }
+        .bento-container { display: flex; flex-direction: column; gap: 2rem; padding: 5vw; max-width: 1200px; margin: auto; margin-top: 10vh; }
+        .glass-card { background: rgba(10, 10, 15, 0.7); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 3rem; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+        .hero-title { font-size: clamp(2.5rem, 6vw, 5rem); margin: 0 0 10px 0; line-height: 1.1; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; margin-top: 20px; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        
         .article-text { line-height: 1.8; font-size: 1.1rem; color: #ccc; }
-        .article-text h1, .article-text h2 { color: var(--color-primary); font-size: 1.8rem; margin-top: 40px; }
-        
-        .back-btn { position: fixed; top: 20px; left: 20px; z-index: 100; color: #fff; text-decoration: none; font-family: 'Space Grotesk'; font-weight: 700; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px; backdrop-filter: blur(10px); transition: 0.3s; border: 1px solid rgba(255,255,255,0.2); }
-        .back-btn:hover { background: var(--color-primary); }
-    </style>
-</head>
-<body>
+        .article-text h1, .article-text h2 { color: #0f5ad1; margin-top: 40px; }
+        .god-nav { display: flex; padding: 15px 4vw; background: rgba(5,5,5,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; color: #fff; text-decoration: none; }
+        .logo span { color: #0f5ad1; }
+        .back-btn { margin-left: auto; color: #57b5f9; text-decoration: none; font-weight: 600; padding: 8px 16px; background: rgba(15,90,209,0.15); border-radius: 50px; transition: 0.3s; }
+        .back-btn:hover { background: #0f5ad1; color: #fff; }
+        </style></head><body>
 
-    <a href="../index.html" class="back-btn">← RETURN TO HUB</a>
-    
-    <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="trailer-bg">
-    <div id="webgl-matrix"></div>
-    
-    <div class="hero-title gs-reveal">Remarkably Bright Creatures</div>
-
-    <div class="bento-container">
+        <nav class="god-nav">
+            <a href="../index.html" class="logo">N7<span>_HUB</span></a>
+            <a href="../index.html" class="back-btn">← Back to Database</a>
+        </nav>
         
-        <div class="glass-card gs-reveal">
-            <h3>Visual & Auditory Acquisition (Trailer)</h3>
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/?autoplay=0&controls=1" frameborder="0" allowfullscreen></iframe>
+        <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="trailer-bg">
+        
+        <div class="bento-container">
+            <div class="hero-title">Remarkably Bright Creatures</div>
+            <div class="glass-card">
+                <h3>Visual Acquisition</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/?autoplay=0" frameborder="0" allowfullscreen></iframe>
+                </div>
             </div>
-        </div>
-
-        <div class="glass-card gs-reveal">
-            <h3>Master Critic Analysis</h3>
-            <div class="article-text">
-                <h1>Remarkably Bright Creatures: A Luminescent Dive into the Depths of the Human Heart</h1>
+            <div class="glass-card">
+                <h3>Master Analysis</h3>
+                <div class="article-text"><h1>Remarkably Bright Creatures: A Luminescent Dive into the Depths of the Human Heart</h1>
 
 <p>Every so often, a film emerges from the depths of the cinematic ocean, shimmering with a rare brilliance that captures the imagination and stirs the soul. 'Remarkably Bright Creatures' is precisely that kind of film. Based on the beloved novel, this adaptation transcends its literary origins to deliver a poignant, enchanting, and utterly unforgettable experience. Director Lone Scherfig masterfully crafts a narrative that is at once a tender exploration of grief, an unlikely detective story, and a charming testament to the unexpected connections that bring meaning to our lives. It's a film that reminds us that even in the quietest corners, wonder and joy are waiting to be discovered, often in the most remarkable forms.</p>
 
@@ -92,55 +67,7 @@
 
 <p>'Remarkably Bright Creatures' is more than just a film; it's a warm, comforting embrace. It navigates themes of grief, loneliness, and the search for belonging with such grace and tenderness that it feels like a balm for the soul. The film reminds us that connection can be found in the most unexpected places—between an elderly widow and an exceptionally intelligent octopus, between strangers brought together by fate, and within the quiet rhythms of a life lived with open eyes.</p>
 
-<p>It’s a beautifully crafted narrative, brought to life by outstanding performances and sensitive direction, that champions the extraordinary in the ordinary. If you're looking for a film that will make you laugh, shed a tear, and leave you with a renewed sense of wonder for the world and its remarkable inhabitants, then 'Remarkably Bright Creatures' is an absolute must-see. Dive in; you won't regret it.</p>
+<p>It’s a beautifully crafted narrative, brought to life by outstanding performances and sensitive direction, that champions the extraordinary in the ordinary. If you're looking for a film that will make you laugh, shed a tear, and leave you with a renewed sense of wonder for the world and its remarkable inhabitants, then 'Remarkably Bright Creatures' is an absolute must-see. Dive in; you won't regret it.</p></div>
             </div>
         </div>
-        
-    </div>
-
-    <script>
-        // 1. Smooth Scrolling (Lenis)
-        const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-        requestAnimationFrame(raf);
-
-        // 2. GSAP Parallax Reveal
-        gsap.registerPlugin(ScrollTrigger);
-        gsap.utils.toArray('.gs-reveal').forEach(elem => {
-            gsap.fromTo(elem, 
-                { autoAlpha: 0, y: 100 },
-                { duration: 1.5, autoAlpha: 1, y: 0, ease: "expo.out",
-                   scrollTrigger: { trigger: elem, start: "top 85%", scrub: false }
-                }
-            );
-        });
-
-        // 3. 3D WebGL Matrix Node Generation (Three.js Force Graph)
-        // Creating dummy nodes to simulate the semantic universe
-        const gData = {
-            nodes: [...Array(50).keys()].map(i => ({ id: i })),
-            links: [...Array(50).keys()].filter(id => id).map(id => ({
-              source: id,
-              target: Math.round(Math.random() * (id - 1))
-            }))
-        };
-
-        const Graph = ForceGraph3D()
-            (document.getElementById('webgl-matrix'))
-            .graphData(gData)
-            .nodeRelSize(4)
-            .nodeColor(() => 'rgba(15, 90, 209, 0.6)')
-            .linkWidth(1)
-            .linkColor(() => 'rgba(255,255,255,0.1)')
-            .backgroundColor('rgba(0,0,0,0)');
-
-        // Cinematic Dive Camera Parallax
-        ScrollTrigger.create({
-            trigger: "body", start: "top top", end: "bottom bottom", scrub: 1,
-            onUpdate: self => {
-                Graph.cameraPosition({ z: 400 - (self.progress * 300) });
-            }
-        });
-    </script>
-</body>
-</html>
+        </body></html>
