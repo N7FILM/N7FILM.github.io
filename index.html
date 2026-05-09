@@ -1,36 +1,106 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>N7 Intelligence Hub</title>
+import os, json, time, requests, re
+import gspread
+from google.oauth2.service_account import Credentials
+from google import genai
+
+print("🚀 N7 EXTREME FUNCTIONAL ENGINE STARTING...")
+
+# ==========================================
+# 🔑 API KEYS & SECRETS
+# ==========================================
+TMDB_API_KEY = os.getenv("TMDB_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+GCP_JSON_STR = os.getenv("N7")
+
+# ==========================================
+# 📊 GOOGLE SHEETS CONNECTION
+# ==========================================
+scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+creds_dict = json.loads(GCP_JSON_STR)
+creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
+gc = gspread.authorize(creds)
+sheet = gc.open("N7_IMDB_DATA").sheet1 
+
+def fetch_movies():
+    url = f"https://api.themoviedb.org/3/trending/movie/day?api_key={TMDB_API_KEY}"
+    return requests.get(url).json().get('results', [])[:10] # Ab 10 movies tak layenge
+
+def get_youtube_trailer(movie_title):
+    search_url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={movie_title} official trailer&key={YOUTUBE_API_KEY}&type=video&maxResults=1"
+    try:
+        response = requests.get(search_url).json()
+        return response['items'][0]['id']['videoId']
+    except Exception:
+        return ""
+
+def generate_article(title, synopsis):
+    client = genai.Client(api_key=GEMINI_API_KEY)
+    prompt = f"Act as a master film critic. Write a profound, multi-dimensional review for '{title}'. Synopsis: {synopsis}. Output STRICTLY raw HTML (<h1>, <h2>, <p>). Discuss thematic depth, pacing, and visual aesthetic."
+    try:
+        return client.models.generate_content(model="gemini-2.5-flash", contents=prompt).text.strip()
+    except Exception:
+        return "<p>Semantic analysis generation failed.</p>"
+
+existing_ids = sheet.col_values(1)
+
+for movie in fetch_movies():
+    movie_id = str(movie['id'])
+    title = movie['title']
+    if movie_id not in existing_ids and movie_id != "MovieID":
+        print(f"⚡ Hunting Deep Semantic Data for: {title}...")
+        release_date = movie.get('release_date', 'Unknown')
+        poster_url = f"https://image.tmdb.org/t/p/w1280{movie.get('backdrop_path')}"
+        yt_id = get_youtube_trailer(title)
+        article_html = generate_article(title, movie.get('overview', ''))
+        
+        sheet.append_row([movie_id, title, release_date, poster_url, yt_id, article_html])
+        time.sleep(3)
+
+# ==========================================
+# 🎨 WEBSITE GENERATOR (Functional UI + Search)
+# ==========================================
+print("🎨 Building Next-Gen UI with Search Engine & Menus...")
+
+all_rows = sheet.get_all_values()
+movies_data = all_rows[1:] if len(all_rows) > 1 else []
+
+os.makedirs("public/movies", exist_ok=True)
+
+# 1. GENERATE HOMEPAGE (index.html) - With Navbar, Search & Categories
+index_html = f"""<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>N7 Intelligence Hub</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=Inter:wght@400;600&display=swap');
-body { background-color: #050505; color: #e0e0e0; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
+body {{ background-color: #050505; color: #e0e0e0; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }}
 
 /* 🌟 GOD LEVEL NAVBAR */
-.god-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 4vw; background: rgba(5,5,5,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
-.logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: -1px; }
-.logo span { color: #0f5ad1; }
+.god-nav {{ display: flex; justify-content: space-between; align-items: center; padding: 15px 4vw; background: rgba(5,5,5,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 30px rgba(0,0,0,0.5); }}
+.logo {{ font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: -1px; }}
+.logo span {{ color: #0f5ad1; }}
 
 /* 🌟 MENU CATEGORIES */
-.nav-menu { display: flex; gap: 20px; }
-.nav-link { color: #888; text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 8px 16px; border-radius: 50px; transition: 0.3s; cursor: pointer; }
-.nav-link:hover, .nav-link.active { background: rgba(15, 90, 209, 0.15); color: #57b5f9; }
+.nav-menu {{ display: flex; gap: 20px; }}
+.nav-link {{ color: #888; text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 8px 16px; border-radius: 50px; transition: 0.3s; cursor: pointer; }}
+.nav-link:hover, .nav-link.active {{ background: rgba(15, 90, 209, 0.15); color: #57b5f9; }}
 
 /* 🌟 LIVE SEARCH BAR */
-.search-container { position: relative; }
-.search-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 20px; border-radius: 50px; outline: none; font-family: 'Inter'; font-size: 0.95rem; width: 250px; transition: 0.3s; }
-.search-input:focus { border-color: #0f5ad1; box-shadow: 0 0 15px rgba(15, 90, 209, 0.4); width: 300px; background: rgba(255,255,255,0.1); }
+.search-container {{ position: relative; }}
+.search-input {{ background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 20px; border-radius: 50px; outline: none; font-family: 'Inter'; font-size: 0.95rem; width: 250px; transition: 0.3s; }}
+.search-input:focus {{ border-color: #0f5ad1; box-shadow: 0 0 15px rgba(15, 90, 209, 0.4); width: 300px; background: rgba(255,255,255,0.1); }}
 
 /* Grid & Cards */
-.bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; padding: 4vw; max-width: 1400px; margin: auto; min-height: 50vh; }
-.glass-card { background: rgba(20, 20, 25, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; overflow: hidden; transition: 0.4s; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
-.glass-card:hover { transform: translateY(-8px) scale(1.02); border-color: #0f5ad1; box-shadow: 0 10px 40px rgba(15, 90, 209, 0.25); }
-.card-img { width: 100%; height: 220px; object-fit: cover; opacity: 0.7; transition: 0.4s; }
-.glass-card:hover .card-img { opacity: 1; }
-.card-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-.card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; margin: 0 0 15px 0; line-height: 1.2; }
-.tags { display: flex; gap: 10px; }
-.hud-tag { font-size: 0.75rem; background: rgba(15, 90, 209, 0.2); color: #57b5f9; padding: 5px 10px; border-radius: 4px; border: 1px solid rgba(87, 181, 249, 0.3); font-weight: 600; letter-spacing: 0.5px; }
+.bento-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; padding: 4vw; max-width: 1400px; margin: auto; min-height: 50vh; }}
+.glass-card {{ background: rgba(20, 20, 25, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; overflow: hidden; transition: 0.4s; text-decoration: none; color: inherit; display: flex; flex-direction: column; }}
+.glass-card:hover {{ transform: translateY(-8px) scale(1.02); border-color: #0f5ad1; box-shadow: 0 10px 40px rgba(15, 90, 209, 0.25); }}
+.card-img {{ width: 100%; height: 220px; object-fit: cover; opacity: 0.7; transition: 0.4s; }}
+.glass-card:hover .card-img {{ opacity: 1; }}
+.card-content {{ padding: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }}
+.card-title {{ font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; margin: 0 0 15px 0; line-height: 1.2; }}
+.tags {{ display: flex; gap: 10px; }}
+.hud-tag {{ font-size: 0.75rem; background: rgba(15, 90, 209, 0.2); color: #57b5f9; padding: 5px 10px; border-radius: 4px; border: 1px solid rgba(87, 181, 249, 0.3); font-weight: 600; letter-spacing: 0.5px; }}
 
-.no-results { text-align: center; width: 100%; grid-column: 1 / -1; font-family: 'Space Grotesk'; font-size: 2rem; color: #555; display: none; padding: 50px; }
-@media (max-width: 900px) { .god-nav { flex-direction: column; gap: 15px; padding: 20px; } .search-input { width: 100%; } }
+.no-results {{ text-align: center; width: 100%; grid-column: 1 / -1; font-family: 'Space Grotesk'; font-size: 2rem; color: #555; display: none; padding: 50px; }}
+@media (max-width: 900px) {{ .god-nav {{ flex-direction: column; gap: 15px; padding: 20px; }} .search-input {{ width: 100%; }} }}
 </style></head><body>
 
 <nav class="god-nav">
@@ -49,117 +119,28 @@ body { background-color: #050505; color: #e0e0e0; font-family: 'Inter', sans-ser
 
 <div class="bento-grid" id="movieGrid">
     <div class="no-results" id="noResults">NO MATCHING DATA FOUND IN ARCHIVES.</div>
+"""
 
-        <a href="movies/remarkably-bright-creatures.html" class="glass-card" data-title="remarkably bright creatures" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="card-img" loading="lazy">
+for row in movies_data:
+    if len(row) >= 6:
+        m_title = row[1]
+        m_date = row[2][:4] if row[2] else "N/A"
+        m_poster = row[3]
+        slug = re.sub(r'[^a-z0-9]+', '-', m_title.lower()).strip('-')
+        # data-year aur data-title search/filter ke liye inject kiya hai
+        index_html += f"""
+        <a href="movies/{slug}.html" class="glass-card" data-title="{m_title.lower()}" data-year="{m_date}">
+            <img src="{m_poster}" class="card-img" loading="lazy">
             <div class="card-content">
-                <h2 class="card-title">Remarkably Bright Creatures</h2>
+                <h2 class="card-title">{m_title}</h2>
                 <div class="tags">
                     <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
+                    <span class="hud-tag">{m_date}</span>
                 </div>
             </div>
-        </a>
-        <a href="movies/no-place-to-be-single.html" class="glass-card" data-title="no place to be single" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">No Place to Be Single</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
-            </div>
-        </a>
-        <a href="movies/mortal-kombat-ii.html" class="glass-card" data-title="mortal kombat ii" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">Mortal Kombat II</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
-            </div>
-        </a>
-        <a href="movies/swapped.html" class="glass-card" data-title="swapped" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">Swapped</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
-            </div>
-        </a>
-        <a href="movies/ready-or-not-2-here-i-come.html" class="glass-card" data-title="ready or not 2: here i come" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">Ready or Not 2: Here I Come</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
-            </div>
-        </a>
-        <a href="movies/my-dearest-assassin.html" class="glass-card" data-title="my dearest assassin" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">My Dearest Assassin</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
-            </div>
-        </a>
-        <a href="movies/the-super-mario-galaxy-movie.html" class="glass-card" data-title="the super mario galaxy movie" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">The Super Mario Galaxy Movie</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
-            </div>
-        </a>
-        <a href="movies/hoppers.html" class="glass-card" data-title="hoppers" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">Hoppers</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
-            </div>
-        </a>
-        <a href="movies/the-drama.html" class="glass-card" data-title="the drama" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">The Drama</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
-            </div>
-        </a>
-        <a href="movies/beast.html" class="glass-card" data-title="beast" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">Beast</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
-            </div>
-        </a>
-        <a href="movies/project-hail-mary.html" class="glass-card" data-title="project hail mary" data-year="2026">
-            <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">Project Hail Mary</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
-            </div>
-        </a>
+        </a>"""
+
+index_html += """
 </div>
 
 <script>
@@ -209,3 +190,64 @@ body { background-color: #050505; color: #e0e0e0; font-family: 'Inter', sans-ser
     }
 </script>
 </body></html>
+"""
+
+with open("public/index.html", "w", encoding="utf-8") as f:
+    f.write(index_html)
+
+# 2. GENERATE MOVIE DETAIL PAGES (Same as before but with updated Back Button style)
+for row in movies_data:
+    if len(row) >= 6:
+        m_title = row[1].replace("'", "\\'")
+        m_date = row[2][:4] if row[2] else ""
+        m_poster = row[3]
+        m_yt = row[4]
+        m_article = row[5]
+        slug = re.sub(r'[^a-z0-9]+', '-', row[1].lower()).strip('-')
+        
+        page_html = f"""<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>{row[1]} | Deep Data</title>
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=Inter:wght@400;600&display=swap');
+        body {{ margin: 0; padding: 0; background-color: #050505; color: #e0e0e0; font-family: 'Inter', sans-serif; }}
+        .trailer-bg {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; opacity: 0.15; object-fit: cover; filter: blur(10px); }}
+        .bento-container {{ display: flex; flex-direction: column; gap: 2rem; padding: 5vw; max-width: 1200px; margin: auto; margin-top: 10vh; }}
+        .glass-card {{ background: rgba(10, 10, 15, 0.7); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 3rem; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }}
+        h1, h2, h3 {{ font-family: 'Space Grotesk', sans-serif; }}
+        .hero-title {{ font-size: clamp(2.5rem, 6vw, 5rem); margin: 0 0 10px 0; line-height: 1.1; }}
+        .video-container {{ position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; margin-top: 20px; }}
+        .video-container iframe {{ position: absolute; top: 0; left: 0; width: 100%; height: 100%; }}
+        .article-text {{ line-height: 1.8; font-size: 1.1rem; color: #ccc; }}
+        .article-text h1, .article-text h2 {{ color: #0f5ad1; margin-top: 40px; }}
+        .god-nav {{ display: flex; padding: 15px 4vw; background: rgba(5,5,5,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 1000; }}
+        .logo {{ font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; font-weight: 700; color: #fff; text-decoration: none; }}
+        .logo span {{ color: #0f5ad1; }}
+        .back-btn {{ margin-left: auto; color: #57b5f9; text-decoration: none; font-weight: 600; padding: 8px 16px; background: rgba(15,90,209,0.15); border-radius: 50px; transition: 0.3s; }}
+        .back-btn:hover {{ background: #0f5ad1; color: #fff; }}
+        </style></head><body>
+
+        <nav class="god-nav">
+            <a href="../index.html" class="logo">N7<span>_HUB</span></a>
+            <a href="../index.html" class="back-btn">← Back to Database</a>
+        </nav>
+        
+        <img src="{m_poster}" class="trailer-bg">
+        
+        <div class="bento-container">
+            <div class="hero-title">{row[1]}</div>
+            <div class="glass-card">
+                <h3>Visual Acquisition</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/{m_yt}?autoplay=0" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="glass-card">
+                <h3>Master Analysis</h3>
+                <div class="article-text">{m_article}</div>
+            </div>
+        </div>
+        </body></html>"""
+        
+        with open(f"public/movies/{slug}.html", "w", encoding="utf-8") as f:
+            f.write(page_html)
+
+print("🏁 EXTREME FUNCTIONAL ARCHITECTURE BUILT SUCCESSFULLY!")
