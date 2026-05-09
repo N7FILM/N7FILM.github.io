@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>The Super Mario Galaxy Movie - Deep Analysis</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+:root { --bg: #000000; --surface: #121212; --primary: #F5C518; --text: #ffffff; --text-muted: #aaaaaa; }
+body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 50px; }
+
+/* Navbar */
+.navbar { background: var(--surface); padding: 15px 40px; display: flex; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
+.navbar .logo { background: var(--primary); color: #000; font-weight: 900; font-size: 24px; padding: 4px 8px; border-radius: 4px; letter-spacing: -0.5px; text-decoration: none; }
+.navbar .logo span { color: #fff; background: transparent; font-weight: 500; margin-left: 5px; }
+
+/* Container & Typography */
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+.section-title { font-size: 28px; font-weight: 700; display: flex; align-items: center; gap: 12px; margin-bottom: 25px; color: var(--text); }
+.section-title::before { content: ''; display: inline-block; width: 4px; height: 28px; background: var(--primary); border-radius: 2px; }
+
+/* 🚀 Horizontal Scroll (The IMDb Slider) */
+.movie-scroller { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; scroll-snap-type: x mandatory; }
+.movie-scroller::-webkit-scrollbar { height: 8px; }
+.movie-scroller::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
+.movie-scroller::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+.movie-scroller::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+/* Premium Card Design */
+.card { flex: 0 0 auto; width: 220px; background: #1a1a1a; border-radius: 6px; overflow: hidden; transition: transform 0.3s ease; scroll-snap-align: start; border: 1px solid transparent; display: flex; flex-direction: column; }
+.card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+.card-img-wrapper { position: relative; width: 100%; height: 330px; }
+.card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+/* The IMDb Bookmark Ribbon */
+.bookmark { position: absolute; top: -5px; left: -5px; width: 35px; height: 45px; background: rgba(0,0,0,0.7); clip-path: polygon(100% 0, 100% 100%, 50% 80%, 0 100%, 0 0); display: flex; justify-content: center; color: white; font-size: 24px; padding-top: 5px; transition: 0.2s; }
+.card:hover .bookmark { background: var(--primary); color: #000; }
+
+.card-content { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
+.rating { display: flex; align-items: center; gap: 5px; font-size: 14px; color: var(--text-muted); margin-bottom: 10px; }
+.star { color: var(--primary); font-size: 16px; }
+.card-title { font-size: 16px; font-weight: 500; margin-bottom: 15px; color: #fff; text-decoration: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card-title:hover { text-decoration: underline; }
+
+.card-btn { margin-top: auto; display: block; width: 100%; text-align: center; background: #2c2c2c; color: #57b5f9; padding: 10px 0; text-decoration: none; border-radius: 4px; font-weight: 600; transition: 0.2s; font-size: 14px; }
+.card-btn:hover { background: #333; color: white; }
+</style>
+
+<style>
+.movie-header { display: flex; gap: 30px; margin-bottom: 40px; background: #181818; padding: 30px; border-radius: 10px; border: 1px solid #222; }
+.poster-large { width: 300px; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+.video-container { flex-grow: 1; border-radius: 8px; overflow: hidden; position: relative; padding-bottom: 40%; }
+.video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+.article-box { padding: 0 20px; line-height: 1.8; font-size: 1.1rem; color: #ccc; }
+.article-box h1, .article-box h2 { color: var(--primary); margin-top: 30px; }
+.back-link { color: #57b5f9; text-decoration: none; font-size: 1rem; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 20px; font-weight: 500;}
+.back-link:hover { text-decoration: underline; }
+@media (max-width: 800px) { .movie-header { flex-direction: column; } .poster-large { width: 100%; height: auto; } .video-container{ padding-bottom: 56.25%; } }
+</style>
+</head>
+        <body>
+            <div class="navbar"><a href="../index.html" class="logo">IMDb<span>_KILLER</span></a></div>
+            <div class="container">
+                <a href="../index.html" class="back-link">← Back to Database</a>
+                <h1 style="font-size: 2.8rem; margin: 0 0 20px 0; font-weight: 900;">The Super Mario Galaxy Movie <span style="color:#888; font-size: 1.5rem; font-weight: 400;">(2026)</span></h1>
+                
+                <div class="movie-header">
+                    <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="poster-large">
+                    <div class="video-container">
+                        <iframe src="" allowfullscreen></iframe>
+                    </div>
+                </div>
+                
+                <div class="article-box">
+                    ```html
+<h1>'The Super Mario Galaxy Movie': A Stellar Sequel That Reaches for the Stars!</h1>
+
+<h2>Introduction: The Cosmic Crescendo We Deserved</h2>
+<p>After the groundbreaking success of its predecessor, the anticipation for 'The Super Mario Galaxy Movie' was, quite literally, astronomical. Fans wondered if Nintendo, Illumination, and the visionary filmmakers could once again bottle the lightning, or rather, the stardust, of the beloved game franchise. Let me put your worries to rest: not only does 'The Super Mario Galaxy Movie' meet the sky-high expectations, it blasts past them with the force of a Grand Star. This isn't just a sequel; it's a cosmic ballet, a thrilling odyssey that expands the Mario cinematic universe with breathtaking scope, heartfelt storytelling, and a relentless cascade of fan service that never feels gratuitous. It’s a testament to the power of animation and a love letter to one of gaming's most iconic adventures. From its opening shot, the film establishes a wondrous tone, immediately immersing viewers in a vibrant, gravity-defying universe that feels both comfortingly familiar and exhilaratingly new. It’s an instant classic, a worthy successor, and a genuinely uplifting cinematic experience for all ages.</p>
+
+<h2>A Plot That Soars Across the Cosmos: Beyond the Mushroom Kingdom</h2>
+<p>The narrative picks up in the idyllic aftermath of Mario and Luigi's triumph over King Bowser. The Mushroom Kingdom enjoys a fragile peace, but as we know, evil seldom stays defeated for long. The fresh threat emerges not from the familiar fire-breathing monarch, but from his ambitious and surprisingly cunning son, Bowser Jr. Voiced with a perfect blend of childish petulance and genuine menace, Jr. is on a singular mission: to liberate his imprisoned father and restore the Koopa dynasty to its former glory. His plan is ingenious, relying on a blend of ancient Koopa magic and newly discovered cosmic energy, requiring him to gather powerful Star Bits scattered across various galaxies. This sets Mario (Chris Pratt) and Luigi (Charlie Day) on an unprecedented journey. Princess Peach (Anya Taylor-Joy), now an even more formidable ally, senses the cosmic disturbance and summons our heroes. Soon, they are joined by companions both familiar (a delightfully expressive Yoshi who finally gets his big-screen moment) and wonderfully new: the wise and ethereal Rosalina (Tilda Swinton, a casting masterstroke) and her adorable, star-shaped Lumas. Their quest takes them through fantastical galaxies – from the luscious landscapes of Honeyhive Galaxy to the perilous icy peaks of Freezeflame Galaxy, each realized with astonishing detail and dynamic, gravity-bending action. The pacing is relentless, yet allows moments for character development and genuine emotional resonance, particularly in the bond between the brothers and Rosalina's poignant backstory. The climax is an epic showdown at the heart of a nascent black hole, a visual and emotional spectacle that will leave audiences on the edge of their seats.</p>
+
+<h2>Voice Acting: More Than Just "It's-a Me!"</h2>
+<p>The voice cast truly shines, solidifying their roles and adding new layers to these beloved characters. Chris Pratt’s Mario has matured, embodying a more seasoned hero while retaining his trademark earnestness and optimism. He delivers a performance that balances action-hero gravitas with genuine warmth. Charlie Day’s Luigi continues to be a comedic highlight, his nervous energy perfectly counterpointed by bursts of unexpected courage. His character arc feels more pronounced here, as he faces fears far beyond haunted mansions. Anya Taylor-Joy’s Peach is unequivocally a strong, independent leader, actively participating in the adventure and providing crucial tactical insight. However, the true standouts are the new additions. The voice behind Bowser Jr. (we'll keep it spoiler-free for those who haven't seen the credits!) absolutely nails the complex psychology of a child villain – desperate for his father's approval yet capable of immense destruction. It’s a performance that brings surprising depth to what could have been a one-note antagonist. And then there's Tilda Swinton's Rosalina. Her voice is a soothing, otherworldly balm, conveying ancient wisdom and profound melancholy, perfectly capturing the character's cosmic grandeur and maternal tenderness towards the Lumas. The adorable chirps and squeaks of the Lumas themselves add immense charm, making them instant fan favorites. The ensemble's chemistry is palpable, grounding the fantastical adventure in genuine emotional connections, making every victory feel earned and every peril genuinely threatening.</p>
+
+<h2>Beyond the Power-Up: Extreme Trivia & Easter Eggs</h2>
+<p>For the ardent Mario fan, 'The Super Mario Galaxy Movie' is a treasure trove of extreme trivia and meticulously placed easter eggs that demonstrate an unparalleled reverence for the source material.
+<ol>
+    <li><b>Musical Masterpiece:</b> The film's score, a brilliant adaptation of Mahito Yokota's original orchestral themes from the games, is a character in itself. Listen closely, and you'll hear not just iconic melodies like 'Gusty Garden Galaxy' and 'Good Egg Galaxy' given cinematic grandeur, but also subtle nods to Koji Kondo's earlier works, weaving a rich tapestry of Nintendo's musical legacy.</li>
+    <li><b>Gravity-Defying Animation:</b> Animators reportedly spent months studying orbital mechanics and real-world astrophysics (simplified, of course) to make the film's unique gravity-based platforming feel authentic and visually consistent, translating the game's core mechanic into breathtaking cinematic sequences.</li>
+    <li><b>Rosalina's Storybook:</b> While not explicitly shown, Rosalina's poignant backstory from the game's optional storybook is subtly referenced through visual cues and her dialogue, hinting at her deep connection to the Lumas and her role as the Comet Observatory's guardian. Keen-eyed fans will notice designs on the Observatory that echo pages from the book.</li>
+    <li><b>Obscure Cameos:</b> Beyond the main cast, watch for blink-and-you'll-miss-it appearances from minor characters like Polari, the star-shaped guide from the Comet Observatory, and even a brief glimpse of Lubba from 'Super Mario Galaxy 2'. The variety of Star Bits, including purple and green variants, is also faithfully rendered.</li>
+    <li><b>Power-Up Showcase:</b> The film doesn't shy away from showcasing beloved power-ups beyond the Fire Flower. We get exhilarating sequences featuring Bee Mario, Boo Mario, and even a cleverly utilized Spring Mario, each integrated organically into the action and serving a plot purpose.</li>
+    <li><b>The "New Super Mario Bros." Nod:</b> During a comedic chase scene in the film's second act, listen for a quick, rhythmic drum beat that directly samples the iconic 'New Super Mario Bros.' theme, a fun meta-reference for long-time players.</li>
+    <li><b>Behind Bowser Jr.'s Design:</b> The movie's interpretation of Bowser Jr. incorporates elements from his various appearances, combining his mischievous 'Super Mario Sunshine' look with the more aggressive design from 'Super Smash Bros.' to create a character that is both recognizable and uniquely cinematic.</li>
+</ol>
+The level of detail is astounding, rewarding multiple viewings and cementing the film as a definitive adaptation.</p>
+
+<h2>Conclusion: A Universe of Potential</h2>
+<p>'The Super Mario Galaxy Movie' isn't just a sequel; it's a profound statement on the potential of video game adaptations when handled with genuine care and creative audacity. It’s a vibrant, exhilarating, and emotionally resonant film that manages to honor its source material while forging its own identity. The animation is unparalleled, the action sequences are inventive, and the heart of the story — the bond between brothers and the fight for cosmic balance — resonates deeply. It sets a new benchmark for animated features and leaves the audience eagerly anticipating where Mario's next adventure might take him. The post-credits scene alone, hinting at an even grander threat lurking in the cosmos, ensures that the Mario cinematic universe has a bright, star-filled future. Go see it. You won't just be entertained; you'll be transported.</p>
+```
+                </div>
+            </div>
+        </body></html>
