@@ -1,127 +1,377 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>IMDb_KILLER | Top Movies</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
-:root { --bg: #000000; --surface: #121212; --primary: #F5C518; --text: #ffffff; --text-muted: #aaaaaa; }
-body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; padding-bottom: 50px; }
+import os
+import json
+import base64
+import requests
+import cpi
+from bs4 import BeautifulSoup
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import google.generativeai as genai
+from datetime import datetime
 
-/* Navbar */
-.navbar { background: var(--surface); padding: 15px 40px; display: flex; align-items: center; border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
-.navbar .logo { background: var(--primary); color: #000; font-weight: 900; font-size: 24px; padding: 4px 8px; border-radius: 4px; letter-spacing: -0.5px; text-decoration: none; }
-.navbar .logo span { color: #fff; background: transparent; font-weight: 500; margin-left: 5px; }
+# ==========================================
+# CONFIGURATION & API KEYS
+# ==========================================
+TMDB_API_KEY = os.getenv("TMDB_API_KEY", "your_tmdb_key")
+YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY", "your_yt_key")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "your_gemini_key")
+GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "your_maps_key")
 
-/* Container & Typography */
-.container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-.section-title { font-size: 28px; font-weight: 700; display: flex; align-items: center; gap: 12px; margin-bottom: 25px; color: var(--text); }
-.section-title::before { content: ''; display: inline-block; width: 4px; height: 28px; background: var(--primary); border-radius: 2px; }
+genai.configure(api_key=GEMINI_API_KEY)
+cpi.update() # Ensure CPI data is up-to-date for inflation calculations
 
-/* 🚀 Horizontal Scroll (The IMDb Slider) */
-.movie-scroller { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; scroll-snap-type: x mandatory; }
-.movie-scroller::-webkit-scrollbar { height: 8px; }
-.movie-scroller::-webkit-scrollbar-track { background: #111; border-radius: 4px; }
-.movie-scroller::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-.movie-scroller::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+# Setup Google Sheets
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+client = gspread.authorize(creds)
+sheet = client.open('NextGen_Movie_Intelligence').sheet1
 
-/* Premium Card Design */
-.card { flex: 0 0 auto; width: 220px; background: #1a1a1a; border-radius: 6px; overflow: hidden; transition: transform 0.3s ease; scroll-snap-align: start; border: 1px solid transparent; display: flex; flex-direction: column; }
-.card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-.card-img-wrapper { position: relative; width: 100%; height: 330px; }
-.card-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+# ==========================================
+# MODULE 1: EXTREME DATA AGGREGATION
+# ==========================================
 
-/* The IMDb Bookmark Ribbon */
-.bookmark { position: absolute; top: -5px; left: -5px; width: 35px; height: 45px; background: rgba(0,0,0,0.7); clip-path: polygon(100% 0, 100% 100%, 50% 80%, 0 100%, 0 0); display: flex; justify-content: center; color: white; font-size: 24px; padding-top: 5px; transition: 0.2s; }
-.card:hover .bookmark { background: var(--primary); color: #000; }
+def fetch_tmdb_base(movie_id):
+    """Fetches core movie data and credits from TMDB."""
+    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={TMDB_API_KEY}&append_to_response=credits,keywords"
+    resp = requests.get(url).json()
+    return resp
 
-.card-content { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
-.rating { display: flex; align-items: center; gap: 5px; font-size: 14px; color: var(--text-muted); margin-bottom: 10px; }
-.star { color: var(--primary); font-size: 16px; }
-.card-title { font-size: 16px; font-weight: 500; margin-bottom: 15px; color: #fff; text-decoration: none; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.card-title:hover { text-decoration: underline; }
+def fetch_youtube_analysis(title):
+    """Hunts YouTube for niche theory and trivia analysis, sorting by viewCount."""
+    query = f"{title} movie theory OR trivia analysis"
+    url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={query}&type=video&order=viewCount&key={YOUTUBE_API_KEY}&maxResults=2"
+    resp = requests.get(url).json()
+    videos =
+    if "items" in resp:
+        for item in resp["items"]:
+            videos.append(item['id']['videoId'])
+    return videos
 
-.card-btn { margin-top: auto; display: block; width: 100%; text-align: center; background: #2c2c2c; color: #57b5f9; padding: 10px 0; text-decoration: none; border-radius: 4px; font-weight: 600; transition: 0.2s; font-size: 14px; }
-.card-btn:hover { background: #333; color: white; }
-</style>
+def fetch_filming_coordinates(location_string):
+    """Translates a location string to lat/lng using Google Maps Geocoding API."""
+    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={location_string}&key={GOOGLE_MAPS_API_KEY}"
+    resp = requests.get(url).json()
+    if resp['status'] == 'OK':
+        loc = resp['results']['geometry']['location']
+        return {"lat": loc['lat'], "lng": loc['lng']}
+    return None
+
+def adjust_box_office_inflation(nominal_revenue, release_year):
+    """Calculates true historical weight using the CPI library."""
+    try:
+        real_value = cpi.inflate(nominal_revenue, release_year)
+        return round(real_value, 2)
+    except cpi.errors.CPIObjectDoesNotExist:
+        return nominal_revenue # Fallback if year is out of bounds
+
+def scrape_shotonwhat_tech_specs(title):
+    """Simulated scraping of ShotOnWhat for camera and VFX data."""
+    # In a production environment, this utilizes BeautifulSoup against the ShotOnWhat DOM.
+    # For demonstration, returning a structured mock payload based on research.
+    return {
+        "camera": "ARRI ALEXA Mini, IMAX 3D-30",
+        "lenses": "Panavision C Series Anamorphic",
+        "vfx_software": "Autodesk After Effects, Nuke",
+        "film_stock": "Digital 4K UHD"
+    }
+
+# ==========================================
+# MODULE 2: LLM MASTER CRITIC SYNTHESIS
+# ==========================================
+
+def generate_master_critic_review(movie_data, tech_specs):
+    """Utilizes Gemini to write a multi-dimensional, semantic film review."""
+    model = genai.GenerativeModel('gemini-pro')
+    prompt = f"""
+    Act as a master film critic writing for a prestigious cinematic journal. 
+    Write a profound, multi-dimensional review for the movie '{movie_data['title']}' ({movie_data['release_date'][:4]}).
+    Do not merely summarize the plot. 
+    Analyze the cinematography based on these tools: {tech_specs['camera']} and {tech_specs['lenses']}. 
+    Discuss the thematic depth, pacing, and how the visual aesthetic (color palette) influences the emotional resonance. 
+    Compare it to its contemporaries in the {movie_data['genres']['name']} genre.
+    Maintain an authoritative, academic, yet visceral tone.
+    """
+    response = model.generate_content(prompt)
+    return response.text
+
+# ==========================================
+# MODULE 3: FRONTEND CODE GENERATION
+# ==========================================
+
+def generate_single_file_html(aggregated_data):
+    """Generates the massive, single-file HTML/CSS/JS payload."""
+    
+    # Serialize data for injection into the JS environment
+    json_data = json.dumps(aggregated_data)
+    
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Next-Gen Movie Intelligence Hub</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/3d-force-graph"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+    <style>
+        :root {{
+            /* Dynamic colors to be overwritten by Vibrant.js logic */
+            --color-primary: #0f5ad1;
+            --color-bg: #050505;
+            --color-text: #e0e0e0;
+            --glass-bg: rgba(25, 25, 35, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }}
+        body, html {{
+            margin: 0; padding: 0; 
+            background-color: var(--color-bg); 
+            color: var(--color-text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }}
+        
+        /* 3D WebGL Canvas Container */
+        #webgl-matrix {{
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; pointer-events: none;
+        }}
+
+        /* Glassmorphic Bento Grid Layout */
+       .bento-container {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 5vw;
+            margin-top: 100vh; /* Push below initial 3D matrix dive */
+            position: relative;
+            z-index: 10;
+        }}
+        
+       .glass-card {{
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }}
+        
+       .glass-card:hover {{
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--color-primary);
+        }}
+
+        /* Variable Typography & HUD Elements */
+        h1, h2, h3 {{
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            font-variation-settings: 'wght' 700;
+        }}
+        
+       .hud-stat {{
+            font-size: 3rem;
+            font-variation-settings: 'wght' 300;
+            color: var(--color-primary);
+            text-shadow: 0 0 20px var(--color-primary);
+        }}
+
+        /* D3 Network Graph Container */
+        #cast-graph {{ width: 100%; height: 400px; border-radius: 12px; overflow: hidden; }}
+        
+       .trailer-bg {{
+            position: fixed; top: 0; left: 0; min-width: 100%; min-height: 100%;
+            z-index: -2; opacity: 0.3; object-fit: cover;
+        }}
+    </style>
 </head>
 <body>
-    <div class="navbar"><a href="#" class="logo">IMDb<span>_KILLER</span></a></div>
-    <div class="container">
-        <h2 class="section-title">Top picks for you</h2>
-        <div class="movie-scroller">
 
-            <div class="card">
-                <a href="movies/remarkably-bright-creatures.html" style="text-decoration: none;">
-                    <div class="card-img-wrapper">
-                        <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" alt="Remarkably Bright Creatures">
-                        <div class="bookmark">+</div>
-                    </div>
-                </a>
-                <div class="card-content">
-                    <div class="rating"><span class="star">★</span> 8.5 <span style="margin-left:auto; font-size:12px; color:#777;">2026</span></div>
-                    <a href="movies/remarkably-bright-creatures.html" class="card-title">Remarkably Bright Creatures</a>
-                    <a href="movies/remarkably-bright-creatures.html" class="card-btn">Trailer & Deep Data</a>
-                </div>
-            </div>
-            <div class="card">
-                <a href="movies/no-place-to-be-single.html" style="text-decoration: none;">
-                    <div class="card-img-wrapper">
-                        <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" alt="No Place to Be Single">
-                        <div class="bookmark">+</div>
-                    </div>
-                </a>
-                <div class="card-content">
-                    <div class="rating"><span class="star">★</span> 8.5 <span style="margin-left:auto; font-size:12px; color:#777;">2026</span></div>
-                    <a href="movies/no-place-to-be-single.html" class="card-title">No Place to Be Single</a>
-                    <a href="movies/no-place-to-be-single.html" class="card-btn">Trailer & Deep Data</a>
-                </div>
-            </div>
-            <div class="card">
-                <a href="movies/mortal-kombat-ii.html" style="text-decoration: none;">
-                    <div class="card-img-wrapper">
-                        <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" alt="Mortal Kombat II">
-                        <div class="bookmark">+</div>
-                    </div>
-                </a>
-                <div class="card-content">
-                    <div class="rating"><span class="star">★</span> 8.5 <span style="margin-left:auto; font-size:12px; color:#777;">2026</span></div>
-                    <a href="movies/mortal-kombat-ii.html" class="card-title">Mortal Kombat II</a>
-                    <a href="movies/mortal-kombat-ii.html" class="card-btn">Trailer & Deep Data</a>
-                </div>
-            </div>
-            <div class="card">
-                <a href="movies/swapped.html" style="text-decoration: none;">
-                    <div class="card-img-wrapper">
-                        <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" alt="Swapped">
-                        <div class="bookmark">+</div>
-                    </div>
-                </a>
-                <div class="card-content">
-                    <div class="rating"><span class="star">★</span> 8.5 <span style="margin-left:auto; font-size:12px; color:#777;">2026</span></div>
-                    <a href="movies/swapped.html" class="card-title">Swapped</a>
-                    <a href="movies/swapped.html" class="card-btn">Trailer & Deep Data</a>
-                </div>
-            </div>
-            <div class="card">
-                <a href="movies/ready-or-not-2-here-i-come.html" style="text-decoration: none;">
-                    <div class="card-img-wrapper">
-                        <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" alt="Ready or Not 2: Here I Come">
-                        <div class="bookmark">+</div>
-                    </div>
-                </a>
-                <div class="card-content">
-                    <div class="rating"><span class="star">★</span> 8.5 <span style="margin-left:auto; font-size:12px; color:#777;">2026</span></div>
-                    <a href="movies/ready-or-not-2-here-i-come.html" class="card-title">Ready or Not 2: Here I Come</a>
-                    <a href="movies/ready-or-not-2-here-i-come.html" class="card-btn">Trailer & Deep Data</a>
-                </div>
-            </div>
-            <div class="card">
-                <a href="movies/my-dearest-assassin.html" style="text-decoration: none;">
-                    <div class="card-img-wrapper">
-                        <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" alt="My Dearest Assassin">
-                        <div class="bookmark">+</div>
-                    </div>
-                </a>
-                <div class="card-content">
-                    <div class="rating"><span class="star">★</span> 8.5 <span style="margin-left:auto; font-size:12px; color:#777;">2026</span></div>
-                    <a href="movies/my-dearest-assassin.html" class="card-title">My Dearest Assassin</a>
-                    <a href="movies/my-dearest-assassin.html" class="card-btn">Trailer & Deep Data</a>
-                </div>
-            </div></div></div></body></html>
+    <video autoplay muted loop class="trailer-bg">
+        <source src="trailer_placeholder.mp4" type="video/mp4">
+    </video>
+
+    <div id="webgl-matrix"></div>
+
+    <div class="bento-container" id="content-layer">
+        <div class="glass-card" style="grid-column: 1 / -1;">
+            <h2>Master Critic Analysis</h2>
+            <p id="review-content"></p>
+        </div>
+
+        <div class="glass-card gs-reveal">
+            <h3>Box Office Economics</h3>
+            <p>Nominal Gross: <span id="nominal-gross"></span></p>
+            <p>Inflation Adjusted (2024$): <br><span class="hud-stat" id="real-gross"></span></p>
+        </div>
+
+        <div class="glass-card gs-reveal">
+            <h3>Acquisition & VFX Hardware</h3>
+            <ul id="tech-specs-list" style="list-style-type: none; padding: 0;"></ul>
+        </div>
+
+        <div class="glass-card gs-reveal" style="grid-column: 1 / -1;">
+            <h3>Cast & Crew Collaboration Topology</h3>
+            <div id="cast-graph"></div>
+        </div>
+        
+        <div class="glass-card gs-reveal" style="grid-column: 1 / -1;">
+            <h3>Theory & Trivia Synthesis</h3>
+            <div id="video-container" style="display: flex; gap: 1rem;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Inject Aggregated Data Payload
+        const dbData = {json_data};
+
+        // --- 1. Populate DOM Elements ---
+        document.getElementById('review-content').innerHTML = dbData.critic_review.replace(/\\n/g, '<br>');
+        document.getElementById('nominal-gross').innerText = "$" + dbData.revenue.toLocaleString();
+        document.getElementById('real-gross').innerText = "$" + dbData.adjusted_revenue.toLocaleString();
+        
+        const techList = document.getElementById('tech-specs-list');
+        for (const [key, value] of Object.entries(dbData.tech_specs)) {{
+            techList.innerHTML += `<li><strong>${{key.toUpperCase()}}:</strong> ${{value}}</li>`;
+        }}
+
+        const vidContainer = document.getElementById('video-container');
+        dbData.youtube_ids.forEach(id => {{
+            vidContainer.innerHTML += `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${{id}}" frameborder="0" allowfullscreen></iframe>`;
+        }});
+
+        // --- 2. Smooth Scrolling & GSAP Cinematic Parallax ---
+        const lenis = new Lenis({{ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) }});
+        function raf(time) {{ lenis.raf(time); requestAnimationFrame(raf); }}
+        requestAnimationFrame(raf);
+
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.utils.toArray('.gs-reveal').forEach(elem => {{
+            gsap.fromTo(elem, 
+                {{ autoAlpha: 0, y: 100, scale: 0.95 }},
+                {{ duration: 1.5, autoAlpha: 1, y: 0, scale: 1, ease: "expo.out",
+                   scrollTrigger: {{ trigger: elem, start: "top 85%", scrub: false }}
+                }}
+            );
+        }});
+
+        // --- 3. WebGL 3D Matrix Visualization (Three.js + Force Graph) ---
+        // Simulating the cinematic matrix node space
+        const Graph = ForceGraph3D()
+            (document.getElementById('webgl-matrix'))
+           .graphData({{
+                nodes:,
+                links: dbData.cast.map(c => ({{ source: dbData.title, target: c.name }}))
+            }})
+           .nodeAutoColorBy('group')
+           .nodeRelSize(8)
+           .linkWidth(2)
+           .backgroundColor('rgba(0,0,0,0)');
+            
+        // Setup GSAP Parallax Dive Effect on WebGL Camera
+        ScrollTrigger.create({{
+            trigger: "body", start: "top top", end: "bottom bottom", scrub: 1,
+            onUpdate: self => {{
+                // Cinematic Dive: Push camera deeper into the Z-axis based on scroll
+                const cam = Graph.cameraPosition();
+                Graph.cameraPosition({{ z: 1000 - (self.progress * 800) }});
+            }}
+        }});
+
+        // --- 4. D3.js 2D Cast Network Diagram ---
+        const width = document.getElementById('cast-graph').clientWidth;
+        const height = 400;
+        const svg = d3.select("#cast-graph").append("svg").attr("width", width).attr("height", height);
+        
+        const simulation = d3.forceSimulation(dbData.cast)
+           .force("charge", d3.forceManyBody().strength(-100))
+           .force("center", d3.forceCenter(width / 2, height / 2))
+           .force("collide", d3.forceCollide().radius(30));
+
+        const node = svg.append("g").selectAll("circle")
+           .data(dbData.cast).enter().append("circle").attr("r", 15).attr("fill", "var(--color-primary)");
+            
+        const label = svg.append("g").selectAll("text")
+           .data(dbData.cast).enter().append("text").text(d => d.name)
+           .style("fill", "white").style("font-size", "10px").attr("dx", 20).attr("dy", 4);
+
+        simulation.on("tick", () => {{
+            node.attr("cx", d => d.x).attr("cy", d => d.y);
+            label.attr("x", d => d.x).attr("y", d => d.y);
+        }});
+
+        // --- 5. Decentralized TF.js Personalization Trigger (Placeholder Logic) ---
+        // Generates user-item vectors locally for privacy-preserving recommendations
+        async function runLocalRecSys() {{
+            const model = tf.sequential();
+            model.add(tf.layers.dense({{units: 16, inputShape: , activation: 'relu'}}));
+            // Model training and prediction logic executes entirely on the client
+        }}
+        runLocalRecSys();
+
+    </script>
+</body>
+</html>"""
+    
+    with open("dist_index.html", "w", encoding="utf-8") as file:
+        file.write(html_content)
+    print("Single-file deployment ready at dist_index.html")
+
+# ==========================================
+# MASTER ORCHESTRATION PIPELINE
+# ==========================================
+
+def run_genesis_pipeline(movie_id):
+    print(f"Initiating pipeline for Movie ID: {movie_id}")
+    
+    # 1. Fetch Core Data
+    tmdb_data = fetch_tmdb_base(movie_id)
+    title = tmdb_data['title']
+    release_year = int(tmdb_data['release_date'][:4])
+    nominal_revenue = tmdb_data.get('revenue', 0)
+    
+    # 2. Extreme Data Aggregation
+    adjusted_revenue = adjust_box_office_inflation(nominal_revenue, release_year)
+    tech_specs = scrape_shotonwhat_tech_specs(title)
+    yt_ids = fetch_youtube_analysis(title)
+    
+    # 3. Format Cast for Graphs (Top 15 actors)
+    cast_data = [{"name": c["name"], "character": c["character"]} for c in tmdb_data['credits']['cast'][:15]]
+    
+    # 4. LLM Master Critic Analysis
+    critic_review = generate_master_critic_review(tmdb_data, tech_specs)
+    
+    # 5. Compile Final Data Payload
+    aggregated_data = {
+        "title": title,
+        "release_year": release_year,
+        "revenue": nominal_revenue,
+        "adjusted_revenue": adjusted_revenue,
+        "tech_specs": tech_specs,
+        "youtube_ids": yt_ids,
+        "critic_review": critic_review,
+        "cast": cast_data
+    }
+    
+    # 6. Update Google Sheets Archival Backup
+    row_data = [title, release_year, nominal_revenue, adjusted_revenue, tech_specs['camera'], critic_review[:500]]
+    sheet.append_row(row_data)
+    print("Google Sheet Successfully Updated.")
+    
+    # 7. Generate Final Frontend File
+    generate_single_file_html(aggregated_data)
+
+if __name__ == "__main__":
+    # Example execution using Interstellar's TMDB ID (157336)
+    run_genesis_pipeline(157336)
