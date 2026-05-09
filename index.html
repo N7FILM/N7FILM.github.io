@@ -1,4 +1,59 @@
-<!DOCTYPE html><html><head><title>NeonFilm</title><link rel="stylesheet" href="assets/css/style.css"></head><body>
-<div class="header"><h1>NEON<span style="color:white">FILM</span></h1></div><div class="movie-grid">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N7FILM | Extreme God Level Database</title>
+    <style>
+        /* EXTREME GOD LEVEL NEON UI */
+        body { background-color: #0b0c10; color: #c5c6c7; font-family: 'Courier New', Courier, monospace; margin: 0; }
+        .glitch-header { background: rgba(11,12,16,0.95); padding: 30px; text-align: center; border-bottom: 2px solid #66fcf1; box-shadow: 0 0 20px rgba(102, 252, 241, 0.3); }
+        .glitch-header h1 { margin: 0; color: #66fcf1; font-size: 3rem; text-transform: uppercase; text-shadow: 0 0 10px #66fcf1, 0 0 20px #45a29e; }
+        .glitch-header span { color: #ffffff; }
+        
+        .movie-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; padding: 50px; max-width: 1200px; margin: auto; }
+        
+        .movie-card { 
+            background: #1f2833; width: 300px; border-radius: 15px; padding: 20px; text-align: center;
+            border: 1px solid #45a29e; transition: 0.4s; position: relative; overflow: hidden;
+        }
+        .movie-card:hover { 
+            transform: scale(1.05) translateY(-10px); 
+            box-shadow: 0 0 30px rgba(102, 252, 241, 0.6); 
+            border-color: #66fcf1;
+        }
+        .movie-title { font-size: 1.5rem; color: #ffffff; margin: 15px 0; font-weight: bold; }
+        
+        .hack-btn { 
+            display: inline-block; background: transparent; border: 2px solid #66fcf1; color: #66fcf1; 
+            padding: 12px 25px; text-decoration: none; font-size: 1.1rem; font-weight: bold; 
+            border-radius: 5px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .hack-btn:hover { background: #66fcf1; color: #0b0c10; box-shadow: 0 0 15px #66fcf1; }
+    </style>
+</head>
+<body>
 
-</div></body></html>
+    <div class="glitch-header">
+        <h1>N7<span>FILM</span></h1>
+        <p style="color: #45a29e; font-size: 1.2rem;">The Ultimate Automated Movie Database</p>
+    </div>
+
+    <div class="movie-container">
+        
+        <div class="movie-card">
+            <div class="movie-title">Latest Trending Movie</div>
+            <p>Read the extreme deep dive details and AI analysis.</p>
+            <a href="movies/remarkably-bright-creatures.html" class="hack-btn">Access Data</a>
+        </div>
+
+        <div class="movie-card">
+            <div class="movie-title">Another Blockbuster</div>
+            <p>Read the extreme deep dive details and AI analysis.</p>
+            <a href="movies/mortal-kombat-ii.html" class="hack-btn">Access Data</a>
+        </div>
+
+    </div>
+
+</body>
+</html>
