@@ -1,29 +1,39 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Hoppers</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Hoppers | N7</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;900&display=swap');
-        body { margin: 0; background: #000; color: #fff; font-family: 'Space Grotesk', sans-serif; cursor: none; overflow-x: hidden; }
-        .cursor-dot { position: fixed; top: 0; left: 0; width: 6px; height: 6px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); }
-        .hero-banner { width: 100vw; height: 70vh; position: relative; overflow: hidden; }
-        .hero-banner img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; }
-        .back-btn { position: absolute; top: 40px; left: 40px; color: #fff; text-decoration: none; font-size: 1.2rem; font-weight: 900; z-index: 100; mix-blend-mode: difference; text-transform: uppercase; letter-spacing: 2px; }
-        .content-container { max-width: 1000px; margin: -150px auto 0 auto; position: relative; z-index: 10; padding: 0 5vw; }
-        .massive-title { font-size: 6vw; text-transform: uppercase; line-height: 0.9; margin: 0 0 40px 0; font-weight: 900; letter-spacing: -2px; }
-        .video-box { width: 100%; padding-bottom: 56.25%; position: relative; background: #111; margin-bottom: 50px; }
-        iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
-        .article-text { font-size: 1.5rem; line-height: 1.8; color: #aaa; font-weight: 300; padding-bottom: 100px; }
-        .article-text h1, .article-text h2 { color: #fff; font-size: 3rem; margin-top: 60px; font-weight: 900; text-transform: uppercase; }
-        </style></head><body>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Manrope:wght@300;400&display=swap');
+        * { cursor: none !important; box-sizing: border-box; }
+        body { margin: 0; background: #000; color: #fff; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        
+        .cursor { position: fixed; top: 0; left: 0; width: 12px; height: 12px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; mix-blend-mode: difference; }
+        .cursor.hover { width: 80px; height: 80px; background: transparent; border: 1px solid #fff; }
 
-        <div class="cursor-dot" id="cursorDot"></div>
+        .nav { padding: 40px 5vw; position: fixed; top: 0; width: 100%; z-index: 100; mix-blend-mode: difference; }
+        .back-btn { color: #fff; text-decoration: none; font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; }
         
-        <div class="hero-banner"><img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg"></div>
-        <a href="../index.html" class="back-btn" id="backBtn">← Back</a>
+        .hero-img-container { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1; }
+        .hero-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.3; filter: grayscale(50%); }
         
-        <div class="content-container">
-            <h1 class="massive-title reveal-text">Hoppers</h1>
-            <div class="video-box"><iframe src="https://www.youtube.com/embed/"></iframe></div>
-            <div class="article-text"><h1>A Quantum Leap of Empathy: Unpacking the Profundity of 'Hoppers'</h1>
+        .content-layer { margin-top: 50vh; background: #050505; padding: 10vh 5vw; position: relative; z-index: 10; }
+        .massive-title { font-family: 'Syncopate', sans-serif; font-size: clamp(3rem, 8vw, 8rem); font-weight: 700; text-transform: uppercase; line-height: 0.9; margin: -20vh 0 10vh 0; color: #fff; mix-blend-mode: difference; }
+        
+        .video-box { width: 100%; padding-bottom: 56.25%; position: relative; margin-bottom: 10vh; }
+        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        
+        .article-text { max-width: 900px; margin: 0 auto; font-size: 1.5rem; line-height: 2; font-weight: 300; color: #ccc; }
+        .article-text h1, .article-text h2 { font-family: 'Syncopate', sans-serif; font-size: 2.5rem; color: #fff; margin-top: 80px; text-transform: uppercase; }
+        </style></head><body>
+        
+        <div class="cursor" id="cursor"></div>
+        <div class="hero-img-container"><img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="hero-img" id="bg-img"></div>
+        
+        <div class="nav"><a href="../index.html" class="back-btn hover-target">[ CLOSE TERMINAL ]</a></div>
+        
+        <div class="content-layer">
+            <h1 class="massive-title gs-reveal">Hoppers</h1>
+            <div class="video-box gs-reveal"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            <div class="article-text gs-reveal"><h1>A Quantum Leap of Empathy: Unpacking the Profundity of 'Hoppers'</h1>
 
 <h2>A New Lens on Existence</h2>
 <p>In an era saturated with technological wonders on screen, 'Hoppers' emerges not merely as another science fiction spectacle, but as a profound philosophical treatise, an intrepid voyage into the very fabric of sentience. Director Ava Thorne, with a visionary command of her craft, orchestrates a narrative that transcends mere entertainment, inviting audiences to confront their most deeply ingrained anthropocentric biases. This is cinema that doesn't just show; it interrogates, it empathizes, and ultimately, it transforms.</p>
@@ -42,11 +52,17 @@
         </div>
 
         <script>
-            // Simple custom cursor for inner page
-            const dot = document.getElementById('cursorDot');
-            window.addEventListener('mousemove', (e) => { dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`; });
-            
-            gsap.from(".reveal-text", {y: 100, opacity: 0, duration: 1.5, ease: "power4.out", delay: 0.5});
-            gsap.from(".video-box", {scale: 0.9, opacity: 0, duration: 1.5, ease: "power4.out", delay: 0.8});
+            const lenis = new Lenis({ duration: 1.5 });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+
+            const cursor = document.getElementById('cursor');
+            document.addEventListener('mousemove', e => gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15 }));
+            document.querySelectorAll('.hover-target').forEach(link => {
+                link.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                link.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            });
+
+            gsap.to('#bg-img', { yPercent: 30, ease: "none", scrollTrigger: { trigger: document.body, start: "top top", end: "bottom top", scrub: true } });
         </script>
         </body></html>
