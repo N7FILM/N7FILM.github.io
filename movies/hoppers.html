@@ -1,27 +1,104 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Hoppers | STREAMIT</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+        
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@400;600&display=swap');
+    
+    :root {
+        --bg-deep: #0D0D11;
+        --surface: rgba(20, 20, 25, 0.65);
+        --brand-red: #E50914;
+        --brand-blue: #0f5ad1;
+        --text-main: #FFFFFF;
+        --text-sub: #D1D5DB;
+        --primary-glow: 0 0 30px rgba(229, 9, 20, 0.5);
+    }
+    
+    body, html {
+        margin: 0; padding: 0; background: var(--bg-deep); color: var(--text-main);
+        font-family: 'Inter', sans-serif; overflow-x: hidden;
+        cursor: none; /* Custom geometric tracker */
+    }
+
+    /* 🌟 FLUID CUSTOM CURSOR */
+    @media (pointer: fine) {
+        .cursor-dot { position: fixed; width: 8px; height: 8px; background: var(--text-main); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); }
+        .cursor-ring { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, border-color 0.3s, background 0.3s; }
+    }
+    @media (pointer: coarse) {
+        body, html { cursor: auto; }
+        .cursor-dot, .cursor-ring { display: none !important; }
+    }
+
+    /* 🌟 GLASSMORPHIC NAVBAR */
+    .navbar { position: fixed; top: 0; width: 100%; height: 85px; display: flex; align-items: center; justify-content: space-between; padding: 0 60px; z-index: 1000; transition: all 0.4s ease; box-sizing: border-box; }
+    .navbar.scrolled { background: var(--surface); backdrop-filter: blur(30px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .logo { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: 1px; }
+    .logo span { color: var(--brand-red); }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+
+    /* 🌟 MAGNETIC BUTTONS */
+    .magnetic-btn { padding: 12px 28px; background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: var(--text-main); font-weight: 600; cursor: pointer; display: inline-block; transition: background 0.3s, color 0.3s; text-decoration: none; }
+    .magnetic-btn.primary { background: var(--brand-red); border: none; }
+    .magnetic-btn.primary:hover { box-shadow: var(--primary-glow); }
+
+    /* 🌟 CINEMATIC HERO SLIDER */
+    .hero-container { height: 100vh; width: 100vw; position: relative; overflow: hidden; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 120%; background-size: cover; background-position: center; filter: brightness(0.6); z-index: -1; transform: translateY(-10%); }
+    .hero-overlay { position: absolute; bottom: 0; width: 100%; height: 60%; background: linear-gradient(180deg, rgba(13,13,17,0) 0%, rgba(13,13,17,1) 100%); z-index: 1; }
+    .hero-content { padding-left: 60px; max-width: 900px; z-index: 2; }
+    .kinematic-text { font-family: 'Space Grotesk'; font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 900; margin-bottom: 10px; letter-spacing: -2px; text-transform: uppercase; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.9); clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
+    .hero-meta { display: flex; gap: 15px; margin-bottom: 25px; font-weight: 600; font-size: 1.1rem; align-items: center; flex-wrap: wrap; }
+    .hero-meta span { background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; backdrop-filter: blur(10px); }
+
+    /* 🌟 BENTO GRID & 3D TILT */
+    .archive-section { padding: 80px 60px; position: relative; z-index: 5; background: var(--bg-deep); }
+    .bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+    .bento-card { background: var(--surface); border-radius: 16px; height: 450px; transform-style: preserve-3d; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); will-change: transform; text-decoration: none; color: inherit; display: block; }
+    .bento-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 0.5s; }
+    .bento-card:hover .bento-img { opacity: 1; transform: scale(1.05); }
+    .bento-info { position: absolute; bottom: 0; width: 100%; padding: 40px 20px 20px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); transform: translateZ(30px); }
+    .bento-title { font-family: 'Space Grotesk'; font-size: 1.8rem; margin: 0 0 5px 0; }
+    .bento-glow { position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(229,9,20,0.4) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; opacity: 0; pointer-events: none; transition: opacity 0.3s; transform: translate(-50%, -50%); z-index: -1; }
+    .bento-card:hover .bento-glow { opacity: 1; }
+
+    /* 🌟 COMMAND PALETTE (CTRL+K) */
+    .command-palette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(13, 13, 17, 0.95); backdrop-filter: blur(20px); z-index: 9999; display: flex; justify-content: center; align-items: flex-start; padding-top: 15vh; opacity: 0; pointer-events: none; transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .command-palette.active { opacity: 1; pointer-events: all; }
+    .command-input { width: 80%; max-width: 800px; padding: 25px 30px; font-size: 2rem; font-family: 'Space Grotesk'; background: transparent; border: none; border-bottom: 2px solid rgba(255,255,255,0.2); color: var(--text-main); outline: none; transition: 0.3s; }
+    .command-input:focus { border-color: var(--brand-red); }
+
+    @media (max-width: 768px) {
+        .navbar { padding: 0 20px; height: 70px; }
+        .nav-links a:not(.primary) { display: none; }
+        .hero-content { padding-left: 20px; }
+        .archive-section { padding: 40px 20px; }
+        .command-input { font-size: 1.5rem; width: 90%; }
+    }
+</style>
+
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@400;600&display=swap');
-        body { margin: 0; background: #0D0D11; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .hero-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; opacity: 0.2; filter: blur(10px); }
-        .nav { padding: 30px 5vw; display: flex; align-items: center; justify-content: space-between; }
-        .back-btn { color: #fff; text-decoration: none; font-family: 'Space Grotesk'; font-weight: 700; font-size: 1.2rem; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px; backdrop-filter: blur(10px); transition: 0.3s; }
-        .back-btn:hover { background: #E50914; }
-        .container { max-width: 1200px; margin: auto; padding: 0 5vw 100px 5vw; }
-        h1 { font-family: 'Space Grotesk'; font-size: clamp(2.5rem, 6vw, 5rem); margin: 20px 0 40px 0; line-height: 1.1; }
-        .video-box { border-radius: 20px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); }
+        .page-container { max-width: 1400px; margin: 100px auto 0 auto; padding: 50px 5vw; position: relative; z-index: 10; }
+        .title-huge { font-family: 'Space Grotesk'; font-size: clamp(3rem, 6vw, 6rem); margin: 0 0 20px 0; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .video-wrapper { border-radius: 20px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); width: 100%; margin-bottom: 50px; }
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .data-box { margin-top: 50px; line-height: 1.8; font-size: 1.15rem; color: #D1D5DB; background: rgba(20,20,25,0.7); backdrop-filter: blur(20px); padding: 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .data-box h1, .data-box h2 { color: #fff; font-size: 2rem; margin-top: 0; }
+        .article-box { line-height: 1.8; font-size: 1.2rem; color: var(--text-sub); background: var(--surface); backdrop-filter: var(--glass-blur); padding: 50px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .article-box h1, .article-box h2 { color: var(--text-main); font-size: 2.5rem; font-family: 'Space Grotesk'; margin-top: 0; }
         </style></head><body>
+
+        <div class="cursor-dot"></div><div class="cursor-ring"></div>
+
+        <nav class="navbar" id="navbar">
+            <a href="../index.html" class="logo">STREAM<span>IT</span></a>
+            <div class="nav-links"><a href="../index.html" class="magnetic-btn primary">← Back to Hub</a></div>
+        </nav>
         
-        <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="hero-bg">
-        <div class="nav"><a href="../index.html" class="back-btn">← Back to Hub</a></div>
+        <div class="hero-bg" id="hero-bg" style="background-image: url('https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg'); height: 80vh; transform: translateY(0);"></div>
+        <div class="hero-overlay" style="height: 100vh;"></div>
         
-        <div class="container page-reveal">
-            <h1>Hoppers</h1>
-            <div class="video-box"><iframe src="https://www.youtube.com/embed/?autoplay=0" allowfullscreen></iframe></div>
-            <div class="data-box"><h1>A Quantum Leap of Empathy: Unpacking the Profundity of 'Hoppers'</h1>
+        <div class="page-container">
+            <h1 class="kinematic-text title-huge">Hoppers</h1>
+            <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            <div class="article-box"><h1>A Quantum Leap of Empathy: Unpacking the Profundity of 'Hoppers'</h1>
 
 <h2>A New Lens on Existence</h2>
 <p>In an era saturated with technological wonders on screen, 'Hoppers' emerges not merely as another science fiction spectacle, but as a profound philosophical treatise, an intrepid voyage into the very fabric of sentience. Director Ava Thorne, with a visionary command of her craft, orchestrates a narrative that transcends mere entertainment, inviting audiences to confront their most deeply ingrained anthropocentric biases. This is cinema that doesn't just show; it interrogates, it empathizes, and ultimately, it transforms.</p>
@@ -38,5 +115,103 @@
 <h2>Beyond the Screen, Into the Wild</h2>
 <p>'Hoppers' is more than a film; it is an epoch-making cinematic event that will undoubtedly spark discourse for years to come. It challenges our presumptions, expands our understanding of life, and leaves an indelible mark on the soul. Mabel’s journey becomes our own, urging us to listen to the silent whispers of the wild, to recognize the profound intelligence that pulsates beneath the fur, feather, and scale. This is a work of staggering ambition and even greater achievement, a triumphant blend of cutting-edge science fiction and timeless philosophical inquiry. Go see 'Hoppers,' not just to be entertained, but to be fundamentally changed.</p></div>
         </div>
-        <script>gsap.from(".page-reveal", {y: 50, opacity: 0, duration: 1, ease: "power4.out"});</script>
+
+        
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+    // 1. LENIS SMOOTH SCROLL
+    const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time)=>{ lenis.raf(time * 1000) });
+    gsap.ticker.lagSmoothing(0);
+
+    // 2. GEOMETRIC FLUID CURSOR
+    if (window.matchMedia("(pointer: fine)").matches) {
+        const dot = document.querySelector('.cursor-dot');
+        const ring = document.querySelector('.cursor-ring');
+        const xToDot = gsap.quickTo(dot, "x", {duration: 0.05, ease: "power3"});
+        const yToDot = gsap.quickTo(dot, "y", {duration: 0.05, ease: "power3"});
+        const xToRing = gsap.quickTo(ring, "x", {duration: 0.4, ease: "power3.out"});
+        const yToRing = gsap.quickTo(ring, "y", {duration: 0.4, ease: "power3.out"});
+
+        window.addEventListener('mousemove', (e) => {
+            xToDot(e.clientX); yToDot(e.clientY);
+            xToRing(e.clientX); yToRing(e.clientY);
+        });
+
+        // 3. MAGNETIC BUTTONS
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                gsap.to(btn, { x: x * 0.3, y: y * 0.3, duration: 0.4, ease: "power2.out" });
+                gsap.to(ring, { scale: 1.5, borderColor: "var(--brand-red)", backgroundColor: "rgba(229,9,20,0.1)" });
+                gsap.to(dot, { opacity: 0 });
+            });
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, { x: 0, y: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" });
+                gsap.to(ring, { scale: 1, borderColor: "rgba(255,255,255,0.3)", backgroundColor: "transparent" });
+                gsap.to(dot, { opacity: 1 });
+            });
+        });
+    }
+
+    // 4. COMMAND PALETTE SEARCH
+    const cmdPalette = document.getElementById('cmd-palette');
+    const cmdInput = document.querySelector('.command-input');
+    const cards = document.querySelectorAll('.bento-card');
+
+    const togglePalette = () => {
+        cmdPalette.classList.toggle('active');
+        if(cmdPalette.classList.contains('active')) { setTimeout(() => cmdInput.focus(), 100); } 
+        else { cmdInput.blur(); cmdInput.value = ''; filterCards(''); }
+    };
+
+    window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); togglePalette(); }
+        if (e.key === 'Escape' && cmdPalette.classList.contains('active')) togglePalette();
+    });
+    document.getElementById('search-trigger').addEventListener('click', togglePalette);
+
+    function filterCards(query) {
+        cards.forEach(card => {
+            card.style.display = card.getAttribute('data-title').includes(query.toLowerCase()) ? 'block' : 'none';
+        });
+        if(query.length > 0) { document.getElementById('hero-trigger').style.display = 'none'; } 
+        else { document.getElementById('hero-trigger').style.display = 'flex'; }
+    }
+    cmdInput.addEventListener('input', (e) => filterCards(e.target.value));
+
+    // 5. NAVBAR SCROLL
+    window.addEventListener('scroll', () => {
+        const nav = document.getElementById('navbar');
+        if(window.scrollY > 50) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+    });
+
+    // 6. BENTO GRID 3D TILT
+    if (window.matchMedia("(pointer: fine)").matches) {
+        cards.forEach(card => {
+            const glow = card.querySelector('.bento-glow');
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left, y = e.clientY - rect.top;
+                const centerX = rect.width / 2, centerY = rect.height / 2;
+                gsap.to(card, { rotationX: ((y - centerY) / centerY) * -10, rotationY: ((x - centerX) / centerX) * 10, transformPerspective: 1000, ease: "power2.out", duration: 0.5 });
+                if(glow) gsap.to(glow, { x: x, y: y, duration: 0.1 });
+            });
+            card.addEventListener('mouseleave', () => { gsap.to(card, { rotationX: 0, rotationY: 0, duration: 0.8, ease: "elastic.out(1, 0.3)" }); });
+        });
+    }
+
+    // 7. KINEMATIC REVEAL & PARALLAX
+    gsap.from(".kinematic-text", { y: 120, opacity: 0, duration: 1.8, ease: "power4.out", delay: 0.3, clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)" });
+    gsap.to("#hero-bg", { yPercent: 40, ease: "none", scrollTrigger: { trigger: "#hero-trigger", start: "top top", end: "bottom top", scrub: true } });
+</script>
+
         </body></html>
