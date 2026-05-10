@@ -1,972 +1,242 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CINEMATICA | God-Level Intelligence Hub</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    
-    <style>
-        /* === CORE AESTHETICS & VARIABLES === */
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700;900&family=Inter:wght@400;600&display=swap');
-        
-        :root {
-            --bg-color: #030303;
-            --text-primary: #ffffff;
-            --text-secondary: #888888;
-            --accent: #0066ff;
-            --font-main: 'Inter', sans-serif;
-            --font-display: 'Space Grotesk', sans-serif;
-            --transition-smooth: cubic-bezier(0.77, 0, 0.175, 1);
-        }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-        
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: var(--font-main);
-            overflow-x: hidden;
-            overscroll-behavior: none;
-        }
+<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><title>N7 | God Level UI</title><script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js'></script><script src='https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js'></script><style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700;900&family=Inter:wght@400;600&display=swap');
+:root { --bg: #050505; --primary-glow: #00ffcc; --glass-border: rgba(255,255,255,0.08); --accent-neon: #ff00ff; }
+* { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+body, html { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; overscroll-behavior: none; }
 
-        /* === CUSTOM INTERACTIVE CURSOR === */
-        .custom-cursor {
-            position: fixed; top: 0; left: 0;
-            width: 20px; height: 20px;
-            border-radius: 50%;
-            background-color: var(--accent);
-            pointer-events: none;
-            mix-blend-mode: difference;
-            z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s var(--transition-smooth), height 0.3s var(--transition-smooth);
-        }
-        .custom-cursor.active { width: 60px; height: 60px; background-color: #fff; }
+/* MAGNETIC CURSOR */
+#custom-cursor { position: fixed; top: 0; left: 0; width: 8px; height: 8px; background: var(--primary-glow); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; }
+#cursor-follower { position: fixed; top: 0; left: 0; width: 45px; height: 45px; border: 1px solid rgba(0, 255, 204, 0.4); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s linear; }
 
-        /* === TOP NAVIGATION & MEGA MENU === */
-        .top-header {
-            position: fixed; top: 0; left: 0; width: 100%;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 4vw; z-index: 1000;
-            background: linear-gradient(to bottom, rgba(3,3,3,0.9), transparent);
-        }
-        
-        .logo { font-family: var(--font-display); font-size: 28px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: #fff; text-decoration: none; }
-        .logo span { color: var(--accent); }
+/* ELASTIC SIDEBAR */
+.sidebar { position: fixed; left: 0; top: 0; height: 100vh; width: 80px; background: rgba(3, 3, 3, 0.95); border-right: 1px solid var(--glass-border); z-index: 8000; display: flex; flex-direction: column; padding-top: 40px; transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1); overflow: hidden; backdrop-filter: blur(20px); }
+.sidebar:hover { width: 280px; }
+.sidebar-item { padding: 25px; white-space: nowrap; display: flex; align-items: center; opacity: 0.5; transition: 0.3s; color: #fff; text-decoration: none; font-size: 1.2rem; }
+.sidebar-item:hover { opacity: 1; color: var(--primary-glow); }
+.sidebar-text { margin-left: 25px; opacity: 0; transform: translateX(-30px); transition: 0.4s; font-family: 'Space Grotesk'; font-weight: 700; }
+.sidebar:hover .sidebar-text { opacity: 1; transform: translateX(0); }
 
-        /* Dropdown Architecture */
-        .main-menu { display: flex; list-style: none; gap: 40px; }
-        .menu-item { position: relative; }
-        .menu-link { 
-            color: #fff; text-decoration: none; font-size: 14px; 
-            text-transform: uppercase; font-weight: 600; letter-spacing: 1px;
-            padding: 10px 0; display: block;
-        }
-        
-        .dropdown {
-            position: absolute; top: 100%; left: -20px;
-            background: rgba(10, 10, 12, 0.95);
-            backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05);
-            min-width: 240px; border-radius: 12px;
-            opacity: 0; visibility: hidden; transform: translateY(15px);
-            transition: all 0.4s ease; list-style: none; padding: 15px 0;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-        .menu-item:hover > .dropdown { opacity: 1; visibility: visible; transform: translateY(0); }
-        .dropdown-item { position: relative; }
-        .dropdown-link {
-            color: #aaa; text-decoration: none; padding: 12px 25px;
-            display: block; font-size: 14px; transition: 0.3s;
-        }
-        .dropdown-link:hover { color: #fff; background: rgba(0,102,255,0.1); padding-left: 35px; border-left: 2px solid var(--accent); }
+/* COMMAND PALETTE (CTRL+K) */
+#cmd-palette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(35px); z-index: 11000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.4s ease; }
+#cmd-palette.active { opacity: 1; pointer-events: auto; }
+.cmd-box { width: 700px; max-width: 90vw; background: rgba(10,10,10,0.9); border: 1px solid var(--glass-border); border-radius: 16px; padding: 40px; transform: translateY(30px) scale(0.95); transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
+#cmd-palette.active .cmd-box { transform: translateY(0) scale(1); }
+.cmd-input { width: 100%; background: transparent; border: none; color: white; font-size: 2.5rem; outline: none; padding-bottom: 20px; border-bottom: 1px solid var(--glass-border); font-family: 'Space Grotesk'; }
 
-        /* Sub-Menu Level 2 */
-        .sub-menu {
-            position: absolute; top: 0; left: 100%;
-            background: rgba(10, 10, 12, 0.95);
-            backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05);
-            min-width: 220px; border-radius: 12px;
-            opacity: 0; visibility: hidden; transform: translateX(15px);
-            transition: all 0.4s ease; list-style: none; padding: 15px 0;
-        }
-        .dropdown-item:hover > .sub-menu { opacity: 1; visibility: visible; transform: translateX(0); }
+/* MAIN CONTENT & HERO */
+.main-content { margin-left: 80px; transition: margin-left 0.5s; }
+.hero { height: 90vh; display: flex; align-items: center; padding-left: 5vw; position: relative; border-bottom: 1px solid var(--glass-border); }
+.hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; z-index: -1; mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); }
+.hero-title { font-family: 'Space Grotesk'; font-size: clamp(4rem, 8vw, 8rem); font-weight: 900; line-height: 1; text-transform: uppercase; text-shadow: 0 10px 40px rgba(0,0,0,0.8); }
 
-        /* === LIQUID GLASS SEARCH BAR === */
-        .liquid-search-container { position: relative; display: flex; align-items: center; }
-        .liquid-search {
-            width: 280px; padding: 14px 25px;
-            border-radius: 40px; border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.03);
-            color: #fff; font-size: 14px; outline: none;
-            backdrop-filter: blur(20px) url(#liquidGlassMap);
-            -webkit-backdrop-filter: blur(20px);
-            transition: width 0.5s var(--transition-smooth), background 0.3s, border 0.3s;
-            font-family: var(--font-main);
-        }
-        .liquid-search:focus { width: 400px; background: rgba(255,255,255,0.08); border-color: var(--accent); box-shadow: 0 0 30px rgba(0,102,255,0.2); }
+/* 3D BENTO GRID */
+.bento-section { padding: 100px 5%; max-width: 1600px; margin: 0 auto; }
+.bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; perspective: 1500px; }
+.bento-card { position: relative; height: 500px; background: rgba(20,20,20,0.6); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; transform-style: preserve-3d; text-decoration: none; color: #fff; }
+.bento-card::before { content: ''; position: absolute; inset: -3px; border-radius: 32px; background: linear-gradient(135deg, transparent, var(--primary-glow), var(--accent-neon), transparent); z-index: -1; opacity: 0; filter: blur(20px); transition: 0.5s ease; }
+.bento-card:hover::before { opacity: 0.6; }
+.card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.5s; pointer-events: none; }
+.bento-card:hover .card-img { opacity: 1; }
+.bento-content { position: absolute; bottom: 40px; left: 40px; transform: translateZ(60px); pointer-events: none; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+.bento-title { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 700; margin: 10px 0 0 0; }
+.hud-tag { border: 1px solid var(--primary-glow); color: var(--primary-glow); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; letter-spacing: 1px; backdrop-filter: blur(10px); }
+</style></head><body>
+<div id="custom-cursor"></div><div id="cursor-follower"></div>
 
-        /* === HOMEPAGE HERO === */
-        .hero-spacer { height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; position: relative; }
-        .hero-title { font-family: var(--font-display); font-size: 12vw; text-align: center; letter-spacing: -5px; line-height: 0.8; font-weight: 900; text-transform: uppercase; text-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .hero-subtitle { font-size: 20px; text-transform: uppercase; letter-spacing: 8px; color: var(--text-secondary); margin-top: 30px; font-weight: 600; }
+<div id="cmd-palette">
+    <div class="cmd-box">
+        <input type="text" class="cmd-input" placeholder="Search Database... (Press ESC to close)" />
+        <div style="margin-top: 20px; color: #888;">Fuzzy search active. Press Ctrl+K anywhere to open.</div>
+    </div>
+</div>
 
-        /* === GSAP SCROLL STACKED MOVIE CARDS === */
-        .cards-container { position: relative; width: 100%; padding: 50px 4vw; display: flex; flex-direction: column; align-items: center; }
-        .movie-card {
-            position: sticky; top: 12vh;
-            width: 100%; max-width: 1400px; height: 75vh;
-            border-radius: 24px; overflow: hidden;
-            margin-bottom: 50vh; display: flex;
-            background: #0a0a0c; box-shadow: 0 40px 100px rgba(0,0,0,0.9);
-            will-change: transform; border: 1px solid rgba(255,255,255,0.05);
-        }
-        .card-poster { width: 40%; height: 100%; background-size: cover; background-position: center; position: relative; }
-        .card-poster::after { content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100%; background: linear-gradient(to right, transparent, #0a0a0c); }
-        .card-data { width: 60%; padding: 60px 80px; display: flex; flex-direction: column; position: relative; overflow-y: auto; }
-        
-        .movie-title { font-family: var(--font-display); font-size: clamp(2.5rem, 4vw, 4rem); margin-bottom: 10px; font-weight: 900; line-height: 1.1; color: #fff; text-decoration: none; display: block; }
-        .movie-year { font-size: 1.2rem; color: var(--accent); font-weight: 700; margin-bottom: 30px; letter-spacing: 2px; }
+<div class="sidebar">
+    <a href="#" class="sidebar-item magnetic-target"><div style="font-size:1.5rem">⊚</div><div class="sidebar-text">DASHBOARD</div></a>
+    <a href="#" class="sidebar-item magnetic-target" onclick="document.getElementById('cmd-palette').classList.add('active');"><div style="font-size:1.5rem">⌘</div><div class="sidebar-text">SEARCH (CTRL+K)</div></a>
+    <a href="https://github.com/N7FILM" class="sidebar-item magnetic-target"><div style="font-size:1.5rem">⎈</div><div class="sidebar-text">PROTOCOLS</div></a>
+</div>
 
-        /* === SEGMENTED CONTROL UI === */
-        .segmented-control {
-            display: flex; background: rgba(255,255,255,0.03);
-            border-radius: 12px; padding: 6px; margin-bottom: 40px; border: 1px solid rgba(255,255,255,0.05); width: fit-content;
-        }
-        .segment-btn {
-            padding: 12px 30px; text-align: center; font-size: 13px;
-            text-transform: uppercase; letter-spacing: 2px; font-weight: 600;
-            color: var(--text-secondary); transition: all 0.3s; border-radius: 8px;
-        }
-        .segment-btn.active { background: #1a1a20; color: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05); }
-        
-        .segment-content { display: none; flex-direction: column; animation: fadeUp 0.6s var(--transition-smooth) forwards; }
-        .segment-content.active { display: flex; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Data Grid Styling */
-        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        .meta-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 15px; }
-        .meta-value { font-size: 18px; font-weight: 400; color: #e0e0e0; line-height: 1.6; }
-
-        /* Algorithmic Palette Swatches */
-        .palette-row { display: flex; gap: 15px; margin-top: 10px; }
-        .color-swatch { width: 50px; height: 50px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); transition: transform 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .color-swatch:hover { transform: scale(1.2); border-color: #fff; }
-
-        /* D3 Canvas */
-        .d3-container { width: 100%; height: 350px; background: rgba(0,0,0,0.3); border-radius: 16px; margin-top: 10px; position: relative; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; }
-        .node circle { stroke: #000; stroke-width: 2px; transition: 0.3s; }
-        .node circle:hover { stroke: #fff; stroke-width: 3px; }
-        .node text { font-size: 12px; fill: #fff; pointer-events: none; font-weight: 600; text-shadow: 0 2px 4px #000; font-family: var(--font-main); }
-        .link { stroke: rgba(255,255,255,0.1); stroke-opacity: 0.8; }
-
-        .access-btn { margin-top: 40px; background: var(--accent); color: #fff; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; display: inline-block; width: fit-content; transition: 0.3s; }
-        .access-btn:hover { background: #fff; color: #000; box-shadow: 0 10px 30px rgba(255,255,255,0.2); }
-
-        @media (max-width: 1024px) {
-            .movie-card { flex-direction: column; height: auto; min-height: 80vh; }
-            .card-poster { width: 100%; height: 40vh; }
-            .card-data { width: 100%; padding: 40px 20px; }
-            .meta-grid { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
-
-    <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
-        <filter id="liquidGlassMap" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="8" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-    </svg>
-
-    <div class="custom-cursor" id="cursor"></div>
-
-    <header class="top-header">
-        <a href="index.html" class="logo interactable">CINEMATICA<span>.</span></a>
-        
-        <ul class="main-menu">
-            <li class="menu-item"><a href="#" class="menu-link interactable">Intelligence</a></li>
-            <li class="menu-item">
-                <a href="#" class="menu-link interactable">Archives ▼</a>
-                <ul class="dropdown">
-                    <li class="dropdown-item"><a href="#" class="dropdown-link interactable">Master Analysis</a></li>
-                    <li class="dropdown-item">
-                        <a href="#" class="dropdown-link interactable">Thematic Sorting ▶</a>
-                        <ul class="sub-menu">
-                            <li><a href="#" class="dropdown-link interactable">Cyberpunk & Noir</a></li>
-                            <li><a href="#" class="dropdown-link interactable">Psychological Thriller</a></li>
-                            <li><a href="#" class="dropdown-link interactable">Aesthetic Cinema</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown-item"><a href="#" class="dropdown-link interactable">Cinematography Specs</a></li>
-                </ul>
-            </li>
-            <li class="menu-item"><a href="#" class="menu-link interactable">Topologies</a></li>
-        </ul>
-
-        <div class="liquid-search-container">
-            <input type="text" id="liveSearch" class="liquid-search interactable" placeholder="Search parameters...">
+<div class="main-content">
+    <div class="hero">
+        <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="hero-bg">
+        <div class="hero-typography-layer">
+            <div class="hud-tag gsap-reveal" style="margin-bottom:20px; display:inline-block;">FEATURED INTELLIGENCE</div>
+            <div class="hero-title gsap-reveal">Remarkably Bright Creatures</div>
+            <a href="movies/remarkably-bright-creatures.html" class="hud-tag gsap-reveal magnetic-target" style="margin-top:30px; display:inline-block; font-size:1.2rem; padding: 15px 30px; border-color: #fff; color: #fff; text-decoration: none;">INITIALIZE FEED →</a>
         </div>
-    </header>
-
-    <div class="hero-spacer">
-        <h1 class="hero-title">BEYOND<br>THE FRAME.</h1>
-        <div class="hero-subtitle">The Semantic Cinematic Graph</div>
     </div>
 
-    <div class="cards-container">
-
-        <div class="movie-card" id="card-1330021" data-search="remarkably bright creatures">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/remarkably-bright-creatures.html" class="movie-title interactable">Remarkably Bright Creatures</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('1330021', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('1330021', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-1330021" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><h1>Remarkably Bright Creatures: A Luminescent Dive into the Depths of the Human Heart</h1>
-
-<p>Every so often, a film emerges from the depths of the cinematic ocean, shimmering with a rare brilliance that captures the imagination and stirs the soul....</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #0f172a;"></div>
-                                <div class="color-swatch interactable" style="background-color: #334155;"></div>
-                                <div class="color-swatch interactable" style="background-color: #3b82f6;"></div>
-                                <div class="color-swatch interactable" style="background-color: #93c5fd;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/remarkably-bright-creatures.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-1330021" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-1330021" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#0f172a', '#334155', '#3b82f6', '#93c5fd', '#f8fafc']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-1317448" data-search="no place to be single">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/no-place-to-be-single.html" class="movie-title interactable">No Place to Be Single</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('1317448', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('1317448', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-1317448" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><h1>'No Place to Be Single': A Triumphant Ode to Second Chances and Unapologetic Joy</h1>
-
-<h2>The Verdict: A Resounding Triumph of Heart and Wit</h2>
-<p>In an era brimming with romantic comedies that often feel derivative or formulaic, director Soph...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #2d1b2e;"></div>
-                                <div class="color-swatch interactable" style="background-color: #b45252;"></div>
-                                <div class="color-swatch interactable" style="background-color: #d3a068;"></div>
-                                <div class="color-swatch interactable" style="background-color: #4b5d67;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/no-place-to-be-single.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-1317448" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-1317448" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#2d1b2e', '#b45252', '#d3a068', '#4b5d67', '#322f3d']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-931285" data-search="mortal kombat ii">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/mortal-kombat-ii.html" class="movie-title interactable">Mortal Kombat II</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('931285', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('931285', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-931285" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><H1>Mortal Kombat II: A Flawless Victory, or Just Another Fatality?</H1>
-
-<P>After years of anticipation, decades of lore, and a promising, if sometimes uneven, reintroduction to the franchise, the portals to Outworld have truly opened with 'Mortal K...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #022c22;"></div>
-                                <div class="color-swatch interactable" style="background-color: #065f46;"></div>
-                                <div class="color-swatch interactable" style="background-color: #10b981;"></div>
-                                <div class="color-swatch interactable" style="background-color: #6ee7b7;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/mortal-kombat-ii.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-931285" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-931285" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#022c22', '#065f46', '#10b981', '#6ee7b7', '#ecfdf5']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-1007757" data-search="swapped">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/swapped.html" class="movie-title interactable">Swapped</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('1007757', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('1007757', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-1007757" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><h1>'Swapped': A Soaring Tale of Feathers, Fur, and Unlikely Friendship That Redefines the Animated Epic</h1>
-
-<p>Every so often, a film emerges from the animated realm that not only captivates the imagination of children but resonates profoundly wit...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #450a0a;"></div>
-                                <div class="color-swatch interactable" style="background-color: #7f1d1d;"></div>
-                                <div class="color-swatch interactable" style="background-color: #ef4444;"></div>
-                                <div class="color-swatch interactable" style="background-color: #fca5a5;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/swapped.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-1007757" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-1007757" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#450a0a', '#7f1d1d', '#ef4444', '#fca5a5', '#fef2f2']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-1266127" data-search="ready or not 2: here i come">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/ready-or-not-2-here-i-come.html" class="movie-title interactable">Ready or Not 2: Here I Come</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('1266127', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('1266127', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-1266127" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><h1>Ready or Not 2: Here I Come – The Throne Awaits, and Grace is No Longer Playing Hide-and-Seek</h1>
-
-<p>Few films arrive with the audacious, blood-soaked glee of a true cult classic, and fewer still manage to spawn a sequel that not only lives up ...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #0f172a;"></div>
-                                <div class="color-swatch interactable" style="background-color: #334155;"></div>
-                                <div class="color-swatch interactable" style="background-color: #3b82f6;"></div>
-                                <div class="color-swatch interactable" style="background-color: #93c5fd;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/ready-or-not-2-here-i-come.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-1266127" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-1266127" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#0f172a', '#334155', '#3b82f6', '#93c5fd', '#f8fafc']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-1630423" data-search="my dearest assassin">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/my-dearest-assassin.html" class="movie-title interactable">My Dearest Assassin</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('1630423', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('1630423', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-1630423" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;">```html
-<h1>'My Dearest Assassin': A Torrent of Blood, Love, and Unyielding Will</h1>
-<p>In the vast, churning ocean of action-thrillers, very few films manage to carve out a unique identity, let alone leave a lasting scar on the psyche. 'My Dearest ...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #2d1b2e;"></div>
-                                <div class="color-swatch interactable" style="background-color: #b45252;"></div>
-                                <div class="color-swatch interactable" style="background-color: #d3a068;"></div>
-                                <div class="color-swatch interactable" style="background-color: #4b5d67;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/my-dearest-assassin.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-1630423" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-1630423" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#2d1b2e', '#b45252', '#d3a068', '#4b5d67', '#322f3d']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-1226863" data-search="the super mario galaxy movie">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/the-super-mario-galaxy-movie.html" class="movie-title interactable">The Super Mario Galaxy Movie</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('1226863', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('1226863', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-1226863" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;">```html
-<h1>'The Super Mario Galaxy Movie': A Stellar Sequel That Reaches for the Stars!</h1>
-
-<h2>Introduction: The Cosmic Crescendo We Deserved</h2>
-<p>After the groundbreaking success of its predecessor, the anticipation for 'The Super Mario Galax...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #022c22;"></div>
-                                <div class="color-swatch interactable" style="background-color: #065f46;"></div>
-                                <div class="color-swatch interactable" style="background-color: #10b981;"></div>
-                                <div class="color-swatch interactable" style="background-color: #6ee7b7;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/the-super-mario-galaxy-movie.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-1226863" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-1226863" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#022c22', '#065f46', '#10b981', '#6ee7b7', '#ecfdf5']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-1327819" data-search="hoppers">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/hoppers.html" class="movie-title interactable">Hoppers</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('1327819', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('1327819', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-1327819" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><h1>A Quantum Leap of Empathy: Unpacking the Profundity of 'Hoppers'</h1>
-
-<h2>A New Lens on Existence</h2>
-<p>In an era saturated with technological wonders on screen, 'Hoppers' emerges not merely as another science fiction spectacle, but as a profo...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #450a0a;"></div>
-                                <div class="color-swatch interactable" style="background-color: #7f1d1d;"></div>
-                                <div class="color-swatch interactable" style="background-color: #ef4444;"></div>
-                                <div class="color-swatch interactable" style="background-color: #fca5a5;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/hoppers.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-1327819" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-1327819" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#450a0a', '#7f1d1d', '#ef4444', '#fca5a5', '#fef2f2']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-1325734" data-search="the drama">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/the-drama.html" class="movie-title interactable">The Drama</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('1325734', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('1325734', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-1325734" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><h1>The Altar of Unveiled Truth: Deconstructing 'The Drama'</h1>
-
-<p>In a cinematic landscape often saturated with saccharine romances or facile melodramas, director [Fictional Director's Name, if I wanted, but the prompt doesn't ask for it, so I'll ...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #0f172a;"></div>
-                                <div class="color-swatch interactable" style="background-color: #334155;"></div>
-                                <div class="color-swatch interactable" style="background-color: #3b82f6;"></div>
-                                <div class="color-swatch interactable" style="background-color: #93c5fd;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/the-drama.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-1325734" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-1325734" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#0f172a', '#334155', '#3b82f6', '#93c5fd', '#f8fafc']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-1292415" data-search="beast">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/beast.html" class="movie-title interactable">Beast</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('1292415', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('1292415', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-1292415" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><h1>"Beast": The Echo of a Lion's Roar in the Twilight of Glory</h1>
-
-<p>In the crowded arena of cinematic fight dramas, where tales of redemption and last stands often blur into a predictable rhythm, "Beast" emerges not as a groundbreaking revolutio...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #2d1b2e;"></div>
-                                <div class="color-swatch interactable" style="background-color: #b45252;"></div>
-                                <div class="color-swatch interactable" style="background-color: #d3a068;"></div>
-                                <div class="color-swatch interactable" style="background-color: #4b5d67;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/beast.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-1292415" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-1292415" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#2d1b2e', '#b45252', '#d3a068', '#4b5d67', '#322f3d']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-687163" data-search="project hail mary">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/project-hail-mary.html" class="movie-title interactable">Project Hail Mary</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('687163', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('687163', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-687163" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><h1>Project Hail Mary: A Symphony of Ingenuity and Cosmic Isolation</h1>
-
-<p>From the moment the screen ignites, 'Project Hail Mary' establishes itself not merely as a science fiction film, but as a profound meditation on the resilience of the human ...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #022c22;"></div>
-                                <div class="color-swatch interactable" style="background-color: #065f46;"></div>
-                                <div class="color-swatch interactable" style="background-color: #10b981;"></div>
-                                <div class="color-swatch interactable" style="background-color: #6ee7b7;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/project-hail-mary.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-687163" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-687163" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#022c22', '#065f46', '#10b981', '#6ee7b7', '#ecfdf5']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-936075" data-search="michael">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/michael.html" class="movie-title interactable">Michael</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('936075', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('936075', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-936075" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><h1>Echoes of a King: The Profound Cadence of 'Michael'</h1>
-
-<p>To attempt to capture the supernova that was Michael Jackson on film is not merely an act of storytelling; it is an audacious endeavor in myth-making, deconstruction, and the profound e...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #450a0a;"></div>
-                                <div class="color-swatch interactable" style="background-color: #7f1d1d;"></div>
-                                <div class="color-swatch interactable" style="background-color: #ef4444;"></div>
-                                <div class="color-swatch interactable" style="background-color: #fca5a5;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/michael.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-936075" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-936075" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#450a0a', '#7f1d1d', '#ef4444', '#fca5a5', '#fef2f2']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="movie-card" id="card-1198994" data-search="send help">
-            <div class="card-poster" style="background-image: url('https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg');"></div>
-            <div class="card-data">
-                <a href="movies/send-help.html" class="movie-title interactable">Send Help</a>
-                <div class="movie-year">TEMPORAL LOG: 2026</div>
-                
-                <div class="segmented-control">
-                    <div class="segment-btn active interactable" onclick="switchSegment('1198994', 'specs')">Deep Analysis</div>
-                    <div class="segment-btn interactable" onclick="switchSegment('1198994', 'network')">Semantic Topology</div>
-                </div>
-
-                <div id="seg-specs-1198994" class="segment-content active">
-                    <div class="meta-grid">
-                        <div style="grid-column: 1 / -1;">
-                            <div class="meta-label">Master Critic Overview</div>
-                            <div class="meta-value" style="font-size: 14px; color: #aaa;"><h1>The Unraveling Knot: 'Send Help' and the Brutal Poetry of Survival</h1>
-
-<h2>Introduction: The Echo of Humanity's Collapse</h2>
-<p>In an age saturated with escapist narratives, 'Send Help' emerges not merely as a survival thriller, but as a chill...</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Cinematography Format</div>
-                            <div class="meta-value">ARRI ALEXA 65 / Panavision Spherical</div>
-                        </div>
-                        <div>
-                            <div class="meta-label">Extracted Algorithmic Palette</div>
-                            <div class="palette-row">
-                                <div class="color-swatch interactable" style="background-color: #0f172a;"></div>
-                                <div class="color-swatch interactable" style="background-color: #334155;"></div>
-                                <div class="color-swatch interactable" style="background-color: #3b82f6;"></div>
-                                <div class="color-swatch interactable" style="background-color: #93c5fd;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="movies/send-help.html" class="access-btn interactable">Access Full Database</a>
-                </div>
-
-                <div id="seg-network-1198994" class="segment-content">
-                    <div class="meta-label">Force-Directed Entity Network</div>
-                    <div class="d3-container" id="d3-canvas-1198994" 
-                         data-nodes="[{'id':'Protagonist', 'radius': 25}, {'id':'Antagonist', 'radius': 20}, {'id':'Ally 1', 'radius': 15}, {'id':'Ally 2', 'radius': 15}]" 
-                         data-links="[{'source':'Protagonist','target':'Antagonist','value':10}, {'source':'Protagonist','target':'Ally 1','value':5}, {'source':'Protagonist','target':'Ally 2','value':5}]"
-                         data-colors="['#0f172a', '#334155', '#3b82f6', '#93c5fd', '#f8fafc']">
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-    </div>
-
-    <script>
-        gsap.registerPlugin(ScrollTrigger);
-
-        // Custom Cursor Logic
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => {
-            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15, ease: "power2.out" });
-        });
-        document.querySelectorAll('.interactable').forEach(el => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('active'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('active'));
-        });
-
-        // Live Search Logic targeting GSAP Cards
-        document.getElementById('liveSearch').addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            document.querySelectorAll('.movie-card').forEach(card => {
-                if(card.getAttribute('data-search').includes(query)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            ScrollTrigger.refresh(); // Recalculate pinning after filtering
-        });
-
-        // GSAP Scroll Stacking Parallax Effect
-        const cards = gsap.utils.toArray('.movie-card');
-        cards.forEach((card, i) => {
-            ScrollTrigger.create({
-                trigger: card,
-                start: "top 12%",
-                endTrigger: ".cards-container",
-                end: "bottom bottom",
-                pin: true,
-                pinSpacing: false,
-                id: "card-pin-" + i
-            });
-
-            if (i !== cards.length - 1) {
-                gsap.to(card, {
-                    scale: 0.9,
-                    opacity: 0,
-                    y: -50,
-                    scrollTrigger: {
-                        trigger: cards[i + 1],
-                        start: "top bottom",
-                        end: "top 12%",
-                        scrub: true
-                    }
-                });
-            }
-        });
-
-        // Segmented Control & D3 Integration
-        function switchSegment(cardId, segmentName) {
-            const cardEl = document.getElementById('card-' + cardId);
-            cardEl.querySelectorAll('.segment-btn').forEach(btn => btn.classList.remove('active'));
-            cardEl.querySelectorAll('.segment-content').forEach(content => content.classList.remove('active'));
+    <section class="bento-section">
+        <div class="bento-grid">
             
-            event.target.classList.add('active');
-            document.getElementById('seg-' + segmentName + '-' + cardId).classList.add('active');
+        <a href="movies/no-place-to-be-single.html" class="bento-card gsap-reveal magnetic-target" data-title="no place to be single">
+            <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">No Place to Be Single</h2>
+            </div>
+        </a>
+        <a href="movies/mortal-kombat-ii.html" class="bento-card gsap-reveal magnetic-target" data-title="mortal kombat ii">
+            <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">Mortal Kombat II</h2>
+            </div>
+        </a>
+        <a href="movies/swapped.html" class="bento-card gsap-reveal magnetic-target" data-title="swapped">
+            <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">Swapped</h2>
+            </div>
+        </a>
+        <a href="movies/ready-or-not-2-here-i-come.html" class="bento-card gsap-reveal magnetic-target" data-title="ready or not 2: here i come">
+            <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">Ready or Not 2: Here I Come</h2>
+            </div>
+        </a>
+        <a href="movies/my-dearest-assassin.html" class="bento-card gsap-reveal magnetic-target" data-title="my dearest assassin">
+            <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">My Dearest Assassin</h2>
+            </div>
+        </a>
+        <a href="movies/the-super-mario-galaxy-movie.html" class="bento-card gsap-reveal magnetic-target" data-title="the super mario galaxy movie">
+            <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">The Super Mario Galaxy Movie</h2>
+            </div>
+        </a>
+        <a href="movies/hoppers.html" class="bento-card gsap-reveal magnetic-target" data-title="hoppers">
+            <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">Hoppers</h2>
+            </div>
+        </a>
+        <a href="movies/the-drama.html" class="bento-card gsap-reveal magnetic-target" data-title="the drama">
+            <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">The Drama</h2>
+            </div>
+        </a>
+        <a href="movies/beast.html" class="bento-card gsap-reveal magnetic-target" data-title="beast">
+            <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">Beast</h2>
+            </div>
+        </a>
+        <a href="movies/project-hail-mary.html" class="bento-card gsap-reveal magnetic-target" data-title="project hail mary">
+            <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">Project Hail Mary</h2>
+            </div>
+        </a>
+        <a href="movies/michael.html" class="bento-card gsap-reveal magnetic-target" data-title="michael">
+            <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">Michael</h2>
+            </div>
+        </a>
+        <a href="movies/send-help.html" class="bento-card gsap-reveal magnetic-target" data-title="send help">
+            <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" class="card-img">
+            <div class="bento-content">
+                <div class="hud-tag">ARCHIVE: 2026</div>
+                <h2 class="bento-title">Send Help</h2>
+            </div>
+        </a>
+        </div>
+    </section>
+</div>
 
-            // Render D3 Graph dynamically on click to save memory
-            if(segmentName === 'network' && !cardEl.dataset.d3rendered) {
-                initD3Network(cardId);
-                cardEl.dataset.d3rendered = true;
-            }
-        }
+<script>
+// 1. MAGNETIC CURSOR & LERP PHYSICS
+const cursor = document.getElementById('custom-cursor');
+const follower = document.getElementById('cursor-follower');
+let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+let cursorX = mouseX, cursorY = mouseY;
 
-        function initD3Network(cardId) {
-            const container = document.getElementById('d3-canvas-' + cardId);
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            
-            const nodesData = JSON.parse(container.dataset.nodes.replace(/'/g, '"'));
-            const linksData = JSON.parse(container.dataset.links.replace(/'/g, '"'));
-            const colors = JSON.parse(container.dataset.colors.replace(/'/g, '"'));
+window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.left = `${mouseX}px`; cursor.style.top = `${mouseY}px`;
+});
 
-            const svg = d3.select(container).append("svg").attr("width", width).attr("height", height);
+function renderCursorFollower() {
+    cursorX += (mouseX - cursorX) * 0.15;
+    cursorY += (mouseY - cursorY) * 0.15;
+    follower.style.left = `${cursorX}px`; follower.style.top = `${cursorY}px`;
+    requestAnimationFrame(renderCursorFollower);
+}
+renderCursorFollower();
 
-            const simulation = d3.forceSimulation(nodesData)
-               .force("link", d3.forceLink(linksData).id(d => d.id).distance(100))
-               .force("charge", d3.forceManyBody().strength(-400))
-               .force("center", d3.forceCenter(width / 2, height / 2));
+document.querySelectorAll('.magnetic-target').forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const relX = (e.clientX - rect.left) - (rect.width / 2);
+        const relY = (e.clientY - rect.top) - (rect.height / 2);
+        gsap.to(el, { x: relX * 0.2, y: relY * 0.2, duration: 0.3, ease: 'power2.out' });
+        gsap.to(cursor, { scale: 2, background: 'transparent', border: '1px solid #00ffcc', duration: 0.2 });
+        gsap.to(follower, { scale: 0, opacity: 0, duration: 0.2 });
+    });
+    el.addEventListener('mouseleave', () => {
+        gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.3)' });
+        gsap.to(cursor, { scale: 1, background: '#00ffcc', border: 'none', duration: 0.2 });
+        gsap.to(follower, { scale: 1, opacity: 1, duration: 0.2 });
+    });
+});
 
-            const link = svg.append("g").selectAll("line").data(linksData).enter().append("line")
-               .attr("class", "link").attr("stroke-width", d => Math.sqrt(d.value) * 1.5);
+// 2. 3D BENTO TILT MECHANICS
+document.querySelectorAll('.bento-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const calcX = -((e.clientY - rect.top) - (rect.height / 2)) / 25;
+        const calcY = ((e.clientX - rect.left) - (rect.width / 2)) / 25;
+        card.style.transform = `perspective(1500px) rotateX(${calcX}deg) rotateY(${calcY}deg) scale3d(1.02, 1.02, 1.02)`;
+    });
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(1500px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    });
+});
 
-            const node = svg.append("g").selectAll("g").data(nodesData).enter().append("g")
-               .call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended));
+// 3. COMMAND PALETTE (CTRL+K) & SEARCH
+const cmdPalette = document.getElementById('cmd-palette');
+const cmdInput = document.querySelector('.cmd-input');
+const cards = document.querySelectorAll('.bento-card');
+const hero = document.querySelector('.hero');
 
-            node.append("circle")
-               .attr("r", d => d.radius)
-               .attr("fill", (d, i) => colors[i % colors.length])
-               .attr("class", "interactable");
+window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        cmdPalette.classList.add('active');
+        setTimeout(() => cmdInput.focus(), 100);
+    }
+    if (e.key === 'Escape') cmdPalette.classList.remove('active');
+});
 
-            node.append("text").attr("dx", 20).attr("dy", ".35em").text(d => d.id);
+cmdInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    cards.forEach(card => {
+        card.style.display = card.getAttribute('data-title').includes(query) ? 'block' : 'none';
+    });
+    hero.style.display = query.length > 0 ? 'none' : 'flex';
+    if(query.length > 0) {
+        setTimeout(() => { cmdPalette.classList.remove('active'); }, 500); // Auto close after typing
+    }
+});
 
-            simulation.on("tick", () => {
-                link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
-                   .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
-                node.attr("transform", d => `translate(${d.x = Math.max(d.radius, Math.min(width - d.radius, d.x))},${d.y = Math.max(d.radius, Math.min(height - d.radius, d.y))})`);
-            });
+// 4. GSAP REVEALS & LENIS SCROLL
+const lenis = new Lenis({ duration: 1.2, smooth: true });
+function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
 
-            function dragstarted(event, d) { if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }
-            function dragged(event, d) { d.fx = event.x; d.fy = event.y; }
-            function dragended(event, d) { if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }
-            
-            // Re-bind cursor events for new SVG elements
-            document.querySelectorAll('.interactable').forEach(el => {
-                el.addEventListener('mouseenter', () => document.getElementById('cursor').classList.add('active'));
-                el.addEventListener('mouseleave', () => document.getElementById('cursor').classList.remove('active'));
-            });
-        }
-    </script>
-</body>
-</html>
+gsap.from(".gsap-reveal", { y: 100, opacity: 0, duration: 1.5, stagger: 0.1, ease: "power4.out" });
+</script>
+</body></html>

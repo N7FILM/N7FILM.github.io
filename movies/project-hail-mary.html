@@ -1,27 +1,64 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Project Hail Mary | CINEMATICA</title>
-        <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@400;600&display=swap');
-        body { margin: 0; background: #030303; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .hero-bg { position: absolute; top: 0; left: 0; width: 100vw; height: 80vh; object-fit: cover; z-index: -1; opacity: 0.3; mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); filter: blur(5px); }
-        .nav { padding: 30px 4vw; display: flex; justify-content: space-between; position: relative; z-index: 10; }
-        .back-btn { color: #fff; text-decoration: none; font-family: 'Space Grotesk'; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; transition: 0.3s; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
-        .back-btn:hover { background: #0066ff; border-color: #0066ff; }
-        .container { max-width: 1400px; margin: auto; padding: 50px 4vw 100px 4vw; position: relative; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
-        .title-box h1 { font-family: 'Space Grotesk'; font-size: clamp(3rem, 6vw, 5rem); margin: 0; line-height: 1.1; text-shadow: 0 10px 30px rgba(0,0,0,0.8); text-transform: uppercase; }
-        .video-box { border-radius: 24px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 40px 80px rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.05); width: 100%; }
-        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .data-box { grid-column: 1 / -1; margin-top: 40px; line-height: 1.8; font-size: 1.2rem; color: #ccc; background: rgba(10,10,12,0.8); backdrop-filter: blur(30px); padding: 60px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .data-box h1, .data-box h2 { color: #fff; font-size: 2.2rem; font-family: 'Space Grotesk'; margin-top: 40px; text-transform: uppercase; letter-spacing: -1px; }
-        @media (max-width: 1024px) { .container { grid-template-columns: 1fr; } }
+<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><title>Project Hail Mary</title><script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js'></script><script src='https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js'></script><style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700;900&family=Inter:wght@400;600&display=swap');
+:root { --bg: #050505; --primary-glow: #00ffcc; --glass-border: rgba(255,255,255,0.08); --accent-neon: #ff00ff; }
+* { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+body, html { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; overscroll-behavior: none; }
+
+/* MAGNETIC CURSOR */
+#custom-cursor { position: fixed; top: 0; left: 0; width: 8px; height: 8px; background: var(--primary-glow); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; }
+#cursor-follower { position: fixed; top: 0; left: 0; width: 45px; height: 45px; border: 1px solid rgba(0, 255, 204, 0.4); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s linear; }
+
+/* ELASTIC SIDEBAR */
+.sidebar { position: fixed; left: 0; top: 0; height: 100vh; width: 80px; background: rgba(3, 3, 3, 0.95); border-right: 1px solid var(--glass-border); z-index: 8000; display: flex; flex-direction: column; padding-top: 40px; transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1); overflow: hidden; backdrop-filter: blur(20px); }
+.sidebar:hover { width: 280px; }
+.sidebar-item { padding: 25px; white-space: nowrap; display: flex; align-items: center; opacity: 0.5; transition: 0.3s; color: #fff; text-decoration: none; font-size: 1.2rem; }
+.sidebar-item:hover { opacity: 1; color: var(--primary-glow); }
+.sidebar-text { margin-left: 25px; opacity: 0; transform: translateX(-30px); transition: 0.4s; font-family: 'Space Grotesk'; font-weight: 700; }
+.sidebar:hover .sidebar-text { opacity: 1; transform: translateX(0); }
+
+/* COMMAND PALETTE (CTRL+K) */
+#cmd-palette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(35px); z-index: 11000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.4s ease; }
+#cmd-palette.active { opacity: 1; pointer-events: auto; }
+.cmd-box { width: 700px; max-width: 90vw; background: rgba(10,10,10,0.9); border: 1px solid var(--glass-border); border-radius: 16px; padding: 40px; transform: translateY(30px) scale(0.95); transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
+#cmd-palette.active .cmd-box { transform: translateY(0) scale(1); }
+.cmd-input { width: 100%; background: transparent; border: none; color: white; font-size: 2.5rem; outline: none; padding-bottom: 20px; border-bottom: 1px solid var(--glass-border); font-family: 'Space Grotesk'; }
+
+/* MAIN CONTENT & HERO */
+.main-content { margin-left: 80px; transition: margin-left 0.5s; }
+.hero { height: 90vh; display: flex; align-items: center; padding-left: 5vw; position: relative; border-bottom: 1px solid var(--glass-border); }
+.hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; z-index: -1; mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); }
+.hero-title { font-family: 'Space Grotesk'; font-size: clamp(4rem, 8vw, 8rem); font-weight: 900; line-height: 1; text-transform: uppercase; text-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+
+/* 3D BENTO GRID */
+.bento-section { padding: 100px 5%; max-width: 1600px; margin: 0 auto; }
+.bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; perspective: 1500px; }
+.bento-card { position: relative; height: 500px; background: rgba(20,20,20,0.6); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; transform-style: preserve-3d; text-decoration: none; color: #fff; }
+.bento-card::before { content: ''; position: absolute; inset: -3px; border-radius: 32px; background: linear-gradient(135deg, transparent, var(--primary-glow), var(--accent-neon), transparent); z-index: -1; opacity: 0; filter: blur(20px); transition: 0.5s ease; }
+.bento-card:hover::before { opacity: 0.6; }
+.card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.5s; pointer-events: none; }
+.bento-card:hover .card-img { opacity: 1; }
+.bento-content { position: absolute; bottom: 40px; left: 40px; transform: translateZ(60px); pointer-events: none; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+.bento-title { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 700; margin: 10px 0 0 0; }
+.hud-tag { border: 1px solid var(--primary-glow); color: var(--primary-glow); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; letter-spacing: 1px; backdrop-filter: blur(10px); }
+
+        .movie-container { max-width: 1200px; margin: auto; padding: 50px 5vw 100px 5vw; position: relative; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .video-box { border-radius: 24px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid var(--glass-border); width: 100%; }
+        .video-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .data-box { grid-column: 1 / -1; margin-top: 20px; line-height: 1.8; font-size: 1.15rem; color: #bbb; background: rgba(15,15,19,0.8); backdrop-filter: blur(20px); padding: 50px; border-radius: 24px; border: 1px solid var(--glass-border); }
+        .data-box h1, .data-box h2 { color: #fff; font-size: 2.5rem; font-family: 'Space Grotesk'; margin-top: 0; }
+        @media (max-width: 900px) { .movie-container { grid-template-columns: 1fr; } }
         </style></head><body>
         
-        <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="hero-bg">
-        <div class="nav"><a href="../index.html" class="back-btn">← TERMINATE PROTOCOL</a></div>
-        
-        <div class="container">
-            <div class="title-box"><h1>Project Hail Mary</h1></div>
-            <div class="video-box"><iframe src="https://www.youtube.com/embed/"></iframe></div>
-            <div class="data-box"><h1>Project Hail Mary: A Symphony of Ingenuity and Cosmic Isolation</h1>
+        <div id="custom-cursor"></div><div id="cursor-follower"></div>
+        <div class="sidebar">
+            <a href="../index.html" class="sidebar-item magnetic-target"><div style="font-size:1.5rem">←</div><div class="sidebar-text">RETURN TO BASE</div></a>
+        </div>
+        <div class="main-content">
+            <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="hero-bg" style="height: 60vh;">
+            <div class="movie-container gsap-reveal">
+                <div><h1 style="font-family:'Space Grotesk'; font-size:4rem; text-shadow: 0 10px 30px rgba(0,0,0,0.8); margin-bottom:20px;">Project Hail Mary</h1></div>
+                <div class="video-box"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+                <div class="data-box"><h1>Project Hail Mary: A Symphony of Ingenuity and Cosmic Isolation</h1>
 
 <p>From the moment the screen ignites, 'Project Hail Mary' establishes itself not merely as a science fiction film, but as a profound meditation on the resilience of the human spirit against the backdrop of an indifferent, dying cosmos. Director [Fictional Director Name, or omitted as it's not specified] has achieved a rare feat: a film that is intellectually stimulating, emotionally resonant, and relentlessly entertaining. It is a cinematic experience that dares to ask the biggest questions, then provides answers through the most unlikely of heroes and the most ingenious of methods.</p>
 
@@ -38,5 +75,89 @@
 <h2>Visual Aesthetic: Cosmic Grandeur and Intimate Desperation</h2>
 
 <p>'Project Hail Mary' is a feast for the eyes, translating the vastness and terror of space into a breathtaking visual aesthetic that is both grand and intimately claustrophobic. The production design of the *Hail Mary* itself is a marvel: a triumph of functional, elegant engineering that feels both plausible and awe-inspiring, a sterile yet hopeful ark against the infinite void. The film excels in its depiction of the cosmic environment, from the ominous, pulsating decay of the sun's light to the shimmering, alien beauty of distant star systems. These visuals are not mere spectacle; they serve to emphasize the isolation and the monumental scale of Grace's mission. The use of light and shadow is particularly masterful, painting the interiors of the spaceship with a stark realism and the exteriors with a painterly majesty. Crucially, the visual representation of *[again, referencing the alien ally without explicit spoilers]* alien life is handled with ingenious subtlety and profound respect, managing to be utterly foreign yet instantly communicative, a testament to the film's commitment to visual storytelling that reinforces thematic depth rather than superficial flash. Every frame contributes to a pervasive sense of wonder and impending doom, creating a visual symphony that perfectly complements the film's intellectual and emotional ambitions.</p></div>
+            </div>
         </div>
+        <script>
+// 1. MAGNETIC CURSOR & LERP PHYSICS
+const cursor = document.getElementById('custom-cursor');
+const follower = document.getElementById('cursor-follower');
+let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+let cursorX = mouseX, cursorY = mouseY;
+
+window.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cursor.style.left = `${mouseX}px`; cursor.style.top = `${mouseY}px`;
+});
+
+function renderCursorFollower() {
+    cursorX += (mouseX - cursorX) * 0.15;
+    cursorY += (mouseY - cursorY) * 0.15;
+    follower.style.left = `${cursorX}px`; follower.style.top = `${cursorY}px`;
+    requestAnimationFrame(renderCursorFollower);
+}
+renderCursorFollower();
+
+document.querySelectorAll('.magnetic-target').forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const relX = (e.clientX - rect.left) - (rect.width / 2);
+        const relY = (e.clientY - rect.top) - (rect.height / 2);
+        gsap.to(el, { x: relX * 0.2, y: relY * 0.2, duration: 0.3, ease: 'power2.out' });
+        gsap.to(cursor, { scale: 2, background: 'transparent', border: '1px solid #00ffcc', duration: 0.2 });
+        gsap.to(follower, { scale: 0, opacity: 0, duration: 0.2 });
+    });
+    el.addEventListener('mouseleave', () => {
+        gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.3)' });
+        gsap.to(cursor, { scale: 1, background: '#00ffcc', border: 'none', duration: 0.2 });
+        gsap.to(follower, { scale: 1, opacity: 1, duration: 0.2 });
+    });
+});
+
+// 2. 3D BENTO TILT MECHANICS
+document.querySelectorAll('.bento-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const calcX = -((e.clientY - rect.top) - (rect.height / 2)) / 25;
+        const calcY = ((e.clientX - rect.left) - (rect.width / 2)) / 25;
+        card.style.transform = `perspective(1500px) rotateX(${calcX}deg) rotateY(${calcY}deg) scale3d(1.02, 1.02, 1.02)`;
+    });
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(1500px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    });
+});
+
+// 3. COMMAND PALETTE (CTRL+K) & SEARCH
+const cmdPalette = document.getElementById('cmd-palette');
+const cmdInput = document.querySelector('.cmd-input');
+const cards = document.querySelectorAll('.bento-card');
+const hero = document.querySelector('.hero');
+
+window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        cmdPalette.classList.add('active');
+        setTimeout(() => cmdInput.focus(), 100);
+    }
+    if (e.key === 'Escape') cmdPalette.classList.remove('active');
+});
+
+cmdInput.addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    cards.forEach(card => {
+        card.style.display = card.getAttribute('data-title').includes(query) ? 'block' : 'none';
+    });
+    hero.style.display = query.length > 0 ? 'none' : 'flex';
+    if(query.length > 0) {
+        setTimeout(() => { cmdPalette.classList.remove('active'); }, 500); // Auto close after typing
+    }
+});
+
+// 4. GSAP REVEALS & LENIS SCROLL
+const lenis = new Lenis({ duration: 1.2, smooth: true });
+function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+
+gsap.from(".gsap-reveal", { y: 100, opacity: 0, duration: 1.5, stagger: 0.1, ease: "power4.out" });
+</script>
         </body></html>
+        
