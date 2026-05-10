@@ -1,309 +1,193 @@
-<!DOCTYPE html>
-<html lang="en" class="lenis lenis-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>N7 | Cinematic Architecture</title>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --bg-base: #050505; --text-primary: #ffffff; --text-secondary: rgba(255, 255, 255, 0.6);
-            --primary-glow: rgba(15, 90, 209, 0.85); --glass-surface: rgba(15, 15, 18, 0.45);
-            --glass-border: rgba(255, 255, 255, 0.08); --backdrop-blur: blur(30px) saturate(150%);
-            --ease-cinematic: cubic-bezier(0.19, 1, 0.22, 1);
-        }
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>STREAMIT | Premium OTT</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
+:root { --bg: #0D0D11; --surface: #141419; --primary: #E50914; --text: #FFFFFF; --text-muted: #D1D5DB; }
+body { background: var(--bg); color: var(--text); font-family: 'Manrope', sans-serif; margin: 0; overflow-x: hidden; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { background-color: var(--bg-base); color: var(--text-primary); font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-        .syncopate { font-family: 'Syncopate', sans-serif; text-transform: uppercase; }
+/* 🌟 GLASSMORPHIC NAVBAR */
+.navbar { position: fixed; top: 0; width: 100%; padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; z-index: 1000; transition: 0.4s; box-sizing: border-box; }
+.navbar.scrolled { background: rgba(13, 13, 17, 0.95); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+.logo { font-size: 2rem; font-weight: 800; color: var(--primary); text-decoration: none; letter-spacing: -1px; }
+.logo span { color: #fff; }
+.nav-links { display: flex; gap: 30px; }
+.nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+.nav-links a:hover { color: var(--text); }
+.nav-actions button { background: var(--primary); color: #fff; border: none; padding: 10px 24px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4); }
+.nav-actions button:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(229, 9, 20, 0.8); }
 
-        /* SCROLL UTILITIES */
-        html.lenis { height: auto; }
-        .lenis.lenis-smooth { scroll-behavior: auto; }
-        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-        .lenis.lenis-stopped { overflow: hidden; }
+/* 🌟 CINEMATIC HERO SLIDER */
+.hero { position: relative; width: 100vw; height: 100vh; display: flex; align-items: center; padding: 0 5%; box-sizing: border-box; }
+.hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+.hero-gradient { position: absolute; inset: 0; background: linear-gradient(to right, var(--bg) 10%, rgba(13,13,17,0.4) 50%, transparent), linear-gradient(to top, var(--bg) 0%, transparent 40%); z-index: -1; }
+.hero-content { max-width: 800px; z-index: 10; }
+.hero-title { font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; margin: 0 0 10px 0; line-height: 1.1; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+.hero-meta { display: flex; gap: 15px; align-items: center; font-size: 0.9rem; font-weight: 600; margin-bottom: 20px; color: var(--text-muted); flex-wrap: wrap; }
+.badge { border: 1px solid var(--text-muted); padding: 2px 8px; border-radius: 4px; }
+.badge.red { border-color: var(--primary); color: var(--primary); }
+.hero-btns { display: flex; gap: 15px; margin-top: 30px; }
+.btn-play { background: var(--primary); color: #fff; text-decoration: none; padding: 15px 35px; border-radius: 5px; font-weight: 800; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; }
+.btn-play:hover { background: #b0070f; transform: scale(1.05); }
+.btn-trailer { background: rgba(255,255,255,0.1); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3); color: #fff; text-decoration: none; padding: 15px 35px; border-radius: 5px; font-weight: 800; transition: 0.3s; }
+.btn-trailer:hover { background: rgba(255,255,255,0.2); }
 
-        /* MAGNETIC CURSOR (Hidden on Mobile) */
-        @media (pointer: fine) {
-            * { cursor: none !important; }
-            #cursor-dot { position: fixed; width: 5px; height: 5px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; }
-            #cursor-trail { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.4); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: width 0.4s var(--ease-cinematic), height 0.4s var(--ease-cinematic), background 0.4s; }
-            body.cursor-active #cursor-trail { width: 90px; height: 90px; background: rgba(255,255,255,0.05); border-color: transparent; backdrop-filter: blur(4px); }
-        }
-        @media (pointer: coarse) { #cursor-dot, #cursor-trail { display: none !important; } }
+/* 🌟 HORIZONTAL SCROLL CAROUSELS (MOBILE TOUCH SWIPE) */
+.section-title { padding: 0 5%; font-size: 1.8rem; font-weight: 800; margin-top: 50px; margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 15px; margin-left: 5%; }
+.carousel { display: flex; gap: 20px; padding: 10px 5%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.carousel::-webkit-scrollbar { display: none; }
+.movie-card { flex: 0 0 auto; width: calc(100vw / 5 - 30px); aspect-ratio: 2/3; border-radius: 12px; overflow: hidden; position: relative; scroll-snap-align: start; cursor: pointer; transition: 0.4s; background: var(--surface); box-shadow: 0 10px 20px rgba(0,0,0,0.5); text-decoration: none; display: block; }
+.movie-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+.movie-card:hover { transform: scale(1.05) translateY(-10px); z-index: 50; border: 1px solid rgba(255,255,255,0.2); }
+.movie-card:hover img { filter: brightness(0.6); }
+.card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); opacity: 0; transition: 0.4s; display: flex; flex-direction: column; justify-content: flex-end; box-sizing: border-box; height: 100%; }
+.movie-card:hover .card-overlay { opacity: 1; }
+.card-title { margin: 0; font-size: 1.2rem; font-weight: 800; color: #fff; }
+.card-year { color: var(--primary); font-size: 0.8rem; font-weight: 600; margin-top: 5px; }
 
-        /* KINEMATIC SIDEBAR */
-        .elastic-sidebar { position: fixed; left: 0; top: 0; width: 90px; height: 100vh; background: rgba(8,8,10,0.85); backdrop-filter: var(--backdrop-blur); border-right: 1px solid var(--glass-border); z-index: 500; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; transition: width 0.7s var(--ease-cinematic); overflow: hidden; }
-        .elastic-sidebar:hover { width: 320px; }
-        .sidebar-node { display: flex; align-items: center; padding: 25px 35px; width: 320px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; }
-        .sidebar-icon { width: 24px; height: 24px; background: var(--text-primary); flex-shrink: 0; }
-        .sidebar-text { margin-left: 25px; font-size: 0.8rem; letter-spacing: 3px; font-weight: 600; clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
+/* 🌟 RESPONSIVE MEDIA QUERIES */
+@media (max-width: 1024px) { .movie-card { width: calc(100vw / 4 - 30px); } }
+@media (max-width: 768px) { 
+    .nav-links { display: none; } /* Hide menu on mobile */
+    .hero-title { font-size: 3rem; }
+    .movie-card { width: calc(100vw / 3 - 20px); }
+    .hero { padding-top: 80px; align-items: flex-start; }
+    .hero-btns { flex-direction: column; }
+    .btn-play, .btn-trailer { justify-content: center; width: 100%; box-sizing: border-box; }
+}
+@media (max-width: 480px) { .movie-card { width: calc(100vw / 2 - 20px); } }
+</style></head><body>
 
-        /* HEADER */
-        .glass-header { position: fixed; top: 0; width: 100%; padding: 30px 60px 30px 120px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%); pointer-events: none; }
-        .brand-logo { font-size: 1.6rem; font-weight: 700; letter-spacing: 3px; pointer-events: auto; }
-        .brand-logo span { color: var(--primary-glow); }
+<nav class="navbar" id="navbar">
+    <a href="index.html" class="logo">STREAMIT<span>.</span></a>
+    <div class="nav-links">
+        <a href="#">Home</a>
+        <a href="#movies">Movies</a>
+        <a href="#">Series</a>
+        <a href="#">My List</a>
+    </div>
+    <div class="nav-actions">
+        <button>SUBSCRIBE</button>
+    </div>
+</nav>
 
-        /* WEBGL HERO ENGINE */
-        .hero-environment { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
-        #webgl-stage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        .swiper-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; }
-        .swiper-slide { display: flex; align-items: center; justify-content: center; pointer-events: none; }
-        .cinematic-typography { text-align: center; pointer-events: auto; padding-top: 5vh; mix-blend-mode: exclusion; }
-        .cinematic-headline { font-size: clamp(3rem, 9vw, 9rem); line-height: 0.85; margin-bottom: 25px; color: #fff; }
-        .cinematic-metadata { font-size: clamp(0.8rem, 2vw, 1.1rem); font-family: 'Inter'; letter-spacing: 4px; color: #d0d0d0; opacity: 0; transform: translateY(30px); font-weight: 300; text-transform: uppercase; }
-
-        /* BENTO GRID ARCHIVES */
-        .archive-environment { position: relative; padding: 150px 5vw 150px calc(90px + 5vw); background: var(--bg-base); z-index: 10; }
-        .archive-header { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 80px; letter-spacing: -1px; }
-        
-        .bento-matrix { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); grid-auto-rows: 380px; gap: 30px; grid-auto-flow: dense; perspective: 2500px; }
-        .bento-node { position: relative; background: var(--glass-surface); border-radius: 28px; border: 1px solid var(--glass-border); overflow: hidden; transform-style: preserve-3d; backdrop-filter: blur(25px); display: flex; flex-direction: column; justify-content: flex-end; padding: 30px; text-decoration: none; color: #fff; }
-        .bento-node::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--primary-glow) 0%, transparent 40%); z-index: -1; opacity: 0; transition: opacity 0.6s ease; border-radius: 30px; }
-        @media (pointer: fine) { .bento-node:hover::before { opacity: 1; } }
-        
-        @media (min-width: 1024px) {
-            .bento-node.matrix-large { grid-column: span 2; grid-row: span 2; }
-            .bento-node.matrix-wide { grid-column: span 2; }
-        }
-        
-        .bento-poster { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; z-index: 0; transition: transform 0.8s var(--ease-cinematic), opacity 0.8s; }
-        .bento-node:hover .bento-poster { transform: scale(1.08); opacity: 0.2; }
-        .bento-data { position: relative; z-index: 2; transform: translateZ(40px); }
-        .bento-badge { display: inline-block; padding: 6px 14px; border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; font-size: 0.75rem; margin-bottom: 20px; backdrop-filter: blur(8px); background: rgba(0,0,0,0.5); letter-spacing: 1px; }
-        .bento-title { font-size: 1.8rem; margin-bottom: 10px; line-height: 1.1; }
-
-        /* ========================================= */
-        /* MOBILE & TABLET GOD LEVEL ADAPTATIONS */
-        /* ========================================= */
-        @media (max-width: 768px) {
-            .elastic-sidebar { width: 100%; height: 70px; top: auto; bottom: 0; flex-direction: row; justify-content: space-around; padding: 0; border-right: none; border-top: 1px solid var(--glass-border); z-index: 2000; }
-            .elastic-sidebar:hover { width: 100%; }
-            .sidebar-node { width: auto; padding: 15px; border: none; justify-content: center; }
-            .sidebar-text { display: none !important; }
-            .glass-header { padding: 20px; justify-content: center; }
-            .archive-environment { padding: 80px 5vw 120px 5vw; }
-            .bento-matrix { grid-auto-rows: 300px; }
-        }
-    </style>
-</head>
-<body>
-
-    <div id="cursor-dot"></div>
-    <div id="cursor-trail"></div>
-
-    <nav class="elastic-sidebar" id="elastic-sidebar">
-        <div class="sidebar-node magnetic-zone">
-            <div class="sidebar-icon" style="mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>') no-repeat center;"></div>
-            <div class="sidebar-text syncopate">Intelligence</div>
+<div class="hero">
+    <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="hero-bg" alt="Remarkably Bright Creatures">
+    <div class="hero-gradient"></div>
+    <div class="hero-content gs-reveal">
+        <h1 class="hero-title">Remarkably Bright Creatures</h1>
+        <div class="hero-meta">
+            <span style="color:#FFD700;">★ 4.8</span>
+            <span class="badge">IMDb</span>
+            <span class="badge red">PREMIUM</span>
+            <span>2026</span>
         </div>
-        <div class="sidebar-node magnetic-zone" onclick="window.scrollTo(0, document.body.scrollHeight);">
-            <div class="sidebar-icon" style="mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>') no-repeat center;"></div>
-            <div class="sidebar-text syncopate">Archives</div>
+        <div class="hero-btns">
+            <a href="movies/remarkably-bright-creatures.html" class="btn-play">▶ PLAY NOW</a>
+            <a href="movies/remarkably-bright-creatures.html" class="btn-trailer">DEEP DATA</a>
         </div>
-        <div class="sidebar-node magnetic-zone">
-            <div class="sidebar-icon" style="mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') no-repeat center;"></div>
-            <div class="sidebar-text syncopate">Search</div>
-        </div>
-    </nav>
+    </div>
+</div>
 
-    <header class="glass-header">
-        <div class="brand-logo magnetic-zone syncopate">N7<span>.ARCH</span></div>
-    </header>
+<div id="movies">
+    <h2 class="section-title gs-reveal">Top Trending Data</h2>
+    <div class="carousel">
 
-    <section class="hero-environment">
-        <canvas id="webgl-stage"></canvas>
-        <div class="swiper-container">
-            <div class="swiper-wrapper" id="hero-injection-zone"></div>
-        </div>
-    </section>
+        <a href="movies/no-place-to-be-single.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">No Place to Be Single</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/mortal-kombat-ii.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">Mortal Kombat II</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/swapped.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">Swapped</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/ready-or-not-2-here-i-come.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">Ready or Not 2: Here I Come</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/my-dearest-assassin.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">My Dearest Assassin</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/the-super-mario-galaxy-movie.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">The Super Mario Galaxy Movie</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/hoppers.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">Hoppers</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/the-drama.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">The Drama</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/beast.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">Beast</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/project-hail-mary.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">Project Hail Mary</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/michael.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">Michael</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+        <a href="movies/send-help.html" class="movie-card gs-reveal">
+            <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" loading="lazy">
+            <div class="card-overlay">
+                <h3 class="card-title">Send Help</h3>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+    </div>
+</div>
 
-    <section class="archive-environment">
-        <h2 class="archive-header syncopate title-reveal">Neural Archives</h2>
-        <div class="bento-matrix" id="bento-injection-zone"></div>
-    </section>
+<script>
+    // Navbar Scroll Effect
+    window.addEventListener('scroll', () => {
+        const nav = document.getElementById('navbar');
+        if(window.scrollY > 50) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+    });
 
-    <script id="vertexShader" type="x-shader/x-vertex">
-        varying vec2 vUv;
-        void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
-    </script>
-    <script id="fragmentShader" type="x-shader/x-fragment">
-        varying vec2 vUv; uniform sampler2D u_tex1; uniform sampler2D u_tex2; uniform float u_progress;
-        vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
-        float snoise(vec2 v){
-            const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
-            vec2 i  = floor(v + dot(v, C.yy) ); vec2 x0 = v - i + dot(i, C.xx); vec2 i1;
-            i1 = (x0.x > x0.y)? vec2(1.0, 0.0) : vec2(0.0, 1.0); vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1;
-            i = mod(i, 289.0); vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
-            vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0); m = m*m; m = m*m;
-            vec3 x = 2.0 * fract(p * C.www) - 1.0; vec3 h = abs(x) - 0.5; vec3 ox = floor(x + 0.5);
-            vec3 a0 = x - ox; m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h ); vec3 g;
-            g.x  = a0.x  * x0.x  + h.x  * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw; return 130.0 * dot(m, g);
-        }
-        void main() {
-            vec2 uv = vUv;
-            float noise = snoise(uv * 4.0 + u_progress * 1.5);
-            vec2 distortedUv1 = uv + noise * u_progress * 0.25;
-            vec2 distortedUv2 = uv - noise * (1.0 - u_progress) * 0.25;
-            vec4 tex1 = texture2D(u_tex1, distortedUv1);
-            vec4 tex2 = texture2D(u_tex2, distortedUv2);
-            float blend = smoothstep(0.0, 1.0, u_progress);
-            gl_FragColor = mix(tex1, tex2, blend);
-        }
-    </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/split-type"></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.27/bundled/lenis.min.js"></script>
-
-    <script>
-        const db = [{"title": "Remarkably Bright Creatures", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg", "desc": "Access classified deep data and master analysis for Remarkably Bright Creatures.", "slug": "remarkably-bright-creatures", "yt": ""}, {"title": "No Place to Be Single", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg", "desc": "Access classified deep data and master analysis for No Place to Be Single.", "slug": "no-place-to-be-single", "yt": ""}, {"title": "Mortal Kombat II", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg", "desc": "Access classified deep data and master analysis for Mortal Kombat II.", "slug": "mortal-kombat-ii", "yt": ""}, {"title": "Swapped", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg", "desc": "Access classified deep data and master analysis for Swapped.", "slug": "swapped", "yt": ""}, {"title": "Ready or Not 2: Here I Come", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg", "desc": "Access classified deep data and master analysis for Ready or Not 2: Here I Come.", "slug": "ready-or-not-2-here-i-come", "yt": ""}, {"title": "My Dearest Assassin", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg", "desc": "Access classified deep data and master analysis for My Dearest Assassin.", "slug": "my-dearest-assassin", "yt": ""}, {"title": "The Super Mario Galaxy Movie", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg", "desc": "Access classified deep data and master analysis for The Super Mario Galaxy Movie.", "slug": "the-super-mario-galaxy-movie", "yt": ""}, {"title": "Hoppers", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg", "desc": "Access classified deep data and master analysis for Hoppers.", "slug": "hoppers", "yt": ""}, {"title": "The Drama", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg", "desc": "Access classified deep data and master analysis for The Drama.", "slug": "the-drama", "yt": ""}, {"title": "Beast", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg", "desc": "Access classified deep data and master analysis for Beast.", "slug": "beast", "yt": ""}, {"title": "Project Hail Mary", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg", "desc": "Access classified deep data and master analysis for Project Hail Mary.", "slug": "project-hail-mary", "yt": ""}, {"title": "Michael", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg", "desc": "Access classified deep data and master analysis for Michael.", "slug": "michael", "yt": ""}, {"title": "Send Help", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg", "desc": "Access classified deep data and master analysis for Send Help.", "slug": "send-help", "yt": ""}];
-        
-        const heroWrapper = document.getElementById('hero-injection-zone');
-        const bentoContainer = document.getElementById('bento-injection-zone');
-        
-        db.forEach((item, index) => {
-            // Mount Hero Slides
-            const slide = document.createElement('div');
-            slide.className = 'swiper-slide';
-            slide.innerHTML = `<div class="cinematic-typography"><h1 class="cinematic-headline">${item.title}</h1><div class="cinematic-metadata">${item.genre} | ${item.duration}</div></div>`;
-            heroWrapper.appendChild(slide);
-            
-            // Mount Bento Grid
-            const bentoClass = index === 0 ? "bento-node matrix-large" : (index === 1 ? "bento-node matrix-wide" : "bento-node");
-            bentoContainer.innerHTML += `
-                <a href="movies/${item.slug}.html" class="${bentoClass} magnetic-zone" data-tilt>
-                    <img src="${item.image}" class="bento-poster" crossorigin="anonymous">
-                    <div class="bento-data">
-                        <div class="bento-badge syncopate">${item.duration}</div>
-                        <h2 class="bento-title syncopate">${item.title}</h2>
-                        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.4;">${item.desc}</p>
-                    </div>
-                </a>`;
-        });
-
-        // KINEMATIC ENGINE: LENIS SCROLL
-        gsap.registerPlugin(ScrollTrigger);
-        const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
-        lenis.on('scroll', ScrollTrigger.update);
-        gsap.ticker.add((time) => { lenis.raf(time * 1000); });
-        gsap.ticker.lagSmoothing(0);
-
-        // SPATIAL PHYSICS: FLUID CURSOR (PC ONLY)
-        if(window.matchMedia("(pointer: fine)").matches) {
-            const cursorDot = document.getElementById('cursor-dot');
-            const cursorTrail = document.getElementById('cursor-trail');
-            let mouseState = { x: window.innerWidth/2, y: window.innerHeight/2 };
-            let trailState = { x: window.innerWidth/2, y: window.innerHeight/2 };
-            
-            const moveDotX = gsap.quickTo(cursorDot, "x", {duration: 0.1, ease: "power3.out"});
-            const moveDotY = gsap.quickTo(cursorDot, "y", {duration: 0.1, ease: "power3.out"});
-            
-            window.addEventListener("mousemove", (e) => {
-                mouseState.x = e.clientX; mouseState.y = e.clientY;
-                moveDotX(mouseState.x); moveDotY(mouseState.y);
-            });
-            function processTrailPhysics() {
-                trailState.x += (mouseState.x - trailState.x) * 0.12;
-                trailState.y += (mouseState.y - trailState.y) * 0.12;
-                cursorTrail.style.transform = `translate(${trailState.x}px, ${trailState.y}px)`;
-                requestAnimationFrame(processTrailPhysics);
-            }
-            processTrailPhysics();
-
-            document.querySelectorAll('.magnetic-zone').forEach(zone => {
-                zone.addEventListener('mouseenter', () => document.body.classList.add('cursor-active'));
-                zone.addEventListener('mouseleave', () => { document.body.classList.remove('cursor-active'); gsap.to(zone, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" }); });
-                zone.addEventListener('mousemove', (e) => {
-                    const rect = zone.getBoundingClientRect();
-                    gsap.to(zone, { x: (e.clientX - (rect.left + rect.width/2)) * 0.25, y: (e.clientY - (rect.top + rect.height/2)) * 0.25, duration: 0.4, ease: "power2.out" });
-                });
-            });
-
-            // 3D TILT PHYSICS FOR BENTO GRID
-            document.querySelectorAll('.bento-node').forEach(node => {
-                node.addEventListener('mousemove', (e) => {
-                    const rect = node.getBoundingClientRect();
-                    node.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-                    node.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-                    const thetaX = (((e.clientY - rect.top) - (rect.height/2)) / (rect.height/2)) * -8;
-                    const thetaY = (((e.clientX - rect.left) - (rect.width/2)) / (rect.width/2)) * 8;
-                    gsap.to(node, { rotationX: thetaX, rotationY: thetaY, duration: 0.4, transformPerspective: 2500 });
-                });
-                node.addEventListener('mouseleave', () => gsap.to(node, { rotationX: 0, rotationY: 0, duration: 0.9, ease: "elastic.out(1, 0.4)" }));
-            });
-        }
-
-        // KINEMATICS: ELASTIC SIDEBAR TEXT REVEAL (PC ONLY)
-        if(window.matchMedia("(min-width: 769px)").matches) {
-            document.querySelectorAll('.sidebar-text').forEach(txt => new SplitType(txt, { types: 'chars' }));
-            const sidebarNav = document.getElementById('elastic-sidebar');
-            sidebarNav.addEventListener('mouseenter', () => gsap.to('.sidebar-text .char', { y: '0%', opacity: 1, stagger: 0.02, duration: 0.6, ease: "power4.out" }));
-            sidebarNav.addEventListener('mouseleave', () => gsap.to('.sidebar-text .char', { y: '100%', opacity: 0, stagger: 0.01, duration: 0.3 }));
-        }
-
-        // RENDER PIPELINE: WEBGL CINEMATIC HERO ENGINE
-        const webglCanvas = document.getElementById('webgl-stage');
-        const webglScene = new THREE.Scene();
-        const webglCamera = new THREE.OrthographicCamera( window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000 );
-        webglCamera.position.z = 1;
-        const webglRenderer = new THREE.WebGLRenderer({ canvas: webglCanvas, alpha: true, antialias: true });
-        webglRenderer.setSize(window.innerWidth, window.innerHeight);
-        
-        const textureLoader = new THREE.TextureLoader();
-        textureLoader.crossOrigin = "anonymous";
-        const loadedTextures = db.map(item => textureLoader.load(item.image));
-
-        const shaderUniforms = {
-            u_tex1: { value: loadedTextures[0] }, u_tex2: { value: loadedTextures[0] }, u_progress: { value: 0.0 }
-        };
-        const shaderMaterial = new THREE.ShaderMaterial({
-            vertexShader: document.getElementById('vertexShader').textContent,
-            fragmentShader: document.getElementById('fragmentShader').textContent,
-            uniforms: shaderUniforms
-        });
-        const imageMesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight), shaderMaterial);
-        webglScene.add(imageMesh);
-
-        window.addEventListener('resize', () => {
-            webglRenderer.setSize(window.innerWidth, window.innerHeight);
-            webglCamera.left = window.innerWidth / -2; webglCamera.right = window.innerWidth / 2;
-            webglCamera.top = window.innerHeight / 2; webglCamera.bottom = window.innerHeight / -2;
-            webglCamera.updateProjectionMatrix();
-            imageMesh.geometry = new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight);
-        });
-
-        function renderScene() { webglRenderer.render(webglScene, webglCamera); requestAnimationFrame(renderScene); }
-        requestAnimationFrame(renderScene);
-
-        // SWIPER INTEGRATION WITH GLSL SHADERS
-        let transitionLocked = false;
-        new Swiper('.swiper-container', {
-            slidesPerView: 1, speed: 1800, mousewheel: true, grabCursor: true,
-            on: {
-                init: function() { gsap.fromTo('.swiper-slide-active .cinematic-headline', { y: 100, opacity: 0}, {y: 0, opacity: 1, duration: 1.5, ease: "power4.out", delay: 0.5}); },
-                slideChangeTransitionStart: function() {
-                    if(transitionLocked) return; transitionLocked = true;
-                    shaderUniforms.u_tex1.value = loadedTextures[this.previousIndex];
-                    shaderUniforms.u_tex2.value = loadedTextures[this.activeIndex];
-                    shaderUniforms.u_progress.value = 0.0;
-                    gsap.to(shaderUniforms.u_progress, { value: 1.0, duration: 1.8, ease: "power2.inOut", onComplete: () => transitionLocked = false });
-                    
-                    gsap.to('.swiper-slide-prev .cinematic-headline', { y: -100, opacity: 0, duration: 0.6 });
-                    gsap.fromTo('.swiper-slide-active .cinematic-headline', { y: 100, opacity: 0}, {y: 0, opacity: 1, duration: 1.5, ease: "power4.out", delay: 0.5});
-                }
-            }
-        });
-        
-        // DEEP PARALLAX SCROLL
-        gsap.to(".hero-environment", { yPercent: 35, ease: "none", scrollTrigger: { trigger: ".hero-environment", start: "top top", end: "bottom top", scrub: true }});
-    </script>
-</body>
-</html>
+    // Cinematic Reveal Animations
+    gsap.from(".gs-reveal", { y: 50, opacity: 0, duration: 1, stagger: 0.1, ease: "power3.out" });
+</script>
+</body></html>

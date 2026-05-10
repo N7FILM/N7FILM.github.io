@@ -1,25 +1,40 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Beast | N7 ARCHIVES</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Beast | Watch Now</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@300;400;600&display=swap');
-        body { margin: 0; background: #050505; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .hero-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; opacity: 0.2; filter: blur(20px); }
-        .nav { padding: 30px 5vw; display: flex; justify-content: space-between; position: relative; z-index: 10; }
-        .back-btn { color: #fff; text-decoration: none; font-family: 'Space Grotesk'; font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px; backdrop-filter: blur(10px); }
-        .container { max-width: 1000px; margin: auto; padding: 20px 5vw 100px 5vw; position: relative; z-index: 10; }
-        .title-box h1 { font-family: 'Space Grotesk'; font-size: clamp(2.5rem, 6vw, 5rem); margin: 0 0 40px 0; line-height: 1.1; }
-        .video-box { border-radius: 20px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); width: 100%; }
-        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .data-box { margin-top: 40px; line-height: 1.8; font-size: 1.1rem; color: #bbb; background: rgba(15,15,18,0.6); backdrop-filter: blur(25px); padding: clamp(20px, 5vw, 50px); border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); }
-        .data-box h1, .data-box h2 { color: #0f5ad1; font-size: clamp(1.5rem, 4vw, 2.5rem); font-family: 'Space Grotesk'; margin-top: 30px; }
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
+        body { margin: 0; background: #0D0D11; color: #fff; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        .bg-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -2; opacity: 0.15; filter: blur(20px); }
+        .navbar { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(13,13,17,0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: #E50914; text-decoration: none; }
+        .back-btn { color: #D1D5DB; text-decoration: none; font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .back-btn:hover { color: #E50914; }
+        .content-wrapper { max-width: 1200px; margin: auto; padding: 40px 5%; display: grid; grid-template-columns: 1fr; gap: 40px; }
+        h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin: 0 0 20px 0; line-height: 1.1; }
+        .video-player { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.05); }
+        iframe { width: 100%; height: 100%; border: none; }
+        .metadata-panel { background: rgba(20,20,25,0.8); backdrop-filter: blur(16px); padding: 40px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); line-height: 1.8; color: #D1D5DB; }
+        .metadata-panel h1, .metadata-panel h2 { color: #fff; font-size: 1.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-top: 30px; }
+        
+        @media (max-width: 768px) { .metadata-panel { padding: 20px; } }
         </style></head><body>
         
-        <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="hero-bg">
-        <div class="nav"><a href="../index.html" class="back-btn">← TERMINATE FEED</a></div>
+        <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="bg-layer">
         
-        <div class="container">
-            <div class="title-box"><h1>Beast</h1></div>
-            <div class="video-box"><iframe src="https://www.youtube.com/embed/"></iframe></div>
-            <div class="data-box"><h1>"Beast": The Echo of a Lion's Roar in the Twilight of Glory</h1>
+        <nav class="navbar">
+            <a href="../index.html" class="logo">STREAMIT<span>.</span></a>
+            <a href="../index.html" class="back-btn">← Back to Browse</a>
+        </nav>
+        
+        <div class="content-wrapper gs-reveal">
+            <div>
+                <h1>Beast</h1>
+                <div class="video-player">
+                    <iframe src="https://www.youtube.com/embed/?autoplay=0" allowfullscreen></iframe>
+                </div>
+            </div>
+            
+            <div class="metadata-panel">
+                <h1>"Beast": The Echo of a Lion's Roar in the Twilight of Glory</h1>
 
 <p>In the crowded arena of cinematic fight dramas, where tales of redemption and last stands often blur into a predictable rhythm, "Beast" emerges not as a groundbreaking revolution, but as a profoundly resonant evolution. Director [Director's Name - *since it's not provided, I'll implicitly suggest leaving it to the reader or omitting specific names for a more timeless review*] crafts a narrative that respects the genre's familiar bones—the aging legend, the imperiled family, the impossible comeback—yet imbues them with a raw, almost elemental power that elevates the film far beyond mere pugilistic spectacle. It is a cinematic guttural scream, a meditation on legacy, sacrifice, and the enduring, often painful, pull of the past.</p>
 
@@ -45,6 +60,9 @@
 
 <p>When the film shifts to the world of MMA, the aesthetic transforms, but never loses its grounding. The gym is rendered with a harsh, unglamorous fluorescent glare, emphasizing the sweat, the strain, and the unvarnished reality of training. The camera often lingers on close-ups of scarred faces, knotted muscles, and the subtle tells of exhaustion and determination, ensuring every physical detail contributes to the narrative. The fight sequences themselves are shot with a palpable immediacy, often employing a fluid, handheld style that plunges the viewer directly into the heart of the action, making every impact resonate.</p>
 
-<p>The arena, with its roaring crowds and dazzling lights, becomes a gladiatorial stage, but the visual direction never romanticizes the violence. Instead, it highlights the stark contrast between the spectacle and the deeply personal, often desperate, struggle unfolding within the cage. The framing of the final fight, in particular, uses spatial relationships and strategic camera angles to emphasize the isolation of the combatants, transforming the vast arena into a solitary crucible. "Beast" leverages its visual aesthetic not just for beauty or impact, but to underscore its profound thematic concerns, creating a world that feels as real and as bruised as Patton James himself.</p></div>
+<p>The arena, with its roaring crowds and dazzling lights, becomes a gladiatorial stage, but the visual direction never romanticizes the violence. Instead, it highlights the stark contrast between the spectacle and the deeply personal, often desperate, struggle unfolding within the cage. The framing of the final fight, in particular, uses spatial relationships and strategic camera angles to emphasize the isolation of the combatants, transforming the vast arena into a solitary crucible. "Beast" leverages its visual aesthetic not just for beauty or impact, but to underscore its profound thematic concerns, creating a world that feels as real and as bruised as Patton James himself.</p>
+            </div>
         </div>
+
+        <script>gsap.from(".gs-reveal", {y: 50, opacity: 0, duration: 1, ease: "power3.out"});</script>
         </body></html>
