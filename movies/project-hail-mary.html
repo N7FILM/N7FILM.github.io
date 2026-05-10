@@ -1,31 +1,27 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Project Hail Mary | N7 Base</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Project Hail Mary | Database</title>
         <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@400&display=swap');
         body { margin: 0; background: #030303; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .hero-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; opacity: 0.3; mask-image: linear-gradient(to bottom, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%); }
-        .nav { padding: 30px 5vw; display: flex; position: relative; z-index: 10; }
-        .back-btn { color: #fff; text-decoration: none; font-family: 'Space Grotesk'; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 50px; backdrop-filter: blur(10px); transition: 0.3s; }
-        .back-btn:hover { background: #00ffaa; color: #000; }
-        .container { max-width: 1400px; margin: auto; padding: 5vw; position: relative; z-index: 10; }
-        .title-box h1 { font-family: 'Space Grotesk'; font-size: clamp(3rem, 7vw, 7rem); margin: 0 0 40px 0; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .bento-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        .video-box { border-radius: 24px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); }
+        .hero-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; opacity: 0.3; filter: blur(10px); }
+        .nav { padding: 30px 5vw; display: flex; justify-content: space-between; position: relative; z-index: 10; }
+        .back-btn { color: #fff; text-decoration: none; font-family: 'Space Grotesk'; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px; backdrop-filter: blur(10px); transition: 0.3s; }
+        .back-btn:hover { background: #0066ff; }
+        .container { max-width: 1200px; margin: auto; padding: 50px 5vw 100px 5vw; position: relative; z-index: 10; }
+        h1 { font-family: 'Space Grotesk'; font-size: clamp(3rem, 8vw, 6rem); margin: 0 0 20px 0; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .video-box { border-radius: 24px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); width: 100%; margin-bottom: 40px; }
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .data-box { line-height: 1.8; font-size: 1.15rem; color: #ccc; background: rgba(15,15,15,0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 50px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); font-weight: 300; }
-        .data-box h1, .data-box h2 { color: #00ffaa; font-size: 2rem; font-family: 'Space Grotesk'; font-weight: 700; margin-top: 0; }
-        @media (max-width: 1000px) { .bento-layout { grid-template-columns: 1fr; } .data-box { padding: 30px; } }
+        .data-box { line-height: 1.8; font-size: 1.15rem; color: #ddd; background: rgba(10,10,10,0.7); backdrop-filter: blur(30px); padding: clamp(20px, 5vw, 50px); border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); }
+        .data-box h1, .data-box h2 { color: #0066ff; font-size: 2rem; font-family: 'Space Grotesk'; }
         </style></head><body>
         
         <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="hero-bg">
-        <div class="nav gs-reveal"><a href="../index.html" class="back-btn">← TERMINATE FEED</a></div>
+        <div class="nav"><a href="../index.html" class="back-btn">← Close Terminal</a></div>
         
         <div class="container">
-            <div class="title-box gs-reveal"><h1>Project Hail Mary</h1></div>
-            <div class="bento-layout">
-                <div class="video-box gs-reveal"><iframe src="https://www.youtube.com/embed/"></iframe></div>
-                <div class="data-box gs-reveal"><h1>Project Hail Mary: A Symphony of Ingenuity and Cosmic Isolation</h1>
+            <h1>Project Hail Mary</h1>
+            <div class="video-box"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            <div class="data-box"><h1>Project Hail Mary: A Symphony of Ingenuity and Cosmic Isolation</h1>
 
 <p>From the moment the screen ignites, 'Project Hail Mary' establishes itself not merely as a science fiction film, but as a profound meditation on the resilience of the human spirit against the backdrop of an indifferent, dying cosmos. Director [Fictional Director Name, or omitted as it's not specified] has achieved a rare feat: a film that is intellectually stimulating, emotionally resonant, and relentlessly entertaining. It is a cinematic experience that dares to ask the biggest questions, then provides answers through the most unlikely of heroes and the most ingenious of methods.</p>
 
@@ -42,10 +38,10 @@
 <h2>Visual Aesthetic: Cosmic Grandeur and Intimate Desperation</h2>
 
 <p>'Project Hail Mary' is a feast for the eyes, translating the vastness and terror of space into a breathtaking visual aesthetic that is both grand and intimately claustrophobic. The production design of the *Hail Mary* itself is a marvel: a triumph of functional, elegant engineering that feels both plausible and awe-inspiring, a sterile yet hopeful ark against the infinite void. The film excels in its depiction of the cosmic environment, from the ominous, pulsating decay of the sun's light to the shimmering, alien beauty of distant star systems. These visuals are not mere spectacle; they serve to emphasize the isolation and the monumental scale of Grace's mission. The use of light and shadow is particularly masterful, painting the interiors of the spaceship with a stark realism and the exteriors with a painterly majesty. Crucially, the visual representation of *[again, referencing the alien ally without explicit spoilers]* alien life is handled with ingenious subtlety and profound respect, managing to be utterly foreign yet instantly communicative, a testament to the film's commitment to visual storytelling that reinforces thematic depth rather than superficial flash. Every frame contributes to a pervasive sense of wonder and impending doom, creating a visual symphony that perfectly complements the film's intellectual and emotional ambitions.</p></div>
-            </div>
         </div>
         <script>
-            const lenis = new Lenis(); function raf(time) { lenis.raf(time); requestAnimationFrame(raf); } requestAnimationFrame(raf);
-            gsap.from(".gs-reveal", {y: 60, opacity: 0, duration: 1.2, stagger: 0.2, ease: "power4.out"});
+            const lenis = new Lenis();
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
         </script>
         </body></html>

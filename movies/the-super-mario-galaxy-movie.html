@@ -1,31 +1,27 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>The Super Mario Galaxy Movie | N7 Base</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>The Super Mario Galaxy Movie | Database</title>
         <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@400&display=swap');
         body { margin: 0; background: #030303; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .hero-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; opacity: 0.3; mask-image: linear-gradient(to bottom, black 40%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%); }
-        .nav { padding: 30px 5vw; display: flex; position: relative; z-index: 10; }
-        .back-btn { color: #fff; text-decoration: none; font-family: 'Space Grotesk'; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 10px 25px; border-radius: 50px; backdrop-filter: blur(10px); transition: 0.3s; }
-        .back-btn:hover { background: #00ffaa; color: #000; }
-        .container { max-width: 1400px; margin: auto; padding: 5vw; position: relative; z-index: 10; }
-        .title-box h1 { font-family: 'Space Grotesk'; font-size: clamp(3rem, 7vw, 7rem); margin: 0 0 40px 0; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .bento-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        .video-box { border-radius: 24px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); }
+        .hero-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; opacity: 0.3; filter: blur(10px); }
+        .nav { padding: 30px 5vw; display: flex; justify-content: space-between; position: relative; z-index: 10; }
+        .back-btn { color: #fff; text-decoration: none; font-family: 'Space Grotesk'; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 50px; backdrop-filter: blur(10px); transition: 0.3s; }
+        .back-btn:hover { background: #0066ff; }
+        .container { max-width: 1200px; margin: auto; padding: 50px 5vw 100px 5vw; position: relative; z-index: 10; }
+        h1 { font-family: 'Space Grotesk'; font-size: clamp(3rem, 8vw, 6rem); margin: 0 0 20px 0; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .video-box { border-radius: 24px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); width: 100%; margin-bottom: 40px; }
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .data-box { line-height: 1.8; font-size: 1.15rem; color: #ccc; background: rgba(15,15,15,0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); padding: 50px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); font-weight: 300; }
-        .data-box h1, .data-box h2 { color: #00ffaa; font-size: 2rem; font-family: 'Space Grotesk'; font-weight: 700; margin-top: 0; }
-        @media (max-width: 1000px) { .bento-layout { grid-template-columns: 1fr; } .data-box { padding: 30px; } }
+        .data-box { line-height: 1.8; font-size: 1.15rem; color: #ddd; background: rgba(10,10,10,0.7); backdrop-filter: blur(30px); padding: clamp(20px, 5vw, 50px); border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); }
+        .data-box h1, .data-box h2 { color: #0066ff; font-size: 2rem; font-family: 'Space Grotesk'; }
         </style></head><body>
         
         <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="hero-bg">
-        <div class="nav gs-reveal"><a href="../index.html" class="back-btn">← TERMINATE FEED</a></div>
+        <div class="nav"><a href="../index.html" class="back-btn">← Close Terminal</a></div>
         
         <div class="container">
-            <div class="title-box gs-reveal"><h1>The Super Mario Galaxy Movie</h1></div>
-            <div class="bento-layout">
-                <div class="video-box gs-reveal"><iframe src="https://www.youtube.com/embed/"></iframe></div>
-                <div class="data-box gs-reveal">```html
+            <h1>The Super Mario Galaxy Movie</h1>
+            <div class="video-box"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            <div class="data-box">```html
 <h1>'The Super Mario Galaxy Movie': A Stellar Sequel That Reaches for the Stars!</h1>
 
 <h2>Introduction: The Cosmic Crescendo We Deserved</h2>
@@ -53,10 +49,10 @@ The level of detail is astounding, rewarding multiple viewings and cementing the
 <h2>Conclusion: A Universe of Potential</h2>
 <p>'The Super Mario Galaxy Movie' isn't just a sequel; it's a profound statement on the potential of video game adaptations when handled with genuine care and creative audacity. It’s a vibrant, exhilarating, and emotionally resonant film that manages to honor its source material while forging its own identity. The animation is unparalleled, the action sequences are inventive, and the heart of the story — the bond between brothers and the fight for cosmic balance — resonates deeply. It sets a new benchmark for animated features and leaves the audience eagerly anticipating where Mario's next adventure might take him. The post-credits scene alone, hinting at an even grander threat lurking in the cosmos, ensures that the Mario cinematic universe has a bright, star-filled future. Go see it. You won't just be entertained; you'll be transported.</p>
 ```</div>
-            </div>
         </div>
         <script>
-            const lenis = new Lenis(); function raf(time) { lenis.raf(time); requestAnimationFrame(raf); } requestAnimationFrame(raf);
-            gsap.from(".gs-reveal", {y: 60, opacity: 0, duration: 1.2, stagger: 0.2, ease: "power4.out"});
+            const lenis = new Lenis();
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
         </script>
         </body></html>
