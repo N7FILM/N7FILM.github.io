@@ -1,164 +1,182 @@
-<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><title>N7 | God Level UI</title><script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js'></script><script src='https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js'></script><style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700;900&family=Inter:wght@400;600&display=swap');
-:root { --bg: #050505; --primary-glow: #00ffcc; --glass-border: rgba(255,255,255,0.08); --accent-neon: #ff00ff; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N7 | Extreme Cinematic Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/split-type"></script>
+    <style>
+:root { --primary-glow: #00ffcc; --glass-border: rgba(255,255,255,0.08); --matrix-bg: #050505; --accent-neon: #ff00ff; --nav-height: 90px; }
 * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-body, html { background-color: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; overscroll-behavior: none; }
+body, html { background-color: var(--matrix-bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; overscroll-behavior: none; }
 
 /* MAGNETIC CURSOR */
-#custom-cursor { position: fixed; top: 0; left: 0; width: 8px; height: 8px; background: var(--primary-glow); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; }
-#cursor-follower { position: fixed; top: 0; left: 0; width: 45px; height: 45px; border: 1px solid rgba(0, 255, 204, 0.4); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s linear; }
+#custom-cursor { position: fixed; top: 0; left: 0; width: 8px; height: 8px; background: var(--primary-glow); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; will-change: transform; }
+#cursor-follower { position: fixed; top: 0; left: 0; width: 45px; height: 45px; border: 1px solid rgba(0, 255, 204, 0.4); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s linear; will-change: transform; }
 
-/* ELASTIC SIDEBAR */
-.sidebar { position: fixed; left: 0; top: 0; height: 100vh; width: 80px; background: rgba(3, 3, 3, 0.95); border-right: 1px solid var(--glass-border); z-index: 8000; display: flex; flex-direction: column; padding-top: 40px; transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1); overflow: hidden; backdrop-filter: blur(20px); }
-.sidebar:hover { width: 280px; }
-.sidebar-item { padding: 25px; white-space: nowrap; display: flex; align-items: center; opacity: 0.5; transition: 0.3s; color: #fff; text-decoration: none; font-size: 1.2rem; }
-.sidebar-item:hover { opacity: 1; color: var(--primary-glow); }
-.sidebar-text { margin-left: 25px; opacity: 0; transform: translateX(-30px); transition: 0.4s; font-family: 'Space Grotesk'; font-weight: 700; }
-.sidebar:hover .sidebar-text { opacity: 1; transform: translateX(0); }
+/* COMMAND NAVIGATION */
+nav { position: fixed; top: 0; width: 100%; height: var(--nav-height); background: rgba(5, 5, 5, 0.5); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; padding: 0 5vw; align-items: center; z-index: 9000; }
+.logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: #fff; text-decoration: none; }
+.nav-links { display: flex; gap: 50px; list-style: none; }
+.nav-link { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 3px; padding: 35px 15px; position: relative; }
 
-/* COMMAND PALETTE (CTRL+K) */
-#cmd-palette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(35px); z-index: 11000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.4s ease; }
+/* CTRL+K COMMAND PALETTE */
+#cmd-palette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(35px); z-index: 11000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
 #cmd-palette.active { opacity: 1; pointer-events: auto; }
-.cmd-box { width: 700px; max-width: 90vw; background: rgba(10,10,10,0.9); border: 1px solid var(--glass-border); border-radius: 16px; padding: 40px; transform: translateY(30px) scale(0.95); transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
+.cmd-box { width: 700px; max-width: 90vw; background: rgba(10,10,10,0.9); border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px; box-shadow: 0 0 80px rgba(0, 255, 204, 0.05); transform: translateY(30px) scale(0.95); transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
 #cmd-palette.active .cmd-box { transform: translateY(0) scale(1); }
-.cmd-input { width: 100%; background: transparent; border: none; color: white; font-size: 2.5rem; outline: none; padding-bottom: 20px; border-bottom: 1px solid var(--glass-border); font-family: 'Space Grotesk'; }
+.cmd-input { width: 100%; background: transparent; border: none; color: white; font-size: 2rem; outline: none; padding-bottom: 20px; font-weight: 300; border-bottom: 1px solid var(--glass-border); }
 
-/* MAIN CONTENT & HERO */
-.main-content { margin-left: 80px; transition: margin-left 0.5s; }
-.hero { height: 90vh; display: flex; align-items: center; padding-left: 5vw; position: relative; border-bottom: 1px solid var(--glass-border); }
-.hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; z-index: -1; mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); }
-.hero-title { font-family: 'Space Grotesk'; font-size: clamp(4rem, 8vw, 8rem); font-weight: 900; line-height: 1; text-transform: uppercase; text-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+/* CINEMATIC HERO WEBGL SLIDER */
+#webgl-hero { width: 100vw; height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; padding-left: 10vw; }
+#webgl-hero img.bg-fallback { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; z-index: 1; filter: grayscale(50%); }
+.hero-typography-layer { position: relative; z-index: 2; pointer-events: none; }
+.hero-title { font-size: clamp(4rem, 8vw, 8rem); font-weight: 900; line-height: 1; text-transform: uppercase; color: #fff; mix-blend-mode: exclusion; }
+.gsap-reveal { clip-path: inset(0 100% 0 0); }
 
-/* 3D BENTO GRID */
-.bento-section { padding: 100px 5%; max-width: 1600px; margin: 0 auto; }
-.bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; perspective: 1500px; }
-.bento-card { position: relative; height: 500px; background: rgba(20,20,20,0.6); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; transform-style: preserve-3d; text-decoration: none; color: #fff; }
-.bento-card::before { content: ''; position: absolute; inset: -3px; border-radius: 32px; background: linear-gradient(135deg, transparent, var(--primary-glow), var(--accent-neon), transparent); z-index: -1; opacity: 0; filter: blur(20px); transition: 0.5s ease; }
-.bento-card:hover::before { opacity: 0.6; }
-.card-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; transition: 0.5s; pointer-events: none; }
-.bento-card:hover .card-img { opacity: 1; }
-.bento-content { position: absolute; bottom: 40px; left: 40px; transform: translateZ(60px); pointer-events: none; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
-.bento-title { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 700; margin: 10px 0 0 0; }
-.hud-tag { border: 1px solid var(--primary-glow); color: var(--primary-glow); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; letter-spacing: 1px; backdrop-filter: blur(10px); }
-</style></head><body>
-<div id="custom-cursor"></div><div id="cursor-follower"></div>
+/* BENTO GRID 3D TILT */
+.bento-section { padding: 100px 5%; max-width: 1800px; margin: 0 auto; position: relative; z-index: 5; }
+.bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 40px; perspective: 1500px; }
+.bento-card { position: relative; height: 450px; background: rgba(20,20,20,0.4); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; transform-style: preserve-3d; transition: border-color 0.4s ease; text-decoration: none; color: #fff; display: block; }
+.bento-card::before { content: ''; position: absolute; inset: -3px; border-radius: 32px; background: linear-gradient(135deg, transparent, var(--primary-glow), var(--accent-neon), transparent); z-index: -1; opacity: 0; filter: blur(20px); transition: opacity 0.5s ease; }
+.bento-card:hover::before { opacity: 0.8; }
+.bento-card:hover { border-color: rgba(0, 255, 204, 0.3); }
+.bento-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: opacity 0.6s ease; }
+.bento-card:hover .bento-img { opacity: 0.8; }
+.bento-content { position: absolute; bottom: 40px; left: 40px; transform: translateZ(80px); pointer-events: none; }
+.bento-tag { display: inline-block; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--primary-glow); color: var(--primary-glow); font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; backdrop-filter: blur(10px); background: rgba(0,0,0,0.5); }
+.bento-title { font-size: 2rem; font-weight: 700; letter-spacing: 1px; margin: 0; text-shadow: 0 5px 15px rgba(0,0,0,0.8); }
+</style>
+</head>
+<body>
+    <div id="custom-cursor"></div>
+    <div id="cursor-follower"></div>
 
-<div id="cmd-palette">
-    <div class="cmd-box">
-        <input type="text" class="cmd-input" placeholder="Search Database... (Press ESC to close)" />
-        <div style="margin-top: 20px; color: #888;">Fuzzy search active. Press Ctrl+K anywhere to open.</div>
-    </div>
-</div>
-
-<div class="sidebar">
-    <a href="#" class="sidebar-item magnetic-target"><div style="font-size:1.5rem">⊚</div><div class="sidebar-text">DASHBOARD</div></a>
-    <a href="#" class="sidebar-item magnetic-target" onclick="document.getElementById('cmd-palette').classList.add('active');"><div style="font-size:1.5rem">⌘</div><div class="sidebar-text">SEARCH (CTRL+K)</div></a>
-    <a href="https://github.com/N7FILM" class="sidebar-item magnetic-target"><div style="font-size:1.5rem">⎈</div><div class="sidebar-text">PROTOCOLS</div></a>
-</div>
-
-<div class="main-content">
-    <div class="hero">
-        <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="hero-bg">
-        <div class="hero-typography-layer">
-            <div class="hud-tag gsap-reveal" style="margin-bottom:20px; display:inline-block;">FEATURED INTELLIGENCE</div>
-            <div class="hero-title gsap-reveal">Remarkably Bright Creatures</div>
-            <a href="movies/remarkably-bright-creatures.html" class="hud-tag gsap-reveal magnetic-target" style="margin-top:30px; display:inline-block; font-size:1.2rem; padding: 15px 30px; border-color: #fff; color: #fff; text-decoration: none;">INITIALIZE FEED →</a>
+    <div id="cmd-palette">
+        <div class="cmd-box">
+            <input type="text" class="cmd-input" placeholder="Initiate Search Sequence... (ESC to close)">
         </div>
     </div>
+
+    <nav>
+        <a href="#" class="logo magnetic-target">N7_HUB</a>
+        <ul class="nav-links">
+            <li class="nav-link magnetic-target">Ctrl+K to Search</li>
+        </ul>
+    </nav>
+
+    <section id="webgl-hero">
+        <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="bg-fallback">
+        <div class="hero-typography-layer">
+            <div class="hero-title gsap-reveal">Remarkably Bright Creatures</div>
+            <div class="hero-title gsap-reveal" style="color: var(--primary-glow); margin-left: 5vw;">2026</div>
+        </div>
+    </section>
 
     <section class="bento-section">
         <div class="bento-grid">
             
-        <a href="movies/no-place-to-be-single.html" class="bento-card gsap-reveal magnetic-target" data-title="no place to be single">
-            <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" class="card-img">
+        <a href="movies/no-place-to-be-single.html" class="bento-card magnetic-target" data-title="no place to be single">
+            <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">No Place to Be Single</h2>
             </div>
         </a>
-        <a href="movies/mortal-kombat-ii.html" class="bento-card gsap-reveal magnetic-target" data-title="mortal kombat ii">
-            <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" class="card-img">
+        <a href="movies/mortal-kombat-ii.html" class="bento-card magnetic-target" data-title="mortal kombat ii">
+            <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">Mortal Kombat II</h2>
             </div>
         </a>
-        <a href="movies/swapped.html" class="bento-card gsap-reveal magnetic-target" data-title="swapped">
-            <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="card-img">
+        <a href="movies/swapped.html" class="bento-card magnetic-target" data-title="swapped">
+            <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">Swapped</h2>
             </div>
         </a>
-        <a href="movies/ready-or-not-2-here-i-come.html" class="bento-card gsap-reveal magnetic-target" data-title="ready or not 2: here i come">
-            <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" class="card-img">
+        <a href="movies/ready-or-not-2-here-i-come.html" class="bento-card magnetic-target" data-title="ready or not 2: here i come">
+            <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">Ready or Not 2: Here I Come</h2>
             </div>
         </a>
-        <a href="movies/my-dearest-assassin.html" class="bento-card gsap-reveal magnetic-target" data-title="my dearest assassin">
-            <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" class="card-img">
+        <a href="movies/my-dearest-assassin.html" class="bento-card magnetic-target" data-title="my dearest assassin">
+            <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">My Dearest Assassin</h2>
             </div>
         </a>
-        <a href="movies/the-super-mario-galaxy-movie.html" class="bento-card gsap-reveal magnetic-target" data-title="the super mario galaxy movie">
-            <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="card-img">
+        <a href="movies/the-super-mario-galaxy-movie.html" class="bento-card magnetic-target" data-title="the super mario galaxy movie">
+            <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">The Super Mario Galaxy Movie</h2>
             </div>
         </a>
-        <a href="movies/hoppers.html" class="bento-card gsap-reveal magnetic-target" data-title="hoppers">
-            <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="card-img">
+        <a href="movies/hoppers.html" class="bento-card magnetic-target" data-title="hoppers">
+            <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">Hoppers</h2>
             </div>
         </a>
-        <a href="movies/the-drama.html" class="bento-card gsap-reveal magnetic-target" data-title="the drama">
-            <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" class="card-img">
+        <a href="movies/the-drama.html" class="bento-card magnetic-target" data-title="the drama">
+            <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">The Drama</h2>
             </div>
         </a>
-        <a href="movies/beast.html" class="bento-card gsap-reveal magnetic-target" data-title="beast">
-            <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="card-img">
+        <a href="movies/beast.html" class="bento-card magnetic-target" data-title="beast">
+            <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">Beast</h2>
             </div>
         </a>
-        <a href="movies/project-hail-mary.html" class="bento-card gsap-reveal magnetic-target" data-title="project hail mary">
-            <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="card-img">
+        <a href="movies/project-hail-mary.html" class="bento-card magnetic-target" data-title="project hail mary">
+            <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">Project Hail Mary</h2>
             </div>
         </a>
-        <a href="movies/michael.html" class="bento-card gsap-reveal magnetic-target" data-title="michael">
-            <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" class="card-img">
+        <a href="movies/michael.html" class="bento-card magnetic-target" data-title="michael">
+            <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">Michael</h2>
             </div>
         </a>
-        <a href="movies/send-help.html" class="bento-card gsap-reveal magnetic-target" data-title="send help">
-            <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" class="card-img">
+        <a href="movies/send-help.html" class="bento-card magnetic-target" data-title="send help">
+            <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" class="bento-img" loading="lazy">
             <div class="bento-content">
-                <div class="hud-tag">ARCHIVE: 2026</div>
+                <div class="bento-tag">Archive: 2026</div>
                 <h2 class="bento-title">Send Help</h2>
             </div>
         </a>
         </div>
     </section>
-</div>
 
-<script>
-// 1. MAGNETIC CURSOR & LERP PHYSICS
+    <script>
+// 1. LENIS SMOOTH SCROLL
+const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+gsap.registerPlugin(ScrollTrigger);
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add((time) => { lenis.raf(time * 1000) });
+
+// 2. MAGNETIC CURSOR & LERP PHYSICS
 const cursor = document.getElementById('custom-cursor');
 const follower = document.getElementById('cursor-follower');
 let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
@@ -193,24 +211,10 @@ document.querySelectorAll('.magnetic-target').forEach(el => {
     });
 });
 
-// 2. 3D BENTO TILT MECHANICS
-document.querySelectorAll('.bento-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const calcX = -((e.clientY - rect.top) - (rect.height / 2)) / 25;
-        const calcY = ((e.clientX - rect.left) - (rect.width / 2)) / 25;
-        card.style.transform = `perspective(1500px) rotateX(${calcX}deg) rotateY(${calcY}deg) scale3d(1.02, 1.02, 1.02)`;
-    });
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = `perspective(1500px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-    });
-});
-
-// 3. COMMAND PALETTE (CTRL+K) & SEARCH
+// 3. COMMAND PALETTE (CTRL+K)
 const cmdPalette = document.getElementById('cmd-palette');
 const cmdInput = document.querySelector('.cmd-input');
 const cards = document.querySelectorAll('.bento-card');
-const hero = document.querySelector('.hero');
 
 window.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -218,25 +222,46 @@ window.addEventListener('keydown', (e) => {
         cmdPalette.classList.add('active');
         setTimeout(() => cmdInput.focus(), 100);
     }
-    if (e.key === 'Escape') cmdPalette.classList.remove('active');
-});
-
-cmdInput.addEventListener('input', (e) => {
-    const query = e.target.value.toLowerCase();
-    cards.forEach(card => {
-        card.style.display = card.getAttribute('data-title').includes(query) ? 'block' : 'none';
-    });
-    hero.style.display = query.length > 0 ? 'none' : 'flex';
-    if(query.length > 0) {
-        setTimeout(() => { cmdPalette.classList.remove('active'); }, 500); // Auto close after typing
+    if (e.key === 'Escape') {
+        cmdPalette.classList.remove('active');
+        cmdInput.value = '';
+        cards.forEach(c => c.style.display = 'block');
     }
 });
 
-// 4. GSAP REVEALS & LENIS SCROLL
-const lenis = new Lenis({ duration: 1.2, smooth: true });
-function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-requestAnimationFrame(raf);
+cmdInput.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    cards.forEach(card => {
+        if(card.getAttribute('data-title').includes(q)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+});
 
-gsap.from(".gsap-reveal", { y: 100, opacity: 0, duration: 1.5, stagger: 0.1, ease: "power4.out" });
+// 4. BENTO GRID 3D TILT MECHANICS
+cards.forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const calcX = -((e.clientY - rect.top) - (rect.height / 2)) / 30;
+        const calcY = ((e.clientX - rect.left) - (rect.width / 2)) / 30;
+        card.style.transform = `perspective(1500px) rotateX(${calcX}deg) rotateY(${calcY}deg) scale3d(1.02, 1.02, 1.02)`;
+    });
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(1500px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    });
+});
+
+// 5. GSAP KINEMATIC REVEAL
+const splitText = new SplitType('.gsap-reveal', { types: 'chars' });
+gsap.to(splitText.chars, { 
+    clipPath: 'inset(0 0% 0 0)', 
+    duration: 1.2, 
+    stagger: 0.05, 
+    ease: 'power4.out', 
+    delay: 0.5 
+});
 </script>
-</body></html>
+</body>
+</html>
