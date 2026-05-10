@@ -1,303 +1,203 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N7 | The Cinematic Universe</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
-    
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Manrope:wght@200;400;700&display=swap');
-    
-    :root { --bg: #000; --text: #fff; --accent: #0f5ad1; }
-    * { box-sizing: border-box; cursor: none !important; } /* HIDDEN DEFAULT CURSOR */
-    body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Manrope', sans-serif; overflow-x: hidden; }
-    
-    /* 🌌 CUSTOM MAGNETIC CURSOR */
-    .cursor { position: fixed; top: 0; left: 0; width: 12px; height: 12px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; mix-blend-mode: difference; }
-    .cursor.hover { width: 80px; height: 80px; background: transparent; border: 1px solid #fff; }
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>N7 | Advanced Cinematic Hub</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
-    /* 🌌 3D WEBGL BACKGROUND */
-    #vanta-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Inter:wght@300;400;600&display=swap');
 
-    /* 🌌 MINIMALIST AWWWARDS NAVBAR */
-    .nav { position: fixed; top: 0; width: 100%; padding: 40px 5vw; display: flex; justify-content: space-between; mix-blend-mode: difference; z-index: 100; }
-    .nav-logo { font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: 1.5rem; letter-spacing: 5px; text-decoration: none; color: #fff; }
-    .nav-links { display: flex; gap: 40px; }
-    .nav-link { color: #fff; text-decoration: none; font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; position: relative; overflow: hidden; font-weight: 700; }
-    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 2px; background: #fff; transform: translateX(-101%); transition: 0.4s cubic-bezier(0.8, 0, 0.2, 1); }
-    .nav-link:hover::after { transform: translateX(0); }
+:root { --bg: #050505; --primary: #FF2E93; --text: #ffffff; }
+* { cursor: none; box-sizing: border-box; } /* Hide default cursor */
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
 
-    /* 🌌 KINETIC TYPOGRAPHY HERO */
-    .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; }
-    .hero-title { font-family: 'Syncopate', sans-serif; font-size: clamp(3rem, 12vw, 15rem); font-weight: 700; text-transform: uppercase; line-height: 0.8; text-align: center; margin: 0; mix-blend-mode: overlay; opacity: 0.8; white-space: nowrap; pointer-events: none; }
-    .hero-subtitle { font-size: clamp(1rem, 2vw, 1.5rem); font-weight: 200; letter-spacing: 15px; text-transform: uppercase; margin-top: 30px; color: var(--accent); }
+/* 🌟 CUSTOM CURSOR */
+.custom-cursor { position: fixed; top: 0; left: 0; width: 20px; height: 20px; border: 2px solid var(--primary); border-radius: 50%; pointer-events: none; z-index: 99999; transform: translate(-50%, -50%); transition: width 0.2s, height 0.2s, background-color 0.2s; }
+.custom-cursor.hover { width: 50px; height: 50px; background-color: rgba(255, 46, 147, 0.2); }
 
-    /* 🌌 ASYMMETRICAL PARALLAX SCROLL LAYOUT */
-    .showcase { padding: 15vh 5vw; display: flex; flex-direction: column; gap: 25vh; }
-    .movie-row { display: flex; align-items: center; justify-content: space-between; gap: 8vw; }
-    .movie-row:nth-child(even) { flex-direction: row-reverse; }
-    
-    .img-wrapper { width: 55%; height: 80vh; overflow: hidden; position: relative; border-radius: 4px; }
-    .movie-img { width: 100%; height: 140%; object-fit: cover; position: absolute; top: -20%; filter: grayscale(20%); transition: filter 0.5s; }
-    .img-wrapper:hover .movie-img { filter: grayscale(0%); }
-    
-    .movie-info { width: 40%; display: flex; flex-direction: column; }
-    .m-index { font-family: 'Syncopate', sans-serif; font-size: 5rem; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.2); margin-bottom: 10px; line-height: 1; }
-    .m-title { font-family: 'Syncopate', sans-serif; font-size: clamp(2rem, 5vw, 5rem); font-weight: 700; line-height: 1.1; margin: 0 0 30px 0; text-transform: uppercase; }
-    .m-date { font-size: 1.2rem; font-weight: 700; color: #888; margin-bottom: 50px; letter-spacing: 5px; }
-    
-    .explore-btn { align-self: flex-start; padding: 20px 50px; border: 1px solid rgba(255,255,255,0.4); border-radius: 50px; color: #fff; text-decoration: none; text-transform: uppercase; letter-spacing: 3px; font-weight: 700; transition: 0.4s; position: relative; overflow: hidden; }
-    .explore-btn::before { content: ''; position: absolute; top: 100%; left: 0; width: 100%; height: 100%; background: #fff; transition: 0.4s cubic-bezier(0.8, 0, 0.2, 1); z-index: -1; }
-    .explore-btn:hover { color: #000; border-color: #fff; }
-    .explore-btn:hover::before { top: 0; }
-    
-    @media (max-width: 900px) { .movie-row, .movie-row:nth-child(even) { flex-direction: column; gap: 50px; } .img-wrapper, .movie-info { width: 100%; } .img-wrapper { height: 60vh; } .nav-links { display: none; } }
-    </style>
-</head>
-<body>
+/* 🌟 PREMIUM NAVBAR */
+header { position: fixed; top: 0; width: 100%; padding: 30px 5vw; display: flex; justify-content: space-between; align-items: center; z-index: 1000; mix-blend-mode: difference; }
+.logo { font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; color: #fff; text-decoration: none; letter-spacing: -2px; }
+.logo span { color: var(--primary); }
+.nav-actions { display: flex; gap: 30px; align-items: center; }
+.action-btn { background: none; border: none; color: #fff; font-family: 'Inter'; font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+.action-btn:hover ~ .custom-cursor { transform: scale(2); }
 
-<div class="cursor" id="cursor"></div>
-<div id="vanta-bg"></div>
+/* 🌟 MEGA MENU (FULL SCREEN) */
+.mega-menu { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a0a; z-index: 900; display: flex; flex-direction: column; justify-content: center; padding: 5vw 10vw; transform: translateY(-100%); transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1); }
+.mega-menu.open { transform: translateY(0); }
+.menu-links { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 20px; }
+.menu-links li a { font-family: 'Syne', sans-serif; font-size: clamp(3rem, 6vw, 6rem); color: #fff; text-decoration: none; font-weight: 800; line-height: 1; transition: color 0.3s, padding-left 0.3s; display: inline-block; }
+.menu-links li a:hover { color: var(--primary); padding-left: 20px; }
+.dropdown-content { display: none; margin-left: 40px; padding-top: 10px; border-left: 2px solid var(--primary); padding-left: 20px; }
+.menu-links li:hover .dropdown-content { display: block; }
+.dropdown-content a { font-size: 1.5rem; font-family: 'Inter'; font-weight: 400; color: #aaa; margin-bottom: 10px; }
 
-<nav class="nav">
-    <a href="#" class="nav-logo hover-target">N7</a>
-    <div class="nav-links">
-        <a href="#" class="nav-link hover-target">Search</a>
-        <a href="#" class="nav-link hover-target">Manifesto</a>
+/* 🌟 SEARCH OVERLAY */
+.search-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(5,5,5,0.95); z-index: 900; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.5s; backdrop-filter: blur(20px); }
+.search-overlay.open { opacity: 1; pointer-events: all; }
+.search-input { background: transparent; border: none; border-bottom: 3px solid #fff; color: #fff; font-size: clamp(2rem, 5vw, 4rem); font-family: 'Syne'; font-weight: 700; width: 80%; max-width: 1000px; outline: none; padding-bottom: 10px; }
+.search-input:focus { border-color: var(--primary); }
+
+/* 🌟 SWIPER SLIDER (HERO) */
+.hero-slider { width: 100%; height: 100vh; padding-top: 15vh; }
+.swiper-slide { background-position: center; background-size: cover; width: 80%; max-width: 1200px; height: 70vh; border-radius: 20px; position: relative; overflow: hidden; }
+.slide-content { position: absolute; bottom: 0; left: 0; width: 100%; padding: 5vw; background: linear-gradient(to top, #000 0%, transparent 100%); }
+.slide-title { font-family: 'Syne'; font-size: clamp(2rem, 4vw, 4rem); margin: 0 0 10px 0; font-weight: 800; }
+.slide-btn { background: #fff; color: #000; padding: 15px 30px; font-weight: 700; text-decoration: none; border-radius: 50px; display: inline-block; margin-top: 20px; font-family: 'Inter'; }
+
+/* Grid for remaining items */
+.archive-title { font-family: 'Syne'; font-size: 3rem; padding: 5vw; margin: 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px; padding: 0 5vw 5vw 5vw; }
+.grid-card { position: relative; height: 400px; border-radius: 15px; overflow: hidden; display: block; }
+.grid-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+.grid-card:hover img { transform: scale(1.1); }
+.grid-card .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); transition: 0.3s; opacity: 0; display: flex; align-items: center; justify-content: center; }
+.grid-card:hover .overlay { opacity: 1; }
+.overlay-title { font-family: 'Syne'; font-size: 1.5rem; color: #fff; font-weight: 700; text-align: center; padding: 20px; }
+</style></head><body>
+
+<div class="custom-cursor" id="cursor"></div>
+
+<header>
+    <a href="index.html" class="logo">N7<span>HUB</span></a>
+    <div class="nav-actions">
+        <button class="action-btn hover-target" onclick="toggleSearch()">Search</button>
+        <button class="action-btn hover-target" onclick="toggleMenu()">Menu</button>
     </div>
-</nav>
+</header>
 
-<div class="hero">
-    <h1 class="hero-title" id="hero-text">INTELLIGENCE</h1>
-    <div class="hero-subtitle">The Cinematic Matrix</div>
+<div class="mega-menu" id="megaMenu">
+    <ul class="menu-links">
+        <li><a href="#" class="hover-target">Home</a></li>
+        <li>
+            <a href="#" class="hover-target">Categories ↴</a>
+            <div class="dropdown-content">
+                <a href="#" class="hover-target">Sci-Fi Masterpieces</a><br>
+                <a href="#" class="hover-target">Cinematic Action</a><br>
+                <a href="#" class="hover-target">Deep Analysis</a>
+            </div>
+        </li>
+        <li><a href="#" class="hover-target">About Architect</a></li>
+    </ul>
 </div>
 
-<div class="showcase">
+<div class="search-overlay" id="searchOverlay">
+    <input type="text" id="searchInput" class="search-input hover-target" placeholder="TYPE TO SEARCH...">
+</div>
 
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">01</div>
-                <h2 class="m-title">Remarkably Bright Creatures</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/remarkably-bright-creatures.html" class="explore-btn hover-target">Access Terminal</a>
+<div class="swiper hero-slider">
+    <div class="swiper-wrapper" id="sliderWrapper">
+
+        <div class="swiper-slide" style="background-image: url('https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg');">
+            <div class="slide-content">
+                <h2 class="slide-title">Remarkably Bright Creatures</h2>
+                <a href="movies/remarkably-bright-creatures.html" class="slide-btn hover-target">Enter Database</a>
             </div>
         </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">02</div>
-                <h2 class="m-title">No Place to Be Single</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/no-place-to-be-single.html" class="explore-btn hover-target">Access Terminal</a>
+        <div class="swiper-slide" style="background-image: url('https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg');">
+            <div class="slide-content">
+                <h2 class="slide-title">No Place to Be Single</h2>
+                <a href="movies/no-place-to-be-single.html" class="slide-btn hover-target">Enter Database</a>
             </div>
         </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">03</div>
-                <h2 class="m-title">Mortal Kombat II</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/mortal-kombat-ii.html" class="explore-btn hover-target">Access Terminal</a>
+        <div class="swiper-slide" style="background-image: url('https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg');">
+            <div class="slide-content">
+                <h2 class="slide-title">Mortal Kombat II</h2>
+                <a href="movies/mortal-kombat-ii.html" class="slide-btn hover-target">Enter Database</a>
             </div>
         </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">04</div>
-                <h2 class="m-title">Swapped</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/swapped.html" class="explore-btn hover-target">Access Terminal</a>
+        <div class="swiper-slide" style="background-image: url('https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg');">
+            <div class="slide-content">
+                <h2 class="slide-title">Swapped</h2>
+                <a href="movies/swapped.html" class="slide-btn hover-target">Enter Database</a>
             </div>
         </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">05</div>
-                <h2 class="m-title">Ready or Not 2: Here I Come</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/ready-or-not-2-here-i-come.html" class="explore-btn hover-target">Access Terminal</a>
+        <div class="swiper-slide" style="background-image: url('https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg');">
+            <div class="slide-content">
+                <h2 class="slide-title">Ready or Not 2: Here I Come</h2>
+                <a href="movies/ready-or-not-2-here-i-come.html" class="slide-btn hover-target">Enter Database</a>
             </div>
         </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">06</div>
-                <h2 class="m-title">My Dearest Assassin</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/my-dearest-assassin.html" class="explore-btn hover-target">Access Terminal</a>
-            </div>
-        </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">07</div>
-                <h2 class="m-title">The Super Mario Galaxy Movie</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/the-super-mario-galaxy-movie.html" class="explore-btn hover-target">Access Terminal</a>
-            </div>
-        </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">08</div>
-                <h2 class="m-title">Hoppers</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/hoppers.html" class="explore-btn hover-target">Access Terminal</a>
-            </div>
-        </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">09</div>
-                <h2 class="m-title">The Drama</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/the-drama.html" class="explore-btn hover-target">Access Terminal</a>
-            </div>
-        </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">010</div>
-                <h2 class="m-title">Beast</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/beast.html" class="explore-btn hover-target">Access Terminal</a>
-            </div>
-        </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">011</div>
-                <h2 class="m-title">Project Hail Mary</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/project-hail-mary.html" class="explore-btn hover-target">Access Terminal</a>
-            </div>
-        </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">012</div>
-                <h2 class="m-title">Michael</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/michael.html" class="explore-btn hover-target">Access Terminal</a>
-            </div>
-        </div>
-        
-        <div class="movie-row">
-            <div class="img-wrapper hover-target">
-                <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" class="movie-img parallax-img" loading="lazy">
-            </div>
-            <div class="movie-info gs-reveal-text">
-                <div class="m-index">013</div>
-                <h2 class="m-title">Send Help</h2>
-                <div class="m-date">2026</div>
-                <a href="movies/send-help.html" class="explore-btn hover-target">Access Terminal</a>
-            </div>
-        </div>
-        
+    </div>
+</div>
+
+<h2 class="archive-title">Full Archives</h2>
+<div class="grid" id="gridWrapper">
+
+        <a href="movies/my-dearest-assassin.html" class="grid-card hover-target" data-title="my dearest assassin">
+            <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" loading="lazy">
+            <div class="overlay"><div class="overlay-title">My Dearest Assassin</div></div>
+        </a>
+        <a href="movies/the-super-mario-galaxy-movie.html" class="grid-card hover-target" data-title="the super mario galaxy movie">
+            <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" loading="lazy">
+            <div class="overlay"><div class="overlay-title">The Super Mario Galaxy Movie</div></div>
+        </a>
+        <a href="movies/hoppers.html" class="grid-card hover-target" data-title="hoppers">
+            <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" loading="lazy">
+            <div class="overlay"><div class="overlay-title">Hoppers</div></div>
+        </a>
+        <a href="movies/the-drama.html" class="grid-card hover-target" data-title="the drama">
+            <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" loading="lazy">
+            <div class="overlay"><div class="overlay-title">The Drama</div></div>
+        </a>
+        <a href="movies/beast.html" class="grid-card hover-target" data-title="beast">
+            <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" loading="lazy">
+            <div class="overlay"><div class="overlay-title">Beast</div></div>
+        </a>
+        <a href="movies/project-hail-mary.html" class="grid-card hover-target" data-title="project hail mary">
+            <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" loading="lazy">
+            <div class="overlay"><div class="overlay-title">Project Hail Mary</div></div>
+        </a>
+        <a href="movies/michael.html" class="grid-card hover-target" data-title="michael">
+            <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" loading="lazy">
+            <div class="overlay"><div class="overlay-title">Michael</div></div>
+        </a>
+        <a href="movies/send-help.html" class="grid-card hover-target" data-title="send help">
+            <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" loading="lazy">
+            <div class="overlay"><div class="overlay-title">Send Help</div></div>
+        </a>
 </div>
 
 <script>
-    // 1. VANTA 3D WEBGL FOG BACKGROUND
-    VANTA.FOG({
-      el: "#vanta-bg",
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      highlightColor: 0x111111,
-      midtoneColor: 0x0f5ad1, /* N7 Blue Accent */
-      lowlightColor: 0x000000,
-      baseColor: 0x020202,
-      blurFactor: 0.90,
-      speed: 2.00,
-      zoom: 1.50
-    })
-
-    // 2. EXTREME SMOOTH SCROLLING (Lenis)
-    const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
-    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-    requestAnimationFrame(raf);
-
-    // 3. CUSTOM MAGNETIC CURSOR
+    // 1. Custom Cursor Logic
     const cursor = document.getElementById('cursor');
-    document.addEventListener('mousemove', e => {
-        gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15, ease: "power2.out" });
+    document.addEventListener('mousemove', (e) => {
+        gsap.to(cursor, {x: e.clientX, y: e.clientY, duration: 0.1});
     });
-    document.querySelectorAll('.hover-target').forEach(link => {
-        link.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-        link.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
-
-    // 4. GSAP KINETIC PARALLAX & REVEALS
-    gsap.registerPlugin(ScrollTrigger);
-    
-    // Hero Text reacting to mouse movement
-    document.addEventListener('mousemove', e => {
-        const x = (window.innerWidth / 2 - e.clientX) * 0.05;
-        const y = (window.innerHeight / 2 - e.clientY) * 0.05;
-        gsap.to('#hero-text', { x: x, y: y, duration: 1, ease: "power2.out" });
+    document.querySelectorAll('.hover-target').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
 
-    // Inside-Image Parallax Effect
-    gsap.utils.toArray('.img-wrapper').forEach(wrapper => {
-        const img = wrapper.querySelector('.movie-img');
-        gsap.to(img, {
-            yPercent: 25,
-            ease: "none",
-            scrollTrigger: { trigger: wrapper, start: "top bottom", end: "bottom top", scrub: true }
+    // 2. Swiper Initialization (3D Coverflow)
+    new Swiper('.hero-slider', {
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        coverflowEffect: { rotate: 20, stretch: 0, depth: 200, modifier: 1, slideShadows: true },
+        loop: true,
+        autoplay: { delay: 3000, disableOnInteraction: false }
+    });
+
+    // 3. Menu & Search Toggles
+    const menu = document.getElementById('megaMenu');
+    const search = document.getElementById('searchOverlay');
+    function toggleMenu() { menu.classList.toggle('open'); if(search.classList.contains('open')) search.classList.remove('open'); }
+    function toggleSearch() { search.classList.toggle('open'); document.getElementById('searchInput').focus(); if(menu.classList.contains('open')) menu.classList.remove('open'); }
+
+    // 4. Live Search Filtering
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('.grid-card').forEach(card => {
+            card.style.display = card.getAttribute('data-title').includes(query) ? 'block' : 'none';
         });
-    });
-
-    // Text Content Fade-Up Strategy
-    gsap.utils.toArray('.gs-reveal-text').forEach(text => {
-        gsap.from(text, {
-            y: 100, opacity: 0, duration: 1.5, ease: "power4.out",
-            scrollTrigger: { trigger: text, start: "top 85%" }
-        });
+        if(query.length > 0) {
+            document.querySelector('.hero-slider').style.display = 'none';
+            search.classList.remove('open');
+        } else {
+            document.querySelector('.hero-slider').style.display = 'block';
+        }
     });
 </script>
-</body>
-</html>
+</body></html>

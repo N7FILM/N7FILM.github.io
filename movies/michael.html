@@ -1,39 +1,21 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Michael | N7</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Manrope:wght@300;400&display=swap');
-        * { cursor: none !important; box-sizing: border-box; }
-        body { margin: 0; background: #000; color: #fff; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
-        
-        .cursor { position: fixed; top: 0; left: 0; width: 12px; height: 12px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; mix-blend-mode: difference; }
-        .cursor.hover { width: 80px; height: 80px; background: transparent; border: 1px solid #fff; }
-
-        .nav { padding: 40px 5vw; position: fixed; top: 0; width: 100%; z-index: 100; mix-blend-mode: difference; }
-        .back-btn { color: #fff; text-decoration: none; font-family: 'Syncopate', sans-serif; font-weight: 700; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; }
-        
-        .hero-img-container { width: 100vw; height: 100vh; position: fixed; top: 0; left: 0; z-index: -1; }
-        .hero-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.3; filter: grayscale(50%); }
-        
-        .content-layer { margin-top: 50vh; background: #050505; padding: 10vh 5vw; position: relative; z-index: 10; }
-        .massive-title { font-family: 'Syncopate', sans-serif; font-size: clamp(3rem, 8vw, 8rem); font-weight: 700; text-transform: uppercase; line-height: 0.9; margin: -20vh 0 10vh 0; color: #fff; mix-blend-mode: difference; }
-        
-        .video-box { width: 100%; padding-bottom: 56.25%; position: relative; margin-bottom: 10vh; }
-        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        
-        .article-text { max-width: 900px; margin: 0 auto; font-size: 1.5rem; line-height: 2; font-weight: 300; color: #ccc; }
-        .article-text h1, .article-text h2 { font-family: 'Syncopate', sans-serif; font-size: 2.5rem; color: #fff; margin-top: 80px; text-transform: uppercase; }
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;600&display=swap');
+        body { margin: 0; background: #050505; color: #fff; font-family: 'Inter', sans-serif; }
+        .header { padding: 30px 5vw; display: flex; justify-content: space-between; }
+        .back-btn { color: #FF2E93; text-decoration: none; font-weight: bold; font-family: 'Syne'; font-size: 1.5rem; text-transform: uppercase; }
+        .content { padding: 0 5vw 10vw 5vw; max-width: 1200px; margin: auto; }
+        h1 { font-family: 'Syne'; font-size: clamp(3rem, 8vw, 6rem); margin: 0 0 40px 0; font-weight: 800; line-height: 1; }
+        .video-box { width: 100%; aspect-ratio: 16/9; border-radius: 20px; overflow: hidden; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .data-box { margin-top: 50px; font-size: 1.2rem; line-height: 1.8; color: #bbb; }
+        .data-box h1, .data-box h2 { font-family: 'Syne'; color: #fff; font-size: 2.5rem; margin-top: 40px; }
         </style></head><body>
-        
-        <div class="cursor" id="cursor"></div>
-        <div class="hero-img-container"><img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" class="hero-img" id="bg-img"></div>
-        
-        <div class="nav"><a href="../index.html" class="back-btn hover-target">[ CLOSE TERMINAL ]</a></div>
-        
-        <div class="content-layer">
-            <h1 class="massive-title gs-reveal">Michael</h1>
-            <div class="video-box gs-reveal"><iframe src="https://www.youtube.com/embed/"></iframe></div>
-            <div class="article-text gs-reveal"><h1>Echoes of a King: The Profound Cadence of 'Michael'</h1>
+        <div class="header"><a href="../index.html" class="back-btn">← Back</a></div>
+        <div class="content">
+            <h1>Michael</h1>
+            <div class="video-box"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            <div class="data-box"><h1>Echoes of a King: The Profound Cadence of 'Michael'</h1>
 
 <p>To attempt to capture the supernova that was Michael Jackson on film is not merely an act of storytelling; it is an audacious endeavor in myth-making, deconstruction, and the profound exploration of a singular artistic spirit. 'Michael' does not shy away from this daunting task, presenting a multi-faceted portrait that strives to transcend mere hagiography, instead seeking the intricate human beneath the global icon. It is a film that pulsates with the very energy of its subject, often breathtaking in its ambition, and at times, poignantly reflective of the immense cost of unparalleled genius.</p>
 
@@ -55,19 +37,4 @@
 
 <p>The film’s use of light and shadow is particularly masterful, serving as a powerful visual metaphor for the public versus private dimensions of Jackson’s life. Brilliant, almost blinding spotlights illuminate the stage, symbolizing the adoration and scrutiny he faced, while the deeper shadows and muted tones define his more secluded, contemplative existence. Production design meticulously recreates the distinctive eras, from the vibrant, soulful 70s to the sleek, futuristic aesthetic that defined his 80s superstardom. Every frame is imbued with a sense of purpose, contributing to a rich visual tapestry that not only tells a story but actively immerses the viewer in the unique, often surreal, world that Michael Jackson inhabited. 'Michael' is a profound cinematic experience, a vibrant and often heartbreaking meditation on genius, identity, and the relentless pursuit of an impossible dream.</p></div>
         </div>
-
-        <script>
-            const lenis = new Lenis({ duration: 1.5 });
-            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-            requestAnimationFrame(raf);
-
-            const cursor = document.getElementById('cursor');
-            document.addEventListener('mousemove', e => gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.15 }));
-            document.querySelectorAll('.hover-target').forEach(link => {
-                link.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-                link.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-            });
-
-            gsap.to('#bg-img', { yPercent: 30, ease: "none", scrollTrigger: { trigger: document.body, start: "top top", end: "bottom top", scrub: true } });
-        </script>
         </body></html>
