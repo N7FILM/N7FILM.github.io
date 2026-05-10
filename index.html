@@ -3,93 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>N7 | Advanced Cinematic Architecture</title>
+    <title>N7 | Cinematic Architecture</title>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS DESIGN TOKENS */
         :root {
-            --bg-base: #030303; --text-primary: #ffffff; --text-secondary: rgba(255, 255, 255, 0.6);
+            --bg-base: #050505; --text-primary: #ffffff; --text-secondary: rgba(255, 255, 255, 0.6);
             --primary-glow: rgba(15, 90, 209, 0.85); --glass-surface: rgba(15, 15, 18, 0.45);
             --glass-border: rgba(255, 255, 255, 0.08); --backdrop-blur: blur(30px) saturate(150%);
             --ease-cinematic: cubic-bezier(0.19, 1, 0.22, 1);
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body { background-color: var(--bg-base); color: var(--text-primary); font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
         .syncopate { font-family: 'Syncopate', sans-serif; text-transform: uppercase; }
 
-        /* LENIS MOMENTUM SCROLL */
+        /* SCROLL UTILITIES */
         html.lenis { height: auto; }
         .lenis.lenis-smooth { scroll-behavior: auto; }
         .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
         .lenis.lenis-stopped { overflow: hidden; }
 
-        /* FLUID CURSOR (Hidden on Mobile) */
+        /* MAGNETIC CURSOR (Hidden on Mobile) */
         @media (pointer: fine) {
-            * { cursor: none!important; }
+            * { cursor: none !important; }
             #cursor-dot { position: fixed; width: 5px; height: 5px; background: #fff; border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); mix-blend-mode: difference; }
             #cursor-trail { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.4); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: width 0.4s var(--ease-cinematic), height 0.4s var(--ease-cinematic), background 0.4s; }
             body.cursor-active #cursor-trail { width: 90px; height: 90px; background: rgba(255,255,255,0.05); border-color: transparent; backdrop-filter: blur(4px); }
         }
         @media (pointer: coarse) { #cursor-dot, #cursor-trail { display: none !important; } }
 
-        /* GLOBAL COMMAND PALETTE (CTRL+K) */
-        #cmd-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: var(--backdrop-blur); z-index: 9000; display: flex; justify-content: center; align-items: flex-start; padding-top: 15vh; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-        #cmd-overlay.active { opacity: 1; pointer-events: all; }
-        .cmd-panel { width: 90%; max-width: 650px; background: var(--glass-surface); border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden; transform: translateY(-40px) scale(0.98); transition: transform 0.4s; }
-        #cmd-overlay.active .cmd-panel { transform: translateY(0) scale(1); }
-        .cmd-input { width: 100%; padding: 25px; background: transparent; border: none; border-bottom: 1px solid var(--glass-border); color: #fff; font-size: 1.5rem; outline: none; }
-        .cmd-results { max-height: 400px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
-        .cmd-item { padding: 15px; color: var(--text-secondary); text-decoration: none; border-radius: 10px; transition: 0.3s; display: flex; justify-content: space-between; }
-        .cmd-item:hover { background: rgba(255,255,255,0.08); color: #fff; padding-left: 20px; }
+        /* KINEMATIC SIDEBAR */
+        .elastic-sidebar { position: fixed; left: 0; top: 0; width: 90px; height: 100vh; background: rgba(8,8,10,0.85); backdrop-filter: var(--backdrop-blur); border-right: 1px solid var(--glass-border); z-index: 500; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; transition: width 0.7s var(--ease-cinematic); overflow: hidden; }
+        .elastic-sidebar:hover { width: 320px; }
+        .sidebar-node { display: flex; align-items: center; padding: 25px 35px; width: 320px; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; }
+        .sidebar-icon { width: 24px; height: 24px; background: var(--text-primary); flex-shrink: 0; }
+        .sidebar-text { margin-left: 25px; font-size: 0.8rem; letter-spacing: 3px; font-weight: 600; clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
 
-        /* MORPHING MEGA MENU TOPOLOGY */
-        .glass-header { position: fixed; top: 0; width: 100%; padding: 20px 4vw; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%); }
-        .brand-logo { font-size: 1.5rem; font-weight: 700; letter-spacing: 2px; text-decoration: none; color: #fff; }
-        .nav-topology { position: relative; display: flex; align-items: center; gap: 30px; }
-        .nav-list { display: flex; gap: 30px; list-style: none; }
-        .nav-node { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-primary); cursor: pointer; }
-        #cmd-trigger { color: #57b5f9; border: 1px solid rgba(87,181,249,0.3); padding: 8px 15px; border-radius: 50px; background: rgba(15,90,209,0.1); }
+        /* HEADER */
+        .glass-header { position: fixed; top: 0; width: 100%; padding: 30px 60px 30px 120px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, transparent 100%); pointer-events: none; }
+        .brand-logo { font-size: 1.6rem; font-weight: 700; letter-spacing: 3px; pointer-events: auto; }
+        .brand-logo span { color: var(--primary-glow); }
 
-        /* WEBGL CINEMATIC HERO SLIDER ENGINE */
+        /* WEBGL HERO ENGINE */
         .hero-environment { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
         #webgl-stage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         .swiper-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; }
         .swiper-slide { display: flex; align-items: center; justify-content: center; pointer-events: none; }
         .cinematic-typography { text-align: center; pointer-events: auto; padding-top: 5vh; mix-blend-mode: exclusion; }
-        .cinematic-headline { font-size: clamp(3rem, 8vw, 9vw); line-height: 0.85; margin-bottom: 25px; clip-path: polygon(0 0, 100% 0, 100% 120%, 0% 120%); text-shadow: 0 10px 30px rgba(0,0,0,1); }
-        .cinematic-headline.char { transform: translateY(115%); opacity: 0; display: inline-block; }
-        .cinematic-metadata { font-size: 1rem; letter-spacing: 5px; color: #ccc; opacity: 0; transform: translateY(30px); font-weight: 600; }
+        .cinematic-headline { font-size: clamp(3rem, 9vw, 9rem); line-height: 0.85; margin-bottom: 25px; color: #fff; }
+        .cinematic-metadata { font-size: clamp(0.8rem, 2vw, 1.1rem); font-family: 'Inter'; letter-spacing: 4px; color: #d0d0d0; opacity: 0; transform: translateY(30px); font-weight: 300; text-transform: uppercase; }
 
-        /* BENTO GRID 3D ARCHIVES */
-        .archive-environment { position: relative; padding: 10vw 5vw; background: var(--bg-base); z-index: 10; }
-        .archive-header { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 50px; }
-        .bento-matrix { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 350px; gap: 20px; grid-auto-flow: dense; perspective: 2500px; }
-        .bento-node { position: relative; background: var(--glass-surface); border-radius: 24px; border: 1px solid var(--glass-border); overflow: hidden; transform-style: preserve-3d; display: flex; flex-direction: column; justify-content: flex-end; padding: 30px; text-decoration: none; color: inherit; }
+        /* BENTO GRID ARCHIVES */
+        .archive-environment { position: relative; padding: 150px 5vw 150px calc(90px + 5vw); background: var(--bg-base); z-index: 10; }
+        .archive-header { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 80px; letter-spacing: -1px; }
         
-        .bento-node.matrix-large { grid-column: span 2; grid-row: span 2; }
-        .bento-node.matrix-wide { grid-column: span 2; }
+        .bento-matrix { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); grid-auto-rows: 380px; gap: 30px; grid-auto-flow: dense; perspective: 2500px; }
+        .bento-node { position: relative; background: var(--glass-surface); border-radius: 28px; border: 1px solid var(--glass-border); overflow: hidden; transform-style: preserve-3d; backdrop-filter: blur(25px); display: flex; flex-direction: column; justify-content: flex-end; padding: 30px; text-decoration: none; color: #fff; }
+        .bento-node::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), var(--primary-glow) 0%, transparent 40%); z-index: -1; opacity: 0; transition: opacity 0.6s ease; border-radius: 30px; }
+        @media (pointer: fine) { .bento-node:hover::before { opacity: 1; } }
         
-        .bento-poster { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: 0; transition: transform 0.8s var(--ease-cinematic), opacity 0.8s; }
-        .bento-node:hover .bento-poster { transform: scale(1.05); opacity: 0.3; }
-        
-        .bento-data { position: relative; z-index: 2; transform: translateZ(40px); }
-        .bento-badge { display: inline-block; padding: 6px 14px; border: 1px solid rgba(255,255,255,0.2); border-radius: 30px; font-size: 0.7rem; margin-bottom: 15px; background: rgba(0,0,0,0.5); letter-spacing: 1px; color: #57b5f9; }
-        .bento-title { font-size: clamp(1.5rem, 2vw, 2rem); margin-bottom: 10px; line-height: 1.1; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
-        .matrix-large .bento-title { font-size: clamp(2rem, 3vw, 3.5rem); }
-
-        /* 📱 EXTREME MOBILE RESPONSIVENESS */
-        @media (max-width: 1024px) {
-            .bento-matrix { grid-template-columns: repeat(2, 1fr); }
-            .nav-list { display: none; } /* Hide complex menus on tablet/mobile */
+        @media (min-width: 1024px) {
+            .bento-node.matrix-large { grid-column: span 2; grid-row: span 2; }
+            .bento-node.matrix-wide { grid-column: span 2; }
         }
-        @media (max-width: 600px) {
-            .bento-matrix { grid-template-columns: 1fr; grid-auto-rows: 300px; }
-            .bento-node.matrix-large, .bento-node.matrix-wide { grid-column: span 1; grid-row: span 1; }
-            .glass-header { padding: 15px 5vw; }
-            .cinematic-typography { padding-top: 15vh; }
+        
+        .bento-poster { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; z-index: 0; transition: transform 0.8s var(--ease-cinematic), opacity 0.8s; }
+        .bento-node:hover .bento-poster { transform: scale(1.08); opacity: 0.2; }
+        .bento-data { position: relative; z-index: 2; transform: translateZ(40px); }
+        .bento-badge { display: inline-block; padding: 6px 14px; border: 1px solid rgba(255,255,255,0.15); border-radius: 30px; font-size: 0.75rem; margin-bottom: 20px; backdrop-filter: blur(8px); background: rgba(0,0,0,0.5); letter-spacing: 1px; }
+        .bento-title { font-size: 1.8rem; margin-bottom: 10px; line-height: 1.1; }
+
+        /* ========================================= */
+        /* MOBILE & TABLET GOD LEVEL ADAPTATIONS */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            .elastic-sidebar { width: 100%; height: 70px; top: auto; bottom: 0; flex-direction: row; justify-content: space-around; padding: 0; border-right: none; border-top: 1px solid var(--glass-border); z-index: 2000; }
+            .elastic-sidebar:hover { width: 100%; }
+            .sidebar-node { width: auto; padding: 15px; border: none; justify-content: center; }
+            .sidebar-text { display: none !important; }
+            .glass-header { padding: 20px; justify-content: center; }
+            .archive-environment { padding: 80px 5vw 120px 5vw; }
+            .bento-matrix { grid-auto-rows: 300px; }
         }
     </style>
 </head>
@@ -98,22 +96,23 @@
     <div id="cursor-dot"></div>
     <div id="cursor-trail"></div>
 
-    <div id="cmd-overlay">
-        <div class="cmd-panel">
-            <input type="text" class="cmd-input" placeholder="Query Database... ⌘K" id="cmd-input">
-            <div class="cmd-results" id="cmd-results"></div>
+    <nav class="elastic-sidebar" id="elastic-sidebar">
+        <div class="sidebar-node magnetic-zone">
+            <div class="sidebar-icon" style="mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>') no-repeat center;"></div>
+            <div class="sidebar-text syncopate">Intelligence</div>
         </div>
-    </div>
+        <div class="sidebar-node magnetic-zone" onclick="window.scrollTo(0, document.body.scrollHeight);">
+            <div class="sidebar-icon" style="mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>') no-repeat center;"></div>
+            <div class="sidebar-text syncopate">Archives</div>
+        </div>
+        <div class="sidebar-node magnetic-zone">
+            <div class="sidebar-icon" style="mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') no-repeat center;"></div>
+            <div class="sidebar-text syncopate">Search</div>
+        </div>
+    </nav>
 
     <header class="glass-header">
-        <a href="index.html" class="brand-logo magnetic-zone syncopate">N7.ARCH</a>
-        <div class="nav-topology">
-            <ul class="nav-list">
-                <li class="nav-node magnetic-zone">Intelligence</li>
-                <li class="nav-node magnetic-zone">Archives</li>
-            </ul>
-            <div class="nav-node magnetic-zone" id="cmd-trigger">Search ⌘K</div>
-        </div>
+        <div class="brand-logo magnetic-zone syncopate">N7<span>.ARCH</span></div>
     </header>
 
     <section class="hero-environment">
@@ -124,7 +123,7 @@
     </section>
 
     <section class="archive-environment">
-        <h2 class="archive-header syncopate">Neural Archives</h2>
+        <h2 class="archive-header syncopate title-reveal">Neural Archives</h2>
         <div class="bento-matrix" id="bento-injection-zone"></div>
     </section>
 
@@ -137,15 +136,13 @@
         vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
         float snoise(vec2 v){
             const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
-            vec2 i  = floor(v + dot(v, C.yy) ); vec2 x0 = v -   i + dot(i, C.xx);
-            vec2 i1; i1 = (x0.x > x0.y)? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-            vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1; i = mod(i, 289.0);
-            vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
-            vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-            m = m*m ; m = m*m ; vec3 x = 2.0 * fract(p * C.www) - 1.0; vec3 h = abs(x) - 0.5;
-            vec3 ox = floor(x + 0.5); vec3 a0 = x - ox; m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
-            vec3 g; g.x  = a0.x  * x0.x  + h.x  * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-            return 130.0 * dot(m, g);
+            vec2 i  = floor(v + dot(v, C.yy) ); vec2 x0 = v - i + dot(i, C.xx); vec2 i1;
+            i1 = (x0.x > x0.y)? vec2(1.0, 0.0) : vec2(0.0, 1.0); vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1;
+            i = mod(i, 289.0); vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 )) + i.x + vec3(0.0, i1.x, 1.0 ));
+            vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0); m = m*m; m = m*m;
+            vec3 x = 2.0 * fract(p * C.www) - 1.0; vec3 h = abs(x) - 0.5; vec3 ox = floor(x + 0.5);
+            vec3 a0 = x - ox; m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h ); vec3 g;
+            g.x  = a0.x  * x0.x  + h.x  * x0.y; g.yz = a0.yz * x12.xz + h.yz * x12.yw; return 130.0 * dot(m, g);
         }
         void main() {
             vec2 uv = vUv;
@@ -167,27 +164,19 @@
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.27/bundled/lenis.min.js"></script>
 
     <script>
-        const db = [{"title": "Remarkably Bright Creatures", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg", "slug": "remarkably-bright-creatures", "desc": "Access full classified archives and semantic analysis."}, {"title": "No Place to Be Single", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg", "slug": "no-place-to-be-single", "desc": "Access full classified archives and semantic analysis."}, {"title": "Mortal Kombat II", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg", "slug": "mortal-kombat-ii", "desc": "Access full classified archives and semantic analysis."}, {"title": "Swapped", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg", "slug": "swapped", "desc": "Access full classified archives and semantic analysis."}, {"title": "Ready or Not 2: Here I Come", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg", "slug": "ready-or-not-2-here-i-come", "desc": "Access full classified archives and semantic analysis."}, {"title": "My Dearest Assassin", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg", "slug": "my-dearest-assassin", "desc": "Access full classified archives and semantic analysis."}, {"title": "The Super Mario Galaxy Movie", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg", "slug": "the-super-mario-galaxy-movie", "desc": "Access full classified archives and semantic analysis."}, {"title": "Hoppers", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg", "slug": "hoppers", "desc": "Access full classified archives and semantic analysis."}, {"title": "The Drama", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg", "slug": "the-drama", "desc": "Access full classified archives and semantic analysis."}, {"title": "Beast", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg", "slug": "beast", "desc": "Access full classified archives and semantic analysis."}, {"title": "Project Hail Mary", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg", "slug": "project-hail-mary", "desc": "Access full classified archives and semantic analysis."}, {"title": "Michael", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg", "slug": "michael", "desc": "Access full classified archives and semantic analysis."}, {"title": "Send Help", "genre": "CLASSIFIED INTEL", "duration": "2026", "rating": "9.9", "image": "https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg", "slug": "send-help", "desc": "Access full classified archives and semantic analysis."}];
-        const isTouch = window.matchMedia("(pointer: coarse)").matches;
+        const db = [{"title": "Remarkably Bright Creatures", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg", "desc": "Access classified deep data and master analysis for Remarkably Bright Creatures.", "slug": "remarkably-bright-creatures", "yt": ""}, {"title": "No Place to Be Single", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg", "desc": "Access classified deep data and master analysis for No Place to Be Single.", "slug": "no-place-to-be-single", "yt": ""}, {"title": "Mortal Kombat II", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg", "desc": "Access classified deep data and master analysis for Mortal Kombat II.", "slug": "mortal-kombat-ii", "yt": ""}, {"title": "Swapped", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg", "desc": "Access classified deep data and master analysis for Swapped.", "slug": "swapped", "yt": ""}, {"title": "Ready or Not 2: Here I Come", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg", "desc": "Access classified deep data and master analysis for Ready or Not 2: Here I Come.", "slug": "ready-or-not-2-here-i-come", "yt": ""}, {"title": "My Dearest Assassin", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg", "desc": "Access classified deep data and master analysis for My Dearest Assassin.", "slug": "my-dearest-assassin", "yt": ""}, {"title": "The Super Mario Galaxy Movie", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg", "desc": "Access classified deep data and master analysis for The Super Mario Galaxy Movie.", "slug": "the-super-mario-galaxy-movie", "yt": ""}, {"title": "Hoppers", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg", "desc": "Access classified deep data and master analysis for Hoppers.", "slug": "hoppers", "yt": ""}, {"title": "The Drama", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg", "desc": "Access classified deep data and master analysis for The Drama.", "slug": "the-drama", "yt": ""}, {"title": "Beast", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg", "desc": "Access classified deep data and master analysis for Beast.", "slug": "beast", "yt": ""}, {"title": "Project Hail Mary", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg", "desc": "Access classified deep data and master analysis for Project Hail Mary.", "slug": "project-hail-mary", "yt": ""}, {"title": "Michael", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg", "desc": "Access classified deep data and master analysis for Michael.", "slug": "michael", "yt": ""}, {"title": "Send Help", "genre": "CINEMATIC", "duration": "2026", "rating": "N7 EXCLUSIVE", "image": "https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg", "desc": "Access classified deep data and master analysis for Send Help.", "slug": "send-help", "yt": ""}];
         
-        // 1. DATA MOUNTING
         const heroWrapper = document.getElementById('hero-injection-zone');
         const bentoContainer = document.getElementById('bento-injection-zone');
-        const cmdResults = document.getElementById('cmd-results');
         
         db.forEach((item, index) => {
-            // Hero Slides (Top 3)
-            if(index < 3) {
-                heroWrapper.innerHTML += `
-                    <div class="swiper-slide">
-                        <div class="cinematic-typography">
-                            <h1 class="cinematic-headline">${item.title}</h1>
-                            <div class="cinematic-metadata">${item.genre} | ${item.duration}</div>
-                        </div>
-                    </div>`;
-            }
+            // Mount Hero Slides
+            const slide = document.createElement('div');
+            slide.className = 'swiper-slide';
+            slide.innerHTML = `<div class="cinematic-typography"><h1 class="cinematic-headline">${item.title}</h1><div class="cinematic-metadata">${item.genre} | ${item.duration}</div></div>`;
+            heroWrapper.appendChild(slide);
             
-            // Bento Grid (All Movies)
+            // Mount Bento Grid
             const bentoClass = index === 0 ? "bento-node matrix-large" : (index === 1 ? "bento-node matrix-wide" : "bento-node");
             bentoContainer.innerHTML += `
                 <a href="movies/${item.slug}.html" class="${bentoClass} magnetic-zone" data-tilt>
@@ -198,24 +187,17 @@
                         <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.4;">${item.desc}</p>
                     </div>
                 </a>`;
-
-            // Command Palette Items
-            cmdResults.innerHTML += `
-                <a href="movies/${item.slug}.html" class="cmd-item" data-title="${item.title.toLowerCase()}">
-                    <span class="syncopate" style="font-size:0.9rem; font-weight:600;">${item.title}</span>
-                    <span style="font-size:0.75rem; background: rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 8px;">${item.duration}</span>
-                </a>`;
         });
 
-        // 2. KINEMATICS & SCROLL
+        // KINEMATIC ENGINE: LENIS SCROLL
         gsap.registerPlugin(ScrollTrigger);
-        const lenis = new Lenis({ duration: 1.2, smooth: true });
+        const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
         lenis.on('scroll', ScrollTrigger.update);
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0);
 
-        // 3. SPATIAL PHYSICS (PC ONLY)
-        if(!isTouch) {
+        // SPATIAL PHYSICS: FLUID CURSOR (PC ONLY)
+        if(window.matchMedia("(pointer: fine)").matches) {
             const cursorDot = document.getElementById('cursor-dot');
             const cursorTrail = document.getElementById('cursor-trail');
             let mouseState = { x: window.innerWidth/2, y: window.innerHeight/2 };
@@ -228,87 +210,66 @@
                 mouseState.x = e.clientX; mouseState.y = e.clientY;
                 moveDotX(mouseState.x); moveDotY(mouseState.y);
             });
-
-            const calculateLerp = (start, end, factor) => start * (1 - factor) + end * factor;
             function processTrailPhysics() {
-                trailState.x = calculateLerp(trailState.x, mouseState.x, 0.15);
-                trailState.y = calculateLerp(trailState.y, mouseState.y, 0.15);
+                trailState.x += (mouseState.x - trailState.x) * 0.12;
+                trailState.y += (mouseState.y - trailState.y) * 0.12;
                 cursorTrail.style.transform = `translate(${trailState.x}px, ${trailState.y}px)`;
                 requestAnimationFrame(processTrailPhysics);
             }
             processTrailPhysics();
 
-            // 3D Tilt for Bento Cards
+            document.querySelectorAll('.magnetic-zone').forEach(zone => {
+                zone.addEventListener('mouseenter', () => document.body.classList.add('cursor-active'));
+                zone.addEventListener('mouseleave', () => { document.body.classList.remove('cursor-active'); gsap.to(zone, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.4)" }); });
+                zone.addEventListener('mousemove', (e) => {
+                    const rect = zone.getBoundingClientRect();
+                    gsap.to(zone, { x: (e.clientX - (rect.left + rect.width/2)) * 0.25, y: (e.clientY - (rect.top + rect.height/2)) * 0.25, duration: 0.4, ease: "power2.out" });
+                });
+            });
+
+            // 3D TILT PHYSICS FOR BENTO GRID
             document.querySelectorAll('.bento-node').forEach(node => {
                 node.addEventListener('mousemove', (e) => {
                     const rect = node.getBoundingClientRect();
-                    const centerX = rect.width / 2; const centerY = rect.height / 2;
-                    const thetaX = (((e.clientY - rect.top) - centerY) / centerY) * -10;
-                    const thetaY = (((e.clientX - rect.left) - centerX) / centerX) * 10;
-                    gsap.to(node, { rotationX: thetaX, rotationY: thetaY, duration: 0.4, ease: "power2.out", transformPerspective: 2000 });
+                    node.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                    node.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+                    const thetaX = (((e.clientY - rect.top) - (rect.height/2)) / (rect.height/2)) * -8;
+                    const thetaY = (((e.clientX - rect.left) - (rect.width/2)) / (rect.width/2)) * 8;
+                    gsap.to(node, { rotationX: thetaX, rotationY: thetaY, duration: 0.4, transformPerspective: 2500 });
                 });
-                node.addEventListener('mouseleave', () => {
-                    gsap.to(node, { rotationX: 0, rotationY: 0, duration: 0.8, ease: "elastic.out(1, 0.4)" });
-                });
+                node.addEventListener('mouseleave', () => gsap.to(node, { rotationX: 0, rotationY: 0, duration: 0.9, ease: "elastic.out(1, 0.4)" }));
             });
         }
 
-        // 4. COMMAND PALETTE (Search)
-        const cmdOverlay = document.getElementById('cmd-overlay');
-        const cmdInput = document.getElementById('cmd-input');
-        const cmdItems = document.querySelectorAll('.cmd-item');
-
-        function toggleCmd() {
-            cmdOverlay.classList.toggle('active');
-            if(cmdOverlay.classList.contains('active')) setTimeout(() => cmdInput.focus(), 100);
-            else cmdInput.blur();
+        // KINEMATICS: ELASTIC SIDEBAR TEXT REVEAL (PC ONLY)
+        if(window.matchMedia("(min-width: 769px)").matches) {
+            document.querySelectorAll('.sidebar-text').forEach(txt => new SplitType(txt, { types: 'chars' }));
+            const sidebarNav = document.getElementById('elastic-sidebar');
+            sidebarNav.addEventListener('mouseenter', () => gsap.to('.sidebar-text .char', { y: '0%', opacity: 1, stagger: 0.02, duration: 0.6, ease: "power4.out" }));
+            sidebarNav.addEventListener('mouseleave', () => gsap.to('.sidebar-text .char', { y: '100%', opacity: 0, stagger: 0.01, duration: 0.3 }));
         }
-        document.getElementById('cmd-trigger').addEventListener('click', toggleCmd);
-        cmdOverlay.addEventListener('click', (e) => { if(e.target === cmdOverlay) toggleCmd(); });
-        window.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); toggleCmd(); }
-            if (e.key === 'Escape' && cmdOverlay.classList.contains('active')) toggleCmd();
-        });
 
-        cmdInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase();
-            cmdItems.forEach(item => {
-                item.style.display = item.getAttribute('data-title').includes(query) ? 'flex' : 'none';
-            });
-        });
-
-        // 5. WEBGL CINEMATIC HERO ENGINE
-        const titles = document.querySelectorAll('.cinematic-headline');
-        titles.forEach(title => new SplitType(title, { types: 'chars' }));
-
+        // RENDER PIPELINE: WEBGL CINEMATIC HERO ENGINE
         const webglCanvas = document.getElementById('webgl-stage');
         const webglScene = new THREE.Scene();
-        const webglCamera = new THREE.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000);
+        const webglCamera = new THREE.OrthographicCamera( window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, 1, 1000 );
         webglCamera.position.z = 1;
-        
         const webglRenderer = new THREE.WebGLRenderer({ canvas: webglCanvas, alpha: true, antialias: true });
         webglRenderer.setSize(window.innerWidth, window.innerHeight);
-        webglRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
+        
         const textureLoader = new THREE.TextureLoader();
         textureLoader.crossOrigin = "anonymous";
-        // Load only textures for the top 3 slides to save memory
-        const loadedTextures = db.slice(0,3).map(item => textureLoader.load(item.image));
+        const loadedTextures = db.map(item => textureLoader.load(item.image));
 
         const shaderUniforms = {
-            u_tex1: { value: loadedTextures[0] },
-            u_tex2: { value: loadedTextures[0] },
-            u_progress: { value: 0.0 }
+            u_tex1: { value: loadedTextures[0] }, u_tex2: { value: loadedTextures[0] }, u_progress: { value: 0.0 }
         };
-
         const shaderMaterial = new THREE.ShaderMaterial({
             vertexShader: document.getElementById('vertexShader').textContent,
             fragmentShader: document.getElementById('fragmentShader').textContent,
             uniforms: shaderUniforms
         });
-
-        const planeGeometry = new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight);
-        const imageMesh = new THREE.Mesh(planeGeometry, shaderMaterial);
+        const imageMesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight), shaderMaterial);
         webglScene.add(imageMesh);
 
         window.addEventListener('resize', () => {
@@ -319,47 +280,30 @@
             imageMesh.geometry = new THREE.PlaneBufferGeometry(window.innerWidth, window.innerHeight);
         });
 
-        function renderScene() {
-            webglRenderer.render(webglScene, webglCamera);
-            requestAnimationFrame(renderScene);
-        }
+        function renderScene() { webglRenderer.render(webglScene, webglCamera); requestAnimationFrame(renderScene); }
         requestAnimationFrame(renderScene);
 
+        // SWIPER INTEGRATION WITH GLSL SHADERS
         let transitionLocked = false;
         new Swiper('.swiper-container', {
             slidesPerView: 1, speed: 1800, mousewheel: true, grabCursor: true,
             on: {
-                init: function() {
-                    const activeChars = document.querySelectorAll('.swiper-slide-active .char');
-                    gsap.to(activeChars, { y: '0%', opacity: 1, stagger: 0.04, duration: 1.2, ease: "power4.out", delay: 0.5 });
-                    gsap.to('.swiper-slide-active .cinematic-metadata', { y: 0, opacity: 1, duration: 1, ease: "power3.out", delay: 1 });
-                },
+                init: function() { gsap.fromTo('.swiper-slide-active .cinematic-headline', { y: 100, opacity: 0}, {y: 0, opacity: 1, duration: 1.5, ease: "power4.out", delay: 0.5}); },
                 slideChangeTransitionStart: function() {
-                    if(transitionLocked) return;
-                    transitionLocked = true;
-                    
+                    if(transitionLocked) return; transitionLocked = true;
                     shaderUniforms.u_tex1.value = loadedTextures[this.previousIndex];
                     shaderUniforms.u_tex2.value = loadedTextures[this.activeIndex];
                     shaderUniforms.u_progress.value = 0.0;
-
                     gsap.to(shaderUniforms.u_progress, { value: 1.0, duration: 1.8, ease: "power2.inOut", onComplete: () => transitionLocked = false });
-
-                    gsap.to('.swiper-slide-prev .char', { y: '-115%', opacity: 0, stagger: 0.02, duration: 0.6 });
-                    gsap.to('.swiper-slide-prev .cinematic-metadata', { y: -30, opacity: 0, duration: 0.4 });
                     
-                    gsap.set('.swiper-slide-active .char', { y: '115%', opacity: 0 });
-                    gsap.set('.swiper-slide-active .cinematic-metadata', { y: 30, opacity: 0 });
-                    
-                    gsap.to('.swiper-slide-active .char', { y: '0%', opacity: 1, stagger: 0.04, duration: 1.4, ease: "power4.out", delay: 0.4 });
-                    gsap.to('.swiper-slide-active .cinematic-metadata', { y: 0, opacity: 1, duration: 1.2, ease: "power3.out", delay: 0.8 });
+                    gsap.to('.swiper-slide-prev .cinematic-headline', { y: -100, opacity: 0, duration: 0.6 });
+                    gsap.fromTo('.swiper-slide-active .cinematic-headline', { y: 100, opacity: 0}, {y: 0, opacity: 1, duration: 1.5, ease: "power4.out", delay: 0.5});
                 }
             }
         });
         
-        gsap.to(".hero-environment", {
-            yPercent: 40, ease: "none",
-            scrollTrigger: { trigger: ".hero-environment", start: "top top", end: "bottom top", scrub: true }
-        });
+        // DEEP PARALLAX SCROLL
+        gsap.to(".hero-environment", { yPercent: 35, ease: "none", scrollTrigger: { trigger: ".hero-environment", start: "top top", end: "bottom top", scrub: true }});
     </script>
 </body>
 </html>
