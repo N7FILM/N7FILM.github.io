@@ -1,221 +1,124 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>N7 Intelligence Hub</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>N7 | Cinematic Hub</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=Inter:wght@400;600&display=swap');
-body { background-color: #050505; color: #e0e0e0; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
-
-/* 🌟 GOD LEVEL NAVBAR */
-.god-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 4vw; background: rgba(5,5,5,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
-.logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; color: #fff; text-decoration: none; letter-spacing: -1px; }
+body { background: #000; color: #fff; font-family: 'Inter', sans-serif; margin: 0; }
+.god-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5vw; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
+.logo { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 700; color: #fff; text-decoration: none; }
 .logo span { color: #0f5ad1; }
-
-/* 🌟 MENU CATEGORIES */
-.nav-menu { display: flex; gap: 20px; }
-.nav-link { color: #888; text-decoration: none; font-weight: 600; font-size: 0.95rem; padding: 8px 16px; border-radius: 50px; transition: 0.3s; cursor: pointer; }
-.nav-link:hover, .nav-link.active { background: rgba(15, 90, 209, 0.15); color: #57b5f9; }
-
-/* 🌟 LIVE SEARCH BAR */
-.search-container { position: relative; }
-.search-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 10px 20px; border-radius: 50px; outline: none; font-family: 'Inter'; font-size: 0.95rem; width: 250px; transition: 0.3s; }
-.search-input:focus { border-color: #0f5ad1; box-shadow: 0 0 15px rgba(15, 90, 209, 0.4); width: 300px; background: rgba(255,255,255,0.1); }
-
-/* Grid & Cards */
-.bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; padding: 4vw; max-width: 1400px; margin: auto; min-height: 50vh; }
-.glass-card { background: rgba(20, 20, 25, 0.6); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; overflow: hidden; transition: 0.4s; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
-.glass-card:hover { transform: translateY(-8px) scale(1.02); border-color: #0f5ad1; box-shadow: 0 10px 40px rgba(15, 90, 209, 0.25); }
-.card-img { width: 100%; height: 220px; object-fit: cover; opacity: 0.7; transition: 0.4s; }
+.search-input { background: #111; border: 1px solid #333; color: #fff; padding: 12px 25px; border-radius: 50px; outline: none; width: 300px; transition: 0.3s; }
+.search-input:focus { border-color: #0f5ad1; box-shadow: 0 0 20px rgba(15, 90, 209, 0.3); }
+.bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 40px; padding: 5vw; max-width: 1600px; margin: auto; }
+.glass-card { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 16px; overflow: hidden; transition: 0.4s; text-decoration: none; color: inherit; display: block; }
+.glass-card:hover { transform: translateY(-10px); border-color: #0f5ad1; box-shadow: 0 15px 40px rgba(15, 90, 209, 0.2); }
+.card-img { width: 100%; height: 250px; object-fit: cover; opacity: 0.6; transition: 0.4s; }
 .glass-card:hover .card-img { opacity: 1; }
-.card-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-.card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; margin: 0 0 15px 0; line-height: 1.2; }
-.tags { display: flex; gap: 10px; }
-.hud-tag { font-size: 0.75rem; background: rgba(15, 90, 209, 0.2); color: #57b5f9; padding: 5px 10px; border-radius: 4px; border: 1px solid rgba(87, 181, 249, 0.3); font-weight: 600; letter-spacing: 0.5px; }
-
-.no-results { text-align: center; width: 100%; grid-column: 1 / -1; font-family: 'Space Grotesk'; font-size: 2rem; color: #555; display: none; padding: 50px; }
-@media (max-width: 900px) { .god-nav { flex-direction: column; gap: 15px; padding: 20px; } .search-input { width: 100%; } }
+.card-content { padding: 30px; }
+.card-title { font-family: 'Space Grotesk'; font-size: 1.8rem; margin: 0 0 10px 0; }
+.hud-tag { background: #111; color: #57b5f9; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #222; }
 </style></head><body>
 
 <nav class="god-nav">
     <a href="index.html" class="logo">N7<span>_HUB</span></a>
-    
-    <div class="nav-menu">
-        <a class="nav-link active" onclick="filterData('all', this)">All Intel</a>
-        <a class="nav-link" onclick="filterData('2026', this)">Latest (2026)</a>
-        <a class="nav-link" onclick="filterData('2025', this)">Archive (2025)</a>
-    </div>
-
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="Search Cinematic Database...">
-    </div>
+    <input type="text" id="searchInput" class="search-input" placeholder="Initiate Search Sequence...">
 </nav>
 
 <div class="bento-grid" id="movieGrid">
-    <div class="no-results" id="noResults">NO MATCHING DATA FOUND IN ARCHIVES.</div>
 
-        <a href="movies/remarkably-bright-creatures.html" class="glass-card" data-title="remarkably bright creatures" data-year="2026">
+        <a href="movies/remarkably-bright-creatures.html" class="glass-card gs-reveal" data-title="remarkably bright creatures">
             <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">Remarkably Bright Creatures</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/no-place-to-be-single.html" class="glass-card" data-title="no place to be single" data-year="2026">
+        <a href="movies/no-place-to-be-single.html" class="glass-card gs-reveal" data-title="no place to be single">
             <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">No Place to Be Single</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/mortal-kombat-ii.html" class="glass-card" data-title="mortal kombat ii" data-year="2026">
+        <a href="movies/mortal-kombat-ii.html" class="glass-card gs-reveal" data-title="mortal kombat ii">
             <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">Mortal Kombat II</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/swapped.html" class="glass-card" data-title="swapped" data-year="2026">
+        <a href="movies/swapped.html" class="glass-card gs-reveal" data-title="swapped">
             <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">Swapped</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/ready-or-not-2-here-i-come.html" class="glass-card" data-title="ready or not 2: here i come" data-year="2026">
+        <a href="movies/ready-or-not-2-here-i-come.html" class="glass-card gs-reveal" data-title="ready or not 2: here i come">
             <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">Ready or Not 2: Here I Come</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/my-dearest-assassin.html" class="glass-card" data-title="my dearest assassin" data-year="2026">
+        <a href="movies/my-dearest-assassin.html" class="glass-card gs-reveal" data-title="my dearest assassin">
             <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">My Dearest Assassin</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/the-super-mario-galaxy-movie.html" class="glass-card" data-title="the super mario galaxy movie" data-year="2026">
+        <a href="movies/the-super-mario-galaxy-movie.html" class="glass-card gs-reveal" data-title="the super mario galaxy movie">
             <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">The Super Mario Galaxy Movie</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/hoppers.html" class="glass-card" data-title="hoppers" data-year="2026">
+        <a href="movies/hoppers.html" class="glass-card gs-reveal" data-title="hoppers">
             <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">Hoppers</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/the-drama.html" class="glass-card" data-title="the drama" data-year="2026">
+        <a href="movies/the-drama.html" class="glass-card gs-reveal" data-title="the drama">
             <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">The Drama</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/beast.html" class="glass-card" data-title="beast" data-year="2026">
+        <a href="movies/beast.html" class="glass-card gs-reveal" data-title="beast">
             <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">Beast</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/project-hail-mary.html" class="glass-card" data-title="project hail mary" data-year="2026">
+        <a href="movies/project-hail-mary.html" class="glass-card gs-reveal" data-title="project hail mary">
             <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">Project Hail Mary</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
-        <a href="movies/michael.html" class="glass-card" data-title="michael" data-year="2026">
+        <a href="movies/michael.html" class="glass-card gs-reveal" data-title="michael">
             <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" class="card-img" loading="lazy">
             <div class="card-content">
                 <h2 class="card-title">Michael</h2>
-                <div class="tags">
-                    <span class="hud-tag">DEEP DATA</span>
-                    <span class="hud-tag">2026</span>
-                </div>
+                <span class="hud-tag">ARCHIVE: 2026</span>
             </div>
         </a>
 </div>
-
 <script>
-    const searchInput = document.getElementById('searchInput');
-    const cards = document.querySelectorAll('.glass-card');
-    const noResults = document.getElementById('noResults');
-
-    // 1. LIVE SEARCH ENGINE LOGIC
-    searchInput.addEventListener('input', (e) => {
+    // Live Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
-        let visibleCount = 0;
-
-        cards.forEach(card => {
-            const title = card.getAttribute('data-title');
-            if(title.includes(query)) {
-                card.style.display = 'flex';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.style.display = card.getAttribute('data-title').includes(query) ? 'block' : 'none';
         });
-
-        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
     });
-
-    // 2. CATEGORY FILTER LOGIC
-    function filterData(year, element) {
-        // Update active menu state
-        document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-        element.classList.add('active');
-
-        // Clear search bar
-        searchInput.value = '';
-
-        let visibleCount = 0;
-        cards.forEach(card => {
-            const cardYear = card.getAttribute('data-year');
-            if(year === 'all' || cardYear === year) {
-                card.style.display = 'flex';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-
-        noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-    }
+    // GSAP Reveal Animation
+    gsap.from(".gs-reveal", {y: 50, opacity: 0, duration: 1, stagger: 0.1, ease: "power3.out"});
 </script>
 </body></html>
