@@ -1,30 +1,28 @@
-<!DOCTYPE html><html lang="en"><head>
-        <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>The Super Mario Galaxy Movie | STREAMIT</title>
-        <link rel="stylesheet" href="../css/style.css">
-        </head><body>
-
-        <div class="custom-cursor-dot"></div><div class="custom-cursor-ring"></div>
-
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>The Super Mario Galaxy Movie | STREAMIT</title>
+        <link rel="stylesheet" href="../assets/css/style.css">
+        <style>
+        .page-wrapper { padding: 120px 4rem 4rem; max-width: 1400px; margin: auto; position: relative; z-index: 10; }
+        .video-box { border-radius: 12px; overflow: hidden; padding-bottom: 56.25%; position: relative; margin-bottom: 3rem; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .article-data { background: var(--bg-surface-elevated); padding: 3rem; border-radius: 12px; line-height: 1.8; color: var(--text-slate-grey); border: 1px solid rgba(255,255,255,0.05); }
+        .article-data h1, .article-data h2 { color: var(--text-absolute-white); margin-top: 0; }
+        .hero-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: url('https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg') center/cover; filter: blur(20px) brightness(0.3); z-index: 1; transform: scale(1.1); }
+        @media (max-width: 768px) { .page-wrapper { padding: 100px 2rem 2rem; } .article-data { padding: 1.5rem; } }
+        </style></head><body>
+        
+        <div class="cursor-dot"></div><div class="cursor-ring"></div>
+        
         <header class="command-navbar" id="main-nav">
-            <a href="../index.html" class="navbar-brand">STREAM<span>IT</span></a>
-            <a href="../index.html" class="menu-link">← Return to Base</a>
+          <a href="../index.html" class="brand-text">STREAM<span>IT</span></a>
+          <div><a href="../index.html" class="btn-login-neon" style="text-decoration:none;">← Return</a></div>
         </header>
-
-        <section class="hero-slider-wrapper" style="height: 70vh;">
-            <div class="slide-bg" style="background-image: url('https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg');"></div>
-            <div class="vignette-overlay" style="background: linear-gradient(to top, var(--bg-space-black) 0%, transparent 100%);"></div>
-            <div class="slide-content-container" style="justify-content: flex-end; padding-bottom: 50px;">
-                <h1 class="movie-title" style="margin-bottom: 0;">The Super Mario Galaxy Movie</h1>
-            </div>
-        </section>
-
-        <div class="detail-content">
-            <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/"></iframe>
-            </div>
-            <div style="background: var(--bg-surface-elevated); padding: 40px; border-radius: 12px; margin-top: 40px; line-height: 1.8; color: var(--text-slate-grey);">
-                ```html
+        
+        <div class="hero-bg"></div>
+        
+        <div class="page-wrapper">
+            <h1 class="movie-title">The Super Mario Galaxy Movie</h1>
+            <div class="video-box"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            <div class="article-data">```html
 <h1>'The Super Mario Galaxy Movie': A Stellar Sequel That Reaches for the Stars!</h1>
 
 <h2>Introduction: The Cosmic Crescendo We Deserved</h2>
@@ -51,11 +49,11 @@ The level of detail is astounding, rewarding multiple viewings and cementing the
 
 <h2>Conclusion: A Universe of Potential</h2>
 <p>'The Super Mario Galaxy Movie' isn't just a sequel; it's a profound statement on the potential of video game adaptations when handled with genuine care and creative audacity. It’s a vibrant, exhilarating, and emotionally resonant film that manages to honor its source material while forging its own identity. The animation is unparalleled, the action sequences are inventive, and the heart of the story — the bond between brothers and the fight for cosmic balance — resonates deeply. It sets a new benchmark for animated features and leaves the audience eagerly anticipating where Mario's next adventure might take him. The post-credits scene alone, hinting at an even grander threat lurking in the cosmos, ensures that the Mario cinematic universe has a bright, star-filled future. Go see it. You won't just be entertained; you'll be transported.</p>
-```
-            </div>
+```</div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-        <script src="../js/app.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+        <script src="../assets/js/app.js"></script>
         </body></html>

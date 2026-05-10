@@ -1,30 +1,28 @@
-<!DOCTYPE html><html lang="en"><head>
-        <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Remarkably Bright Creatures | STREAMIT</title>
-        <link rel="stylesheet" href="../css/style.css">
-        </head><body>
-
-        <div class="custom-cursor-dot"></div><div class="custom-cursor-ring"></div>
-
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Remarkably Bright Creatures | STREAMIT</title>
+        <link rel="stylesheet" href="../assets/css/style.css">
+        <style>
+        .page-wrapper { padding: 120px 4rem 4rem; max-width: 1400px; margin: auto; position: relative; z-index: 10; }
+        .video-box { border-radius: 12px; overflow: hidden; padding-bottom: 56.25%; position: relative; margin-bottom: 3rem; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .article-data { background: var(--bg-surface-elevated); padding: 3rem; border-radius: 12px; line-height: 1.8; color: var(--text-slate-grey); border: 1px solid rgba(255,255,255,0.05); }
+        .article-data h1, .article-data h2 { color: var(--text-absolute-white); margin-top: 0; }
+        .hero-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: url('https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg') center/cover; filter: blur(20px) brightness(0.3); z-index: 1; transform: scale(1.1); }
+        @media (max-width: 768px) { .page-wrapper { padding: 100px 2rem 2rem; } .article-data { padding: 1.5rem; } }
+        </style></head><body>
+        
+        <div class="cursor-dot"></div><div class="cursor-ring"></div>
+        
         <header class="command-navbar" id="main-nav">
-            <a href="../index.html" class="navbar-brand">STREAM<span>IT</span></a>
-            <a href="../index.html" class="menu-link">← Return to Base</a>
+          <a href="../index.html" class="brand-text">STREAM<span>IT</span></a>
+          <div><a href="../index.html" class="btn-login-neon" style="text-decoration:none;">← Return</a></div>
         </header>
-
-        <section class="hero-slider-wrapper" style="height: 70vh;">
-            <div class="slide-bg" style="background-image: url('https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg');"></div>
-            <div class="vignette-overlay" style="background: linear-gradient(to top, var(--bg-space-black) 0%, transparent 100%);"></div>
-            <div class="slide-content-container" style="justify-content: flex-end; padding-bottom: 50px;">
-                <h1 class="movie-title" style="margin-bottom: 0;">Remarkably Bright Creatures</h1>
-            </div>
-        </section>
-
-        <div class="detail-content">
-            <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/"></iframe>
-            </div>
-            <div style="background: var(--bg-surface-elevated); padding: 40px; border-radius: 12px; margin-top: 40px; line-height: 1.8; color: var(--text-slate-grey);">
-                <h1>Remarkably Bright Creatures: A Luminescent Dive into the Depths of the Human Heart</h1>
+        
+        <div class="hero-bg"></div>
+        
+        <div class="page-wrapper">
+            <h1 class="movie-title">Remarkably Bright Creatures</h1>
+            <div class="video-box"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            <div class="article-data"><h1>Remarkably Bright Creatures: A Luminescent Dive into the Depths of the Human Heart</h1>
 
 <p>Every so often, a film emerges from the depths of the cinematic ocean, shimmering with a rare brilliance that captures the imagination and stirs the soul. 'Remarkably Bright Creatures' is precisely that kind of film. Based on the beloved novel, this adaptation transcends its literary origins to deliver a poignant, enchanting, and utterly unforgettable experience. Director Lone Scherfig masterfully crafts a narrative that is at once a tender exploration of grief, an unlikely detective story, and a charming testament to the unexpected connections that bring meaning to our lives. It's a film that reminds us that even in the quietest corners, wonder and joy are waiting to be discovered, often in the most remarkable forms.</p>
 
@@ -56,11 +54,11 @@
 
 <p>'Remarkably Bright Creatures' is more than just a film; it's a warm, comforting embrace. It navigates themes of grief, loneliness, and the search for belonging with such grace and tenderness that it feels like a balm for the soul. The film reminds us that connection can be found in the most unexpected places—between an elderly widow and an exceptionally intelligent octopus, between strangers brought together by fate, and within the quiet rhythms of a life lived with open eyes.</p>
 
-<p>It’s a beautifully crafted narrative, brought to life by outstanding performances and sensitive direction, that champions the extraordinary in the ordinary. If you're looking for a film that will make you laugh, shed a tear, and leave you with a renewed sense of wonder for the world and its remarkable inhabitants, then 'Remarkably Bright Creatures' is an absolute must-see. Dive in; you won't regret it.</p>
-            </div>
+<p>It’s a beautifully crafted narrative, brought to life by outstanding performances and sensitive direction, that champions the extraordinary in the ordinary. If you're looking for a film that will make you laugh, shed a tear, and leave you with a renewed sense of wonder for the world and its remarkable inhabitants, then 'Remarkably Bright Creatures' is an absolute must-see. Dive in; you won't regret it.</p></div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-        <script src="../js/app.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+        <script src="../assets/js/app.js"></script>
         </body></html>
