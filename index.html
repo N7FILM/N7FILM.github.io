@@ -3,265 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>N7 | Extreme Cinematic Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>N7 | Extreme Cinematic OS</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
-    <script src="https://unpkg.com/split-type"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
     <style>
-:root { --primary-glow: #00ffcc; --glass-border: rgba(255,255,255,0.08); --matrix-bg: #050505; --accent-neon: #ff00ff; --nav-height: 90px; }
-* { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-body, html { background-color: var(--matrix-bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; overscroll-behavior: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=Space+Grotesk:wght@900&display=swap');
 
-/* MAGNETIC CURSOR */
-#custom-cursor { position: fixed; top: 0; left: 0; width: 8px; height: 8px; background: var(--primary-glow); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, background 0.3s; will-change: transform; }
-#cursor-follower { position: fixed; top: 0; left: 0; width: 45px; height: 45px; border: 1px solid rgba(0, 255, 204, 0.4); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s linear; will-change: transform; }
+        :root { --bg-base: #030303; --text-main: #ffffff; --primary-glow: rgba(0, 255, 170, 0.6); --glass-border: rgba(255, 255, 255, 0.08); --glass-bg: rgba(10, 10, 10, 0.35); --font-main: 'Inter', sans-serif; --cursor-size: 8px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none!important; }
+        body { background-color: var(--bg-base); color: var(--text-main); font-family: var(--font-main); overflow-x: hidden; overscroll-behavior: none; }
 
-/* COMMAND NAVIGATION */
-nav { position: fixed; top: 0; width: 100%; height: var(--nav-height); background: rgba(5, 5, 5, 0.5); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; padding: 0 5vw; align-items: center; z-index: 9000; }
-.logo { font-size: 1.5rem; font-weight: 900; letter-spacing: 2px; color: #fff; text-decoration: none; }
-.nav-links { display: flex; gap: 50px; list-style: none; }
-.nav-link { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 3px; padding: 35px 15px; position: relative; }
+        /* OS CURSOR */
+        .cursor-dot,.cursor-trail { position: fixed; top: 0; left: 0; border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); mix-blend-mode: difference; }
+        .cursor-dot { width: var(--cursor-size); height: var(--cursor-size); background: #fff; }
+        .cursor-trail { width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.4); transition: width 0.4s, height 0.4s, background 0.3s; }
+        .cursor-trail.hovering { width: 80px; height: 80px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); border-color: transparent; }
 
-/* CTRL+K COMMAND PALETTE */
-#cmd-palette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(35px); z-index: 11000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
-#cmd-palette.active { opacity: 1; pointer-events: auto; }
-.cmd-box { width: 700px; max-width: 90vw; background: rgba(10,10,10,0.9); border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px; box-shadow: 0 0 80px rgba(0, 255, 204, 0.05); transform: translateY(30px) scale(0.95); transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
-#cmd-palette.active .cmd-box { transform: translateY(0) scale(1); }
-.cmd-input { width: 100%; background: transparent; border: none; color: white; font-size: 2rem; outline: none; padding-bottom: 20px; font-weight: 300; border-bottom: 1px solid var(--glass-border); }
+        /* NAVBAR & MEGA MENU */
+        .glass-nav { position: fixed; top: 0; width: 100%; padding: 20px 5vw; display: flex; justify-content: space-between; align-items: center; background: var(--glass-bg); backdrop-filter: blur(30px) saturate(150%); border-bottom: 1px solid var(--glass-border); z-index: 9000; }
+        .nav-logo { font-family: 'Space Grotesk'; font-size: 1.8rem; letter-spacing: -1px; }
+        .nav-links { display: flex; gap: 40px; align-items: center; }
+        .nav-item { position: relative; text-transform: uppercase; letter-spacing: 2px; font-size: 0.85rem; font-weight: 700; height: 100%; padding: 20px 0; }
+        kbd { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; margin-left: 8px; font-family: monospace; }
+        .mega-menu { position: absolute; top: 100%; left: -250px; width: 850px; background: rgba(5, 5, 5, 0.95); backdrop-filter: blur(50px); border: 1px solid var(--glass-border); border-radius: 16px; padding: 50px; opacity: 0; visibility: hidden; transform: translateY(30px) rotateX(-15deg); transform-origin: top; transition: all 0.5s; box-shadow: 0 30px 60px rgba(0,0,0,0.8); pointer-events: none; }
+        .has-mega:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0) rotateX(0deg); pointer-events: auto; }
+        .mega-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr; gap: 40px; }
+        .mega-column h4 { margin-bottom: 20px; color: #777; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; }
+        .mega-column a { display: block; color: #ddd; text-decoration: none; margin-bottom: 15px; font-weight: 600; transition: 0.3s; }
+        .mega-column a:hover { color: #00ffaa; transform: translateX(5px); }
+        .mega-image-reveal { background: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800') center/cover; border-radius: 12px; filter: grayscale(100%); transition: 0.5s; }
+        .mega-menu:hover .mega-image-reveal { filter: grayscale(0%); }
 
-/* CINEMATIC HERO WEBGL SLIDER */
-#webgl-hero { width: 100vw; height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; padding-left: 10vw; }
-#webgl-hero img.bg-fallback { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; z-index: 1; filter: grayscale(50%); }
-.hero-typography-layer { position: relative; z-index: 2; pointer-events: none; }
-.hero-title { font-size: clamp(4rem, 8vw, 8rem); font-weight: 900; line-height: 1; text-transform: uppercase; color: #fff; mix-blend-mode: exclusion; }
-.gsap-reveal { clip-path: inset(0 100% 0 0); }
+        /* ELASTIC SIDEBAR */
+        .elastic-sidebar { position: fixed; left: 0; top: 0; height: 100vh; width: 80px; background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, transparent 100%); border-right: 1px solid var(--glass-border); z-index: 8000; transition: width 0.6s cubic-bezier(0.19, 1, 0.22, 1); display: flex; flex-direction: column; justify-content: center; }
+        .elastic-sidebar:hover { width: 320px; background: rgba(5,5,5,0.95); backdrop-filter: blur(20px); }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 40px; padding: 0 20px; }
+        .sidebar-item { color: #fff; text-decoration: none; font-size: 1.5rem; font-weight: 700; position: relative; display: flex; align-items: center; overflow: hidden; }
+        .sidebar-item::before { content: attr(data-text); color: rgba(255,255,255,0.2); width: 40px; text-align: center; font-size: 1.6rem; transition: 0.3s; }
+        .elastic-sidebar:hover .sidebar-item::before { color: #00ffaa; }
+        .sidebar-text { display: inline-flex; margin-left: 20px; opacity: 0; transform: translateX(-20px); transition: 0.4s; }
+        .elastic-sidebar:hover .sidebar-text { opacity: 1; transform: translateX(0); }
 
-/* BENTO GRID 3D TILT */
-.bento-section { padding: 100px 5%; max-width: 1800px; margin: 0 auto; position: relative; z-index: 5; }
-.bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 40px; perspective: 1500px; }
-.bento-card { position: relative; height: 450px; background: rgba(20,20,20,0.4); backdrop-filter: blur(20px); border-radius: 30px; border: 1px solid var(--glass-border); overflow: hidden; transform-style: preserve-3d; transition: border-color 0.4s ease; text-decoration: none; color: #fff; display: block; }
-.bento-card::before { content: ''; position: absolute; inset: -3px; border-radius: 32px; background: linear-gradient(135deg, transparent, var(--primary-glow), var(--accent-neon), transparent); z-index: -1; opacity: 0; filter: blur(20px); transition: opacity 0.5s ease; }
-.bento-card:hover::before { opacity: 0.8; }
-.bento-card:hover { border-color: rgba(0, 255, 204, 0.3); }
-.bento-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: opacity 0.6s ease; }
-.bento-card:hover .bento-img { opacity: 0.8; }
-.bento-content { position: absolute; bottom: 40px; left: 40px; transform: translateZ(80px); pointer-events: none; }
-.bento-tag { display: inline-block; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--primary-glow); color: var(--primary-glow); font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 15px; backdrop-filter: blur(10px); background: rgba(0,0,0,0.5); }
-.bento-title { font-size: 2rem; font-weight: 700; letter-spacing: 1px; margin: 0; text-shadow: 0 5px 15px rgba(0,0,0,0.8); }
-</style>
+        /* HERO SECTION */
+        .hero-section { position: relative; width: 100vw; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        #webgl-canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.6; }
+        .hero-text-overlay { position: relative; z-index: 2; text-align: center; width: 100%; max-width: 1200px; padding: 0 20px; }
+        .hero-tag { display: inline-block; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 20px; backdrop-filter: blur(10px); }
+        .hero-text-overlay h1 { font-family: 'Space Grotesk'; font-size: clamp(4rem, 10vw, 8rem); font-weight: 900; line-height: 0.9; margin-bottom: 40px; text-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        .hero-btn { display: inline-block; background: #fff; color: #000; text-decoration: none; padding: 18px 40px; border-radius: 50px; font-weight: 900; font-size: 1.2rem; transition: 0.3s; border: 2px solid #fff; }
+        .hero-btn:hover { background: transparent; color: #fff; backdrop-filter: blur(10px); }
+        .char { display: inline-block; }
+
+        /* BENTO GRID */
+        .bento-section { padding: 100px 8vw 150px 8vw; position: relative; z-index: 5; background: var(--bg-base); }
+        .section-title { font-family: 'Space Grotesk'; font-size: 4rem; margin-bottom: 60px; text-transform: uppercase; font-weight: 900; letter-spacing: -2px; }
+        .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); grid-auto-rows: 400px; gap: 30px; }
+        .bento-card { position: relative; background: rgba(15,15,15,0.7); border: 1px solid var(--glass-border); border-radius: 24px; overflow: hidden; padding: 40px; transform-style: preserve-3d; box-shadow: 0 20px 40px rgba(0,0,0,0.6); display: flex; align-items: flex-end; text-decoration: none; color: #fff; transition: transform 0.2s ease; }
+        .bento-card:active { transform: scale(0.96)!important; }
+        .bento-card.span-2 { grid-column: span 2; grid-row: span 2; }
+        .bento-fallback-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: 0.5s; z-index: 0; }
+        .bento-card:hover .bento-fallback-img { opacity: 0.8; transform: scale(1.05); }
+        .bento-content { position: relative; z-index: 2; transform: translateZ(50px); pointer-events: none; }
+        .bento-tag { background: rgba(0,0,0,0.6); color: #00ffaa; border: 1px solid rgba(0,255,170,0.3); padding: 8px 16px; border-radius: 30px; font-size: 0.8rem; font-weight: 900; margin-bottom: 15px; display: inline-block; backdrop-filter: blur(10px); }
+        .bento-title { font-family: 'Space Grotesk'; font-size: 2.5rem; font-weight: 900; line-height: 1.1; text-shadow: 0 5px 15px rgba(0,0,0,0.8); }
+        
+        .glow-border { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--primary-glow), transparent 40%); opacity: 0; transition: opacity 0.4s; mix-blend-mode: overlay; }
+        .bento-card:hover .glow-border { opacity: 1; }
+
+        /* COMMAND PALETTE (CTRL+K) */
+        .cmd-palette-overlay { position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: flex-start; padding-top: 15vh; opacity: 0; visibility: hidden; transition: all 0.3s; }
+        .cmd-palette-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); }
+        .cmd-palette-overlay.active { opacity: 1; visibility: visible; }
+        .cmd-palette-box { position: relative; width: 90%; max-width: 800px; background: #0a0a0a; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; box-shadow: 0 40px 100px rgba(0,0,0,0.9); transform: scale(0.95) translateY(20px); transition: 0.4s cubic-bezier(0.19, 1, 0.22, 1); overflow: hidden; }
+        .cmd-palette-overlay.active .cmd-palette-box { transform: scale(1) translateY(0); }
+        .cmd-header { padding: 15px 30px; background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; color: #888; font-weight: 600; text-transform: uppercase; display: flex; justify-content: space-between; }
+        .cmd-palette-box input { width: 100%; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 30px; color: #fff; font-size: 2rem; outline: none; font-family: 'Space Grotesk'; font-weight: 700; }
+        .cmd-results { list-style: none; max-height: 50vh; overflow-y: auto; }
+        .cmd-results li a { padding: 25px 30px; border-bottom: 1px solid rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; transition: 0.2s; text-decoration: none; color: #fff; }
+        .cmd-results li a:hover { background: rgba(255,255,255,0.05); padding-left: 40px; }
+        .cmd-title { font-size: 1.4rem; font-family: 'Space Grotesk'; font-weight: 700; }
+        .cmd-cat { font-size: 0.75rem; color: #00ffaa; text-transform: uppercase; font-weight: 700; background: rgba(0,255,170,0.1); padding: 5px 12px; border-radius: 50px; }
+    </style>
 </head>
 <body>
-    <div id="custom-cursor"></div>
-    <div id="cursor-follower"></div>
+    
+    <div class="cursor-dot"></div>
+    <div class="cursor-trail"></div>
 
-    <div id="cmd-palette">
-        <div class="cmd-box">
-            <input type="text" class="cmd-input" placeholder="Initiate Search Sequence... (ESC to close)">
+    <div class="cmd-palette-overlay" id="cmdOverlay">
+        <div class="cmd-palette-backdrop"></div>
+        <div class="cmd-palette-box">
+            <div class="cmd-header">Initiate Command Sequence <kbd>ESC</kbd></div>
+            <input type="text" id="cmdInput" placeholder="Fuzzy Search Global Archives..." autocomplete="off">
+            <ul id="cmdResults" class="cmd-results"></ul>
         </div>
     </div>
 
-    <nav>
-        <a href="#" class="logo magnetic-target">N7_HUB</a>
-        <ul class="nav-links">
-            <li class="nav-link magnetic-target">Ctrl+K to Search</li>
-        </ul>
+    <aside class="elastic-sidebar" id="sidebar">
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-item magnetic" data-text="A"><span class="sidebar-text">Archives</span></a>
+            <a href="#" class="sidebar-item magnetic" data-text="I"><span class="sidebar-text">Intelligence</span></a>
+            <a href="#" class="sidebar-item magnetic" data-text="T"><span class="sidebar-text">Topologies</span></a>
+        </nav>
+    </aside>
+
+    <nav class="glass-nav">
+        <a href="index.html" class="nav-logo magnetic" style="color:white; text-decoration:none;">N7<span style="color:#00ffaa;">_OS</span></a>
+        <div class="nav-links">
+            <div class="nav-item has-mega" id="navCategories">
+                <span class="magnetic">System Topologies</span>
+                <div class="mega-menu">
+                    <div class="mega-grid">
+                        <div class="mega-column">
+                            <h4>Render Engine</h4>
+                            <a href="#" class="magnetic">Neural Linking</a>
+                            <a href="#" class="magnetic">Quantum Encryption</a>
+                        </div>
+                        <div class="mega-column">
+                            <h4>UI Physics</h4>
+                            <a href="#" class="magnetic">Bento Structures</a>
+                            <a href="#" class="magnetic">WebGL Shaders</a>
+                        </div>
+                        <div class="mega-image-reveal"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item search-trigger"><span class="magnetic" style="cursor:pointer;">Command <kbd>Ctrl K</kbd></span></div>
+        </div>
     </nav>
 
-    <section id="webgl-hero">
-        <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="bg-fallback">
-        <div class="hero-typography-layer">
-            <div class="hero-title gsap-reveal">Remarkably Bright Creatures</div>
-            <div class="hero-title gsap-reveal" style="color: var(--primary-glow); margin-left: 5vw;">2026</div>
+    <section class="hero-section">
+        <div id="webgl-canvas-container" data-image="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg"></div>
+        <div class="hero-text-overlay">
+            <div class="hero-tag stagger-reveal">FEATURED ACQUISITION</div>
+            <h1 class="stagger-reveal" id="heroText">REMARKABLY BRIGHT CREATURES</h1>
+            <a href="movies/remarkably-bright-creatures.html" class="hero-btn stagger-reveal">Access Deep Data</a>
         </div>
     </section>
 
     <section class="bento-section">
+        <h2 class="section-title kinematic-text">Architectural Archives</h2>
         <div class="bento-grid">
             
-        <a href="movies/no-place-to-be-single.html" class="bento-card magnetic-target" data-title="no place to be single">
-            <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">No Place to Be Single</h2>
-            </div>
-        </a>
-        <a href="movies/mortal-kombat-ii.html" class="bento-card magnetic-target" data-title="mortal kombat ii">
-            <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">Mortal Kombat II</h2>
-            </div>
-        </a>
-        <a href="movies/swapped.html" class="bento-card magnetic-target" data-title="swapped">
-            <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">Swapped</h2>
-            </div>
-        </a>
-        <a href="movies/ready-or-not-2-here-i-come.html" class="bento-card magnetic-target" data-title="ready or not 2: here i come">
-            <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">Ready or Not 2: Here I Come</h2>
-            </div>
-        </a>
-        <a href="movies/my-dearest-assassin.html" class="bento-card magnetic-target" data-title="my dearest assassin">
-            <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">My Dearest Assassin</h2>
-            </div>
-        </a>
-        <a href="movies/the-super-mario-galaxy-movie.html" class="bento-card magnetic-target" data-title="the super mario galaxy movie">
-            <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">The Super Mario Galaxy Movie</h2>
-            </div>
-        </a>
-        <a href="movies/hoppers.html" class="bento-card magnetic-target" data-title="hoppers">
-            <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">Hoppers</h2>
-            </div>
-        </a>
-        <a href="movies/the-drama.html" class="bento-card magnetic-target" data-title="the drama">
-            <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">The Drama</h2>
-            </div>
-        </a>
-        <a href="movies/beast.html" class="bento-card magnetic-target" data-title="beast">
-            <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">Beast</h2>
-            </div>
-        </a>
-        <a href="movies/project-hail-mary.html" class="bento-card magnetic-target" data-title="project hail mary">
-            <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">Project Hail Mary</h2>
-            </div>
-        </a>
-        <a href="movies/michael.html" class="bento-card magnetic-target" data-title="michael">
-            <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">Michael</h2>
-            </div>
-        </a>
-        <a href="movies/send-help.html" class="bento-card magnetic-target" data-title="send help">
-            <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" class="bento-img" loading="lazy">
-            <div class="bento-content">
-                <div class="bento-tag">Archive: 2026</div>
-                <h2 class="bento-title">Send Help</h2>
-            </div>
-        </a>
+            <a href="movies/no-place-to-be-single.html" class="bento-card span-2" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.0s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">No Place to Be Single</h3>
+                </div>
+            </a>
+            
+            <a href="movies/mortal-kombat-ii.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.1s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">Mortal Kombat II</h3>
+                </div>
+            </a>
+            
+            <a href="movies/swapped.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.2s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">Swapped</h3>
+                </div>
+            </a>
+            
+            <a href="movies/ready-or-not-2-here-i-come.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.3s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">Ready or Not 2: Here I Come</h3>
+                </div>
+            </a>
+            
+            <a href="movies/my-dearest-assassin.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.4s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">My Dearest Assassin</h3>
+                </div>
+            </a>
+            
+            <a href="movies/the-super-mario-galaxy-movie.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.5s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">The Super Mario Galaxy Movie</h3>
+                </div>
+            </a>
+            
+            <a href="movies/hoppers.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.6s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">Hoppers</h3>
+                </div>
+            </a>
+            
+            <a href="movies/the-drama.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.7s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">The Drama</h3>
+                </div>
+            </a>
+            
+            <a href="movies/beast.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.8s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">Beast</h3>
+                </div>
+            </a>
+            
+            <a href="movies/project-hail-mary.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.9s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">Project Hail Mary</h3>
+                </div>
+            </a>
+            
+            <a href="movies/michael.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.10s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">Michael</h3>
+                </div>
+            </a>
+            
+            <a href="movies/send-help.html" class="bento-card span-1" data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000" style="animation-delay: 0.11s;">
+                <div class="glow-border"></div>
+                <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" class="bento-fallback-img">
+                <div class="bento-content">
+                    <span class="bento-tag">ARCHIVE: 2026</span>
+                    <h3 class="bento-title translate-z">Send Help</h3>
+                </div>
+            </a>
+            
         </div>
     </section>
 
+    <script id="dbData" type="application/json">[{"title": "Remarkably Bright Creatures", "category": "Cinematic Archive", "slug": "remarkably-bright-creatures"}, {"title": "No Place to Be Single", "category": "Cinematic Archive", "slug": "no-place-to-be-single"}, {"title": "Mortal Kombat II", "category": "Cinematic Archive", "slug": "mortal-kombat-ii"}, {"title": "Swapped", "category": "Cinematic Archive", "slug": "swapped"}, {"title": "Ready or Not 2: Here I Come", "category": "Cinematic Archive", "slug": "ready-or-not-2-here-i-come"}, {"title": "My Dearest Assassin", "category": "Cinematic Archive", "slug": "my-dearest-assassin"}, {"title": "The Super Mario Galaxy Movie", "category": "Cinematic Archive", "slug": "the-super-mario-galaxy-movie"}, {"title": "Hoppers", "category": "Cinematic Archive", "slug": "hoppers"}, {"title": "The Drama", "category": "Cinematic Archive", "slug": "the-drama"}, {"title": "Beast", "category": "Cinematic Archive", "slug": "beast"}, {"title": "Project Hail Mary", "category": "Cinematic Archive", "slug": "project-hail-mary"}, {"title": "Michael", "category": "Cinematic Archive", "slug": "michael"}, {"title": "Send Help", "category": "Cinematic Archive", "slug": "send-help"}]</script>
     <script>
-// 1. LENIS SMOOTH SCROLL
-const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
-function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-requestAnimationFrame(raf);
-gsap.registerPlugin(ScrollTrigger);
-lenis.on('scroll', ScrollTrigger.update);
-gsap.ticker.add((time) => { lenis.raf(time * 1000) });
+        // 1. Lenis Smooth Scroll Setup
+        const lenis = new Lenis({ duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+        gsap.ticker.add((time)=>{ lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
 
-// 2. MAGNETIC CURSOR & LERP PHYSICS
-const cursor = document.getElementById('custom-cursor');
-const follower = document.getElementById('cursor-follower');
-let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-let cursorX = mouseX, cursorY = mouseY;
+        // 2. Custom Magnetic Cursor
+        const dot = document.querySelector('.cursor-dot');
+        const trail = document.querySelector('.cursor-trail');
+        let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+        let trailX = mouseX, trailY = mouseY;
 
-window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX; mouseY = e.clientY;
-    cursor.style.left = `${mouseX}px`; cursor.style.top = `${mouseY}px`;
-});
-
-function renderCursorFollower() {
-    cursorX += (mouseX - cursorX) * 0.15;
-    cursorY += (mouseY - cursorY) * 0.15;
-    follower.style.left = `${cursorX}px`; follower.style.top = `${cursorY}px`;
-    requestAnimationFrame(renderCursorFollower);
-}
-renderCursorFollower();
-
-document.querySelectorAll('.magnetic-target').forEach(el => {
-    el.addEventListener('mousemove', (e) => {
-        const rect = el.getBoundingClientRect();
-        const relX = (e.clientX - rect.left) - (rect.width / 2);
-        const relY = (e.clientY - rect.top) - (rect.height / 2);
-        gsap.to(el, { x: relX * 0.2, y: relY * 0.2, duration: 0.3, ease: 'power2.out' });
-        gsap.to(cursor, { scale: 2, background: 'transparent', border: '1px solid #00ffcc', duration: 0.2 });
-        gsap.to(follower, { scale: 0, opacity: 0, duration: 0.2 });
-    });
-    el.addEventListener('mouseleave', () => {
-        gsap.to(el, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.3)' });
-        gsap.to(cursor, { scale: 1, background: '#00ffcc', border: 'none', duration: 0.2 });
-        gsap.to(follower, { scale: 1, opacity: 1, duration: 0.2 });
-    });
-});
-
-// 3. COMMAND PALETTE (CTRL+K)
-const cmdPalette = document.getElementById('cmd-palette');
-const cmdInput = document.querySelector('.cmd-input');
-const cards = document.querySelectorAll('.bento-card');
-
-window.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        cmdPalette.classList.add('active');
-        setTimeout(() => cmdInput.focus(), 100);
-    }
-    if (e.key === 'Escape') {
-        cmdPalette.classList.remove('active');
-        cmdInput.value = '';
-        cards.forEach(c => c.style.display = 'block');
-    }
-});
-
-cmdInput.addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase();
-    cards.forEach(card => {
-        if(card.getAttribute('data-title').includes(q)) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX; mouseY = e.clientY;
+            dot.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
+        });
+        const lerp = (start, end, amt) => (1 - amt) * start + amt * end;
+        function animateTrail() {
+            trailX = lerp(trailX, mouseX, 0.15); trailY = lerp(trailY, mouseY, 0.15);
+            trail.style.transform = `translate3d(${trailX - 20}px, ${trailY - 20}px, 0)`;
+            requestAnimationFrame(animateTrail);
         }
-    });
-});
+        animateTrail();
 
-// 4. BENTO GRID 3D TILT MECHANICS
-cards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const calcX = -((e.clientY - rect.top) - (rect.height / 2)) / 30;
-        const calcY = ((e.clientX - rect.left) - (rect.width / 2)) / 30;
-        card.style.transform = `perspective(1500px) rotateX(${calcX}deg) rotateY(${calcY}deg) scale3d(1.02, 1.02, 1.02)`;
-    });
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = `perspective(1500px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-    });
-});
+        document.querySelectorAll('.magnetic, a').forEach(elem => {
+            elem.addEventListener('mouseenter', () => trail.classList.add('hovering'));
+            elem.addEventListener('mouseleave', () => trail.classList.remove('hovering'));
+        });
 
-// 5. GSAP KINEMATIC REVEAL
-const splitText = new SplitType('.gsap-reveal', { types: 'chars' });
-gsap.to(splitText.chars, { 
-    clipPath: 'inset(0 0% 0 0)', 
-    duration: 1.2, 
-    stagger: 0.05, 
-    ease: 'power4.out', 
-    delay: 0.5 
-});
-</script>
+        // 3. Command Palette (Fuzzy Search)
+        const cmdOverlay = document.getElementById('cmdOverlay');
+        const cmdInput = document.getElementById('cmdInput');
+        const cmdResults = document.getElementById('cmdResults');
+        const dbRaw = JSON.parse(document.getElementById('dbData').textContent);
+        const fuse = new Fuse(dbRaw, { keys: ['title'], threshold: 0.3 });
+
+        function toggleCommand() {
+            cmdOverlay.classList.toggle('active');
+            if(cmdOverlay.classList.contains('active')) { setTimeout(() => cmdInput.focus(), 100); } 
+            else { cmdInput.value = ''; cmdResults.innerHTML = ''; }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'k') { e.preventDefault(); toggleCommand(); }
+            if (e.key === 'Escape') { cmdOverlay.classList.remove('active'); }
+        });
+        document.querySelector('.search-trigger').addEventListener('click', toggleCommand);
+
+        cmdInput.addEventListener('input', (e) => {
+            const result = fuse.search(e.target.value);
+            cmdResults.innerHTML = '';
+            result.slice(0, 5).forEach(item => {
+                cmdResults.innerHTML += `<li><a href="movies/${item.item.slug}.html">
+                    <span class="cmd-title">${item.item.title}</span>
+                    <span class="cmd-cat">${item.item.category}</span>
+                </a></li>`;
+            });
+        });
+
+        // 4. GSAP SpliText & Parallax Animations
+        function splitText(selector) {
+            document.querySelectorAll(selector).forEach(el => {
+                const text = el.innerText; el.innerHTML = '';
+                text.split('').forEach(char => {
+                    el.innerHTML += char === ' ' ? '&nbsp;' : `<span class="char" style="opacity:0; display:inline-block;">${char}</span>`;
+                });
+            });
+        }
+        splitText('#heroText');
+
+        gsap.fromTo('.stagger-reveal', {y: 50, opacity: 0}, {y: 0, opacity: 1, duration: 1.5, stagger: 0.2, ease: 'power4.out', delay: 0.2});
+        gsap.to('.char', {y: 0, opacity: 1, duration: 1, stagger: 0.05, ease: 'power4.out', delay: 0.5});
+        
+        gsap.to('.hero-text-overlay', {
+            yPercent: 50, ease: 'none',
+            scrollTrigger: { trigger: '.hero-section', start: 'top top', end: 'bottom top', scrub: true }
+        });
+
+        // 5. Vanilla Tilt & Neon Glow on Bento Cards
+        VanillaTilt.init(document.querySelectorAll(".bento-card"), { max: 5, speed: 400, glare: false });
+        
+        document.querySelectorAll('.bento-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+            });
+        });
+    </script>
 </body>
 </html>
