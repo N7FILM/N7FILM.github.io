@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>No Place to Be Single | N7 HUB</title>
+        
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@400;600&display=swap');
+    
+    :root {
+        --bg-deep: #050508;
+        --surface: rgba(15, 15, 20, 0.7);
+        --brand-red: #E50914;
+        --brand-blue: #0f5ad1;
+        --text-main: #FFFFFF;
+        --text-sub: #A0A0A0;
+        --primary-glow: 0 0 30px rgba(15, 90, 209, 0.5);
+    }
+    
+    body, html {
+        margin: 0; padding: 0; background: var(--bg-deep); color: var(--text-main);
+        font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth;
+    }
+
+    /* 🌟 GLASSMORPHIC NAVBAR */
+    .navbar { position: fixed; top: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; z-index: 2000; transition: all 0.4s ease; box-sizing: border-box; background: transparent; }
+    .navbar.scrolled { background: var(--surface); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .logo { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: 2px; }
+    .logo span { color: var(--brand-blue); }
+    
+    .nav-links { display: flex; gap: 30px; align-items: center; }
+    .nav-item { font-weight: 600; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-main); text-decoration: none; transition: 0.3s; cursor: pointer; position: relative; }
+    .nav-item:hover { color: var(--brand-blue); }
+    
+    .magnetic-btn { padding: 12px 25px; background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: var(--text-main); font-weight: 600; cursor: pointer; transition: 0.3s; text-decoration: none; }
+    .magnetic-btn.primary { background: var(--brand-blue); border: none; }
+    .magnetic-btn.primary:hover { box-shadow: var(--primary-glow); transform: translateY(-3px); }
+
+    /* 🌟 MEGA MENU */
+    .mega-menu { position: absolute; top: 60px; left: -50px; width: 400px; background: rgba(10,10,12,0.95); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; opacity: 0; visibility: hidden; transform: translateY(20px); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+    .nav-item:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+    .mega-link { color: var(--text-sub); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; display: block; }
+    .mega-link:hover { color: #fff; transform: translateX(5px); }
+
+    /* 🌟 HERO SLIDER (SWIPER) */
+    .hero-slider { height: 100vh; width: 100vw; position: relative; }
+    .swiper-slide { position: relative; display: flex; align-items: center; justify-content: flex-start; padding: 0 8vw; overflow: hidden; }
+    .slide-bg { position: absolute; top: 0; left: 0; width: 100%; height: 120%; object-fit: cover; z-index: -2; filter: brightness(0.6); transform: translateY(-10%); transition: transform 0.5s ease; }
+    .slide-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5,5,8,1) 0%, rgba(5,5,8,0.4) 50%, transparent 100%), linear-gradient(0deg, var(--bg-deep) 0%, transparent 30%); z-index: -1; }
+    
+    .slide-content { max-width: 800px; z-index: 10; }
+    .cinematic-title { font-family: 'Space Grotesk'; font-size: clamp(3rem, 7vw, 6.5rem); font-weight: 900; line-height: 1; margin: 20px 0; text-transform: uppercase; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+    .slide-meta { display: flex; gap: 15px; margin-bottom: 25px; font-weight: 600; font-size: 1rem; align-items: center; flex-wrap: wrap; }
+    .meta-badge { background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
+    .slide-desc { font-size: 1.1rem; line-height: 1.6; color: var(--text-sub); margin-bottom: 30px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* 🌟 BENTO GRID & 3D TILT */
+    .archive-section { padding: 80px 5vw; position: relative; z-index: 5; }
+    .section-title { font-family: 'Space Grotesk'; font-size: 2.5rem; font-weight: 900; margin-bottom: 40px; text-transform: uppercase; border-left: 5px solid var(--brand-blue); padding-left: 15px; }
+    .bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+    
+    .bento-card { background: var(--surface); border-radius: 16px; height: 420px; transform-style: preserve-3d; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); display: block; text-decoration: none; color: inherit; }
+    .bento-card:hover { border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+    .bento-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 0.5s; }
+    .bento-card:hover .bento-img { opacity: 1; transform: scale(1.05); }
+    .bento-info { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 20px; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); transform: translateZ(30px); pointer-events: none; }
+    .bento-title { font-family: 'Space Grotesk'; font-size: 1.5rem; margin: 0 0 5px 0; font-weight: 700; }
+    
+    /* 🌟 COMMAND PALETTE (CTRL+K) */
+    .command-palette { position: fixed; inset: 0; background: rgba(5, 5, 8, 0.95); backdrop-filter: blur(25px); z-index: 9999; display: flex; justify-content: center; align-items: flex-start; padding-top: 15vh; opacity: 0; pointer-events: none; transition: 0.3s ease; }
+    .command-palette.active { opacity: 1; pointer-events: all; }
+    .command-input { width: 80%; max-width: 800px; padding: 20px 0; font-size: 3rem; font-family: 'Space Grotesk'; font-weight: 900; background: transparent; border: none; border-bottom: 3px solid rgba(255,255,255,0.1); color: var(--text-main); outline: none; transition: 0.3s; }
+    .command-input:focus { border-color: var(--brand-blue); }
+
+    @media (max-width: 900px) {
+        .navbar { padding: 0 20px; height: 70px; }
+        .nav-links a:not(.primary), .nav-item { display: none; }
+        .cinematic-title { font-size: 3rem; }
+        .slide-desc { font-size: 1rem; }
+        .command-input { font-size: 2rem; width: 90%; }
+        .swiper-slide { padding: 0 5vw; }
+    }
+</style>
+
+        <style>
+        .page-container { max-width: 1400px; margin: 0 auto; padding: 120px 5vw 50px 5vw; position: relative; z-index: 10; display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: start; }
+        .hero-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -2; opacity: 0.25; filter: blur(10px); }
+        .title-huge { font-family: 'Space Grotesk'; font-size: clamp(3rem, 6vw, 5.5rem); margin: 0 0 20px 0; line-height: 1.1; text-shadow: 0 10px 30px rgba(0,0,0,0.8); text-transform: uppercase; }
+        .video-wrapper { border-radius: 20px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); width: 100%; }
+        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .article-box { line-height: 1.8; font-size: 1.15rem; color: var(--text-sub); background: var(--surface); backdrop-filter: blur(30px); padding: 50px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .article-box h1, .article-box h2 { color: var(--text-main); font-size: 2rem; font-family: 'Space Grotesk'; margin-top: 0; }
+        @media (max-width: 1024px) { .page-container { grid-template-columns: 1fr; } }
+        </style></head><body>
+
+        <nav class="navbar scrolled">
+            <a href="../index.html" class="logo">N7<span>HUB</span></a>
+            <div class="nav-links"><a href="../index.html" class="magnetic-btn primary">← RETURN TO HUB</a></div>
+        </nav>
+        
+        <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" class="hero-bg">
+        
+        <div class="page-container">
+            <div class="left-col gs-reveal">
+                <span class="meta-badge" style="color: var(--brand-blue); border: 1px solid var(--brand-blue); font-weight:bold; margin-bottom: 15px; display:inline-block;">N7 INTELLIGENCE DOSSIER</span>
+                <h1 class="title-huge">No Place to Be Single</h1>
+                <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            </div>
+            <div class="right-col gs-reveal" style="transition-delay: 0.2s;">
+                <div class="article-box"><h1>'No Place to Be Single': A Triumphant Ode to Second Chances and Unapologetic Joy</h1>
+
+<h2>The Verdict: A Resounding Triumph of Heart and Wit</h2>
+<p>In an era brimming with romantic comedies that often feel derivative or formulaic, director Sophia Reed's 'No Place to Be Single' bursts onto the scene not just as a breath of fresh air, but as a gale-force wind of intelligent humor, emotional depth, and unabashed joy. This isn't just another rom-com; it's a profound, laugh-out-loud celebration of self-discovery, resilience, and the exhilarating chaos of finding love precisely when you’ve stopped looking. Led by a career-defining performance from Vivian Holloway, the film establishes itself as an instant classic, deserving of every accolade it will undoubtedly receive. It’s a beautifully crafted narrative that reminds us that sometimes, the greatest love story is the one we write for ourselves, even if it eventually includes someone else.</p>
+
+<h2>Plot Unpacked: From Heartbreak to Hilarity and Empowerment</h2>
+<p>The film introduces us to Eleanor Vance (Vivian Holloway), a brilliant architect whose life, post-divorce from her utterly charming but fundamentally unsupportive ex-husband, Mark (Dominic Albright), is in a state of carefully curated limbo. Convinced that her romantic chapter is firmly closed, Eleanor embraces singlehood with a fervent dedication, channeling her formidable intelligence into her career and navigating the often-absurd landscape of modern dating with a cynical wit that is both relatable and utterly hilarious. Her resolve, however, is playfully challenged by the arrival of Ben Carter (Liam Maxwell), a genuinely kind, equally witty, and refreshingly down-to-earth landscape designer whose path intertwines with hers through a series of serendipitous, and often uproarious, encounters.</p>
+<p>What truly elevates 'No Place to Be Single' beyond a typical meet-cute narrative is its nuanced exploration of Eleanor’s journey of self-reclamation. Her "settling the score" isn't a petty act of revenge, but a magnificent triumph of personal and professional resurgence. As she leads a groundbreaking architectural project, subtly outmaneuvering Mark in a high-stakes professional arena, we witness her finding her voice and her power, not for spite, but for herself. The script, penned with razor-sharp precision by Evelyn Thorne, masterfully balances Eleanor’s vulnerabilities with her burgeoning strength, culminating in a third act that is as emotionally resonant as it is genuinely uplifting, proving that the most satisfying victories are those born of self-love and newfound purpose.</p>
+
+<h2>Stellar Performances: A Cast Electrifies the Screen</h2>
+<p>Vivian Holloway as Eleanor Vance delivers a performance that will undoubtedly be discussed for years to come. She imbues Eleanor with a captivating blend of vulnerability, intelligence, and a comedic timing so precise it could set a clock. Her expressions alone convey volumes, transitioning seamlessly from exasperated eye-rolls at terrible dates to the soft glow of burgeoning affection, making Eleanor feel profoundly real and wonderfully complex. It's a tour-de-force that elevates the entire production.</p>
+<p>Opposite Holloway, Liam Maxwell shines as Ben Carter. Maxwell could have easily fallen into the trap of playing a bland romantic foil, but instead, he crafts a character of quiet strength, genuine warmth, and a quick wit that perfectly complements Holloway's Eleanor. Their chemistry is not just palpable; it’s electric, built on intelligent banter and shared glances that speak volumes. The supporting cast is equally strong, with Maya Singh delivering a scene-stealing turn as Eleanor’s unfiltered best friend, Chloe, providing much of the film's consistent belly laughs. Even Dominic Albright as the ostensibly charming but ultimately self-serving ex-husband Mark, manages to elicit the perfect amount of audience disdain without veering into caricature.</p>
+
+<h2>Beyond the Screen: Extreme Trivia & Production Tidbits</h2>
+<p>The journey of 'No Place to Be Single' to the silver screen is almost as compelling as the film itself. Director Sophia Reed, known for her intelligent indie dramas, made a surprising pivot into comedy, citing Evelyn Thorne's script as "too brilliant and unique to pass up." Thorne, a former architect herself, reportedly drew heavily from her own experiences and professional observations, infusing the screenplay with an authentic voice and industry-specific humor that resonates deeply.</p>
+<p>Vivian Holloway was not the first choice for Eleanor; the role was initially offered to a much-younger actress, but Reed insisted on Holloway's casting after seeing her deliver a powerful dramatic monologue in an obscure stage play, recognizing the emotional depth required for Eleanor's character arc. Holloway spent six weeks shadowing a prominent female architect to understand the intricacies of the profession, even learning to draft blueprints by hand for a pivotal scene – a detail that astute viewers might notice in Eleanor's meticulous movements. Liam Maxwell, on the other hand, improvised several of his character’s most endearing lines, including the now-iconic "Your cynicism is merely optimism in disguise," during an early read-through, which was immediately incorporated into the final script.</p>
+<p>The film was shot almost entirely on location in vibrant, lesser-known neighborhoods of Toronto, a deliberate choice by Reed to avoid the clichéd cityscapes often seen in rom-coms, lending the film a fresh, urban authenticity. Even the background extras in the architectural firm scenes were genuine architects and designers from local firms, adding an unparalleled layer of realism. 'No Place to Be Single' debuted to a standing ovation at the Toronto International Film Festival, quickly becoming the festival’s most talked-about acquisition, with early box office projections now pointing towards it being one of the biggest sleeper hits of the year.</p>
+
+<h2>A Love Story for the Modern Age</h2>
+<p>'No Place to Be Single' is more than just a romantic comedy; it's a sharp, witty, and deeply moving testament to the power of self-love and second chances. It’s a film that empowers, entertains, and ultimately, leaves you with a warm, hopeful glow. Don’t miss this masterpiece of modern romantic cinema.</p></div>
+            </div>
+        </div>
+
+        <script>
+            const lenis = new Lenis({duration: 1.2, smooth: true});
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+            gsap.from(".gs-reveal", {y: 60, opacity: 0, duration: 1.2, stagger: 0.2, ease: "power4.out"});
+        </script>
+        </body></html>

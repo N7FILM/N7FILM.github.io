@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>The Super Mario Galaxy Movie | N7 HUB</title>
+        
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@400;600&display=swap');
+    
+    :root {
+        --bg-deep: #050508;
+        --surface: rgba(15, 15, 20, 0.7);
+        --brand-red: #E50914;
+        --brand-blue: #0f5ad1;
+        --text-main: #FFFFFF;
+        --text-sub: #A0A0A0;
+        --primary-glow: 0 0 30px rgba(15, 90, 209, 0.5);
+    }
+    
+    body, html {
+        margin: 0; padding: 0; background: var(--bg-deep); color: var(--text-main);
+        font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth;
+    }
+
+    /* 🌟 GLASSMORPHIC NAVBAR */
+    .navbar { position: fixed; top: 0; width: 100%; height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; z-index: 2000; transition: all 0.4s ease; box-sizing: border-box; background: transparent; }
+    .navbar.scrolled { background: var(--surface); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .logo { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 900; color: #fff; text-decoration: none; letter-spacing: 2px; }
+    .logo span { color: var(--brand-blue); }
+    
+    .nav-links { display: flex; gap: 30px; align-items: center; }
+    .nav-item { font-weight: 600; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-main); text-decoration: none; transition: 0.3s; cursor: pointer; position: relative; }
+    .nav-item:hover { color: var(--brand-blue); }
+    
+    .magnetic-btn { padding: 12px 25px; background: transparent; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: var(--text-main); font-weight: 600; cursor: pointer; transition: 0.3s; text-decoration: none; }
+    .magnetic-btn.primary { background: var(--brand-blue); border: none; }
+    .magnetic-btn.primary:hover { box-shadow: var(--primary-glow); transform: translateY(-3px); }
+
+    /* 🌟 MEGA MENU */
+    .mega-menu { position: absolute; top: 60px; left: -50px; width: 400px; background: rgba(10,10,12,0.95); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; opacity: 0; visibility: hidden; transform: translateY(20px); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+    .nav-item:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+    .mega-link { color: var(--text-sub); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; display: block; }
+    .mega-link:hover { color: #fff; transform: translateX(5px); }
+
+    /* 🌟 HERO SLIDER (SWIPER) */
+    .hero-slider { height: 100vh; width: 100vw; position: relative; }
+    .swiper-slide { position: relative; display: flex; align-items: center; justify-content: flex-start; padding: 0 8vw; overflow: hidden; }
+    .slide-bg { position: absolute; top: 0; left: 0; width: 100%; height: 120%; object-fit: cover; z-index: -2; filter: brightness(0.6); transform: translateY(-10%); transition: transform 0.5s ease; }
+    .slide-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5,5,8,1) 0%, rgba(5,5,8,0.4) 50%, transparent 100%), linear-gradient(0deg, var(--bg-deep) 0%, transparent 30%); z-index: -1; }
+    
+    .slide-content { max-width: 800px; z-index: 10; }
+    .cinematic-title { font-family: 'Space Grotesk'; font-size: clamp(3rem, 7vw, 6.5rem); font-weight: 900; line-height: 1; margin: 20px 0; text-transform: uppercase; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+    .slide-meta { display: flex; gap: 15px; margin-bottom: 25px; font-weight: 600; font-size: 1rem; align-items: center; flex-wrap: wrap; }
+    .meta-badge { background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
+    .slide-desc { font-size: 1.1rem; line-height: 1.6; color: var(--text-sub); margin-bottom: 30px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* 🌟 BENTO GRID & 3D TILT */
+    .archive-section { padding: 80px 5vw; position: relative; z-index: 5; }
+    .section-title { font-family: 'Space Grotesk'; font-size: 2.5rem; font-weight: 900; margin-bottom: 40px; text-transform: uppercase; border-left: 5px solid var(--brand-blue); padding-left: 15px; }
+    .bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+    
+    .bento-card { background: var(--surface); border-radius: 16px; height: 420px; transform-style: preserve-3d; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); display: block; text-decoration: none; color: inherit; }
+    .bento-card:hover { border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+    .bento-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 0.5s; }
+    .bento-card:hover .bento-img { opacity: 1; transform: scale(1.05); }
+    .bento-info { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 20px; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); transform: translateZ(30px); pointer-events: none; }
+    .bento-title { font-family: 'Space Grotesk'; font-size: 1.5rem; margin: 0 0 5px 0; font-weight: 700; }
+    
+    /* 🌟 COMMAND PALETTE (CTRL+K) */
+    .command-palette { position: fixed; inset: 0; background: rgba(5, 5, 8, 0.95); backdrop-filter: blur(25px); z-index: 9999; display: flex; justify-content: center; align-items: flex-start; padding-top: 15vh; opacity: 0; pointer-events: none; transition: 0.3s ease; }
+    .command-palette.active { opacity: 1; pointer-events: all; }
+    .command-input { width: 80%; max-width: 800px; padding: 20px 0; font-size: 3rem; font-family: 'Space Grotesk'; font-weight: 900; background: transparent; border: none; border-bottom: 3px solid rgba(255,255,255,0.1); color: var(--text-main); outline: none; transition: 0.3s; }
+    .command-input:focus { border-color: var(--brand-blue); }
+
+    @media (max-width: 900px) {
+        .navbar { padding: 0 20px; height: 70px; }
+        .nav-links a:not(.primary), .nav-item { display: none; }
+        .cinematic-title { font-size: 3rem; }
+        .slide-desc { font-size: 1rem; }
+        .command-input { font-size: 2rem; width: 90%; }
+        .swiper-slide { padding: 0 5vw; }
+    }
+</style>
+
+        <style>
+        .page-container { max-width: 1400px; margin: 0 auto; padding: 120px 5vw 50px 5vw; position: relative; z-index: 10; display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: start; }
+        .hero-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -2; opacity: 0.25; filter: blur(10px); }
+        .title-huge { font-family: 'Space Grotesk'; font-size: clamp(3rem, 6vw, 5.5rem); margin: 0 0 20px 0; line-height: 1.1; text-shadow: 0 10px 30px rgba(0,0,0,0.8); text-transform: uppercase; }
+        .video-wrapper { border-radius: 20px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); width: 100%; }
+        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .article-box { line-height: 1.8; font-size: 1.15rem; color: var(--text-sub); background: var(--surface); backdrop-filter: blur(30px); padding: 50px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .article-box h1, .article-box h2 { color: var(--text-main); font-size: 2rem; font-family: 'Space Grotesk'; margin-top: 0; }
+        @media (max-width: 1024px) { .page-container { grid-template-columns: 1fr; } }
+        </style></head><body>
+
+        <nav class="navbar scrolled">
+            <a href="../index.html" class="logo">N7<span>HUB</span></a>
+            <div class="nav-links"><a href="../index.html" class="magnetic-btn primary">← RETURN TO HUB</a></div>
+        </nav>
+        
+        <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="hero-bg">
+        
+        <div class="page-container">
+            <div class="left-col gs-reveal">
+                <span class="meta-badge" style="color: var(--brand-blue); border: 1px solid var(--brand-blue); font-weight:bold; margin-bottom: 15px; display:inline-block;">N7 INTELLIGENCE DOSSIER</span>
+                <h1 class="title-huge">The Super Mario Galaxy Movie</h1>
+                <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            </div>
+            <div class="right-col gs-reveal" style="transition-delay: 0.2s;">
+                <div class="article-box">```html
+<h1>'The Super Mario Galaxy Movie': A Stellar Sequel That Reaches for the Stars!</h1>
+
+<h2>Introduction: The Cosmic Crescendo We Deserved</h2>
+<p>After the groundbreaking success of its predecessor, the anticipation for 'The Super Mario Galaxy Movie' was, quite literally, astronomical. Fans wondered if Nintendo, Illumination, and the visionary filmmakers could once again bottle the lightning, or rather, the stardust, of the beloved game franchise. Let me put your worries to rest: not only does 'The Super Mario Galaxy Movie' meet the sky-high expectations, it blasts past them with the force of a Grand Star. This isn't just a sequel; it's a cosmic ballet, a thrilling odyssey that expands the Mario cinematic universe with breathtaking scope, heartfelt storytelling, and a relentless cascade of fan service that never feels gratuitous. It’s a testament to the power of animation and a love letter to one of gaming's most iconic adventures. From its opening shot, the film establishes a wondrous tone, immediately immersing viewers in a vibrant, gravity-defying universe that feels both comfortingly familiar and exhilaratingly new. It’s an instant classic, a worthy successor, and a genuinely uplifting cinematic experience for all ages.</p>
+
+<h2>A Plot That Soars Across the Cosmos: Beyond the Mushroom Kingdom</h2>
+<p>The narrative picks up in the idyllic aftermath of Mario and Luigi's triumph over King Bowser. The Mushroom Kingdom enjoys a fragile peace, but as we know, evil seldom stays defeated for long. The fresh threat emerges not from the familiar fire-breathing monarch, but from his ambitious and surprisingly cunning son, Bowser Jr. Voiced with a perfect blend of childish petulance and genuine menace, Jr. is on a singular mission: to liberate his imprisoned father and restore the Koopa dynasty to its former glory. His plan is ingenious, relying on a blend of ancient Koopa magic and newly discovered cosmic energy, requiring him to gather powerful Star Bits scattered across various galaxies. This sets Mario (Chris Pratt) and Luigi (Charlie Day) on an unprecedented journey. Princess Peach (Anya Taylor-Joy), now an even more formidable ally, senses the cosmic disturbance and summons our heroes. Soon, they are joined by companions both familiar (a delightfully expressive Yoshi who finally gets his big-screen moment) and wonderfully new: the wise and ethereal Rosalina (Tilda Swinton, a casting masterstroke) and her adorable, star-shaped Lumas. Their quest takes them through fantastical galaxies – from the luscious landscapes of Honeyhive Galaxy to the perilous icy peaks of Freezeflame Galaxy, each realized with astonishing detail and dynamic, gravity-bending action. The pacing is relentless, yet allows moments for character development and genuine emotional resonance, particularly in the bond between the brothers and Rosalina's poignant backstory. The climax is an epic showdown at the heart of a nascent black hole, a visual and emotional spectacle that will leave audiences on the edge of their seats.</p>
+
+<h2>Voice Acting: More Than Just "It's-a Me!"</h2>
+<p>The voice cast truly shines, solidifying their roles and adding new layers to these beloved characters. Chris Pratt’s Mario has matured, embodying a more seasoned hero while retaining his trademark earnestness and optimism. He delivers a performance that balances action-hero gravitas with genuine warmth. Charlie Day’s Luigi continues to be a comedic highlight, his nervous energy perfectly counterpointed by bursts of unexpected courage. His character arc feels more pronounced here, as he faces fears far beyond haunted mansions. Anya Taylor-Joy’s Peach is unequivocally a strong, independent leader, actively participating in the adventure and providing crucial tactical insight. However, the true standouts are the new additions. The voice behind Bowser Jr. (we'll keep it spoiler-free for those who haven't seen the credits!) absolutely nails the complex psychology of a child villain – desperate for his father's approval yet capable of immense destruction. It’s a performance that brings surprising depth to what could have been a one-note antagonist. And then there's Tilda Swinton's Rosalina. Her voice is a soothing, otherworldly balm, conveying ancient wisdom and profound melancholy, perfectly capturing the character's cosmic grandeur and maternal tenderness towards the Lumas. The adorable chirps and squeaks of the Lumas themselves add immense charm, making them instant fan favorites. The ensemble's chemistry is palpable, grounding the fantastical adventure in genuine emotional connections, making every victory feel earned and every peril genuinely threatening.</p>
+
+<h2>Beyond the Power-Up: Extreme Trivia & Easter Eggs</h2>
+<p>For the ardent Mario fan, 'The Super Mario Galaxy Movie' is a treasure trove of extreme trivia and meticulously placed easter eggs that demonstrate an unparalleled reverence for the source material.
+<ol>
+    <li><b>Musical Masterpiece:</b> The film's score, a brilliant adaptation of Mahito Yokota's original orchestral themes from the games, is a character in itself. Listen closely, and you'll hear not just iconic melodies like 'Gusty Garden Galaxy' and 'Good Egg Galaxy' given cinematic grandeur, but also subtle nods to Koji Kondo's earlier works, weaving a rich tapestry of Nintendo's musical legacy.</li>
+    <li><b>Gravity-Defying Animation:</b> Animators reportedly spent months studying orbital mechanics and real-world astrophysics (simplified, of course) to make the film's unique gravity-based platforming feel authentic and visually consistent, translating the game's core mechanic into breathtaking cinematic sequences.</li>
+    <li><b>Rosalina's Storybook:</b> While not explicitly shown, Rosalina's poignant backstory from the game's optional storybook is subtly referenced through visual cues and her dialogue, hinting at her deep connection to the Lumas and her role as the Comet Observatory's guardian. Keen-eyed fans will notice designs on the Observatory that echo pages from the book.</li>
+    <li><b>Obscure Cameos:</b> Beyond the main cast, watch for blink-and-you'll-miss-it appearances from minor characters like Polari, the star-shaped guide from the Comet Observatory, and even a brief glimpse of Lubba from 'Super Mario Galaxy 2'. The variety of Star Bits, including purple and green variants, is also faithfully rendered.</li>
+    <li><b>Power-Up Showcase:</b> The film doesn't shy away from showcasing beloved power-ups beyond the Fire Flower. We get exhilarating sequences featuring Bee Mario, Boo Mario, and even a cleverly utilized Spring Mario, each integrated organically into the action and serving a plot purpose.</li>
+    <li><b>The "New Super Mario Bros." Nod:</b> During a comedic chase scene in the film's second act, listen for a quick, rhythmic drum beat that directly samples the iconic 'New Super Mario Bros.' theme, a fun meta-reference for long-time players.</li>
+    <li><b>Behind Bowser Jr.'s Design:</b> The movie's interpretation of Bowser Jr. incorporates elements from his various appearances, combining his mischievous 'Super Mario Sunshine' look with the more aggressive design from 'Super Smash Bros.' to create a character that is both recognizable and uniquely cinematic.</li>
+</ol>
+The level of detail is astounding, rewarding multiple viewings and cementing the film as a definitive adaptation.</p>
+
+<h2>Conclusion: A Universe of Potential</h2>
+<p>'The Super Mario Galaxy Movie' isn't just a sequel; it's a profound statement on the potential of video game adaptations when handled with genuine care and creative audacity. It’s a vibrant, exhilarating, and emotionally resonant film that manages to honor its source material while forging its own identity. The animation is unparalleled, the action sequences are inventive, and the heart of the story — the bond between brothers and the fight for cosmic balance — resonates deeply. It sets a new benchmark for animated features and leaves the audience eagerly anticipating where Mario's next adventure might take him. The post-credits scene alone, hinting at an even grander threat lurking in the cosmos, ensures that the Mario cinematic universe has a bright, star-filled future. Go see it. You won't just be entertained; you'll be transported.</p>
+```</div>
+            </div>
+        </div>
+
+        <script>
+            const lenis = new Lenis({duration: 1.2, smooth: true});
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+            gsap.from(".gs-reveal", {y: 60, opacity: 0, duration: 1.2, stagger: 0.2, ease: "power4.out"});
+        </script>
+        </body></html>
