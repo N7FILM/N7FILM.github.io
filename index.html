@@ -1,124 +1,223 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>N7 | Cinematic Hub</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>N7 | Advanced Cinematic Intelligence</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700&family=Inter:wght@400;600&display=swap');
-body { background: #000; color: #fff; font-family: 'Inter', sans-serif; margin: 0; }
-.god-nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5vw; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 1000; }
-.logo { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 700; color: #fff; text-decoration: none; }
-.logo span { color: #0f5ad1; }
-.search-input { background: #111; border: 1px solid #333; color: #fff; padding: 12px 25px; border-radius: 50px; outline: none; width: 300px; transition: 0.3s; }
-.search-input:focus { border-color: #0f5ad1; box-shadow: 0 0 20px rgba(15, 90, 209, 0.3); }
-.bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 40px; padding: 5vw; max-width: 1600px; margin: auto; }
-.glass-card { background: #0a0a0a; border: 1px solid #1a1a1a; border-radius: 16px; overflow: hidden; transition: 0.4s; text-decoration: none; color: inherit; display: block; }
-.glass-card:hover { transform: translateY(-10px); border-color: #0f5ad1; box-shadow: 0 15px 40px rgba(15, 90, 209, 0.2); }
-.card-img { width: 100%; height: 250px; object-fit: cover; opacity: 0.6; transition: 0.4s; }
-.glass-card:hover .card-img { opacity: 1; }
-.card-content { padding: 30px; }
-.card-title { font-family: 'Space Grotesk'; font-size: 1.8rem; margin: 0 0 10px 0; }
-.hud-tag { background: #111; color: #57b5f9; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; border: 1px solid #222; }
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;700;900&family=Inter:wght@400;600&display=swap');
+:root { --bg: #030303; --surface: #0f0f13; --primary: #0066ff; --text: #ffffff; --text-muted: #888; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; display: flex; overflow-x: hidden; }
+
+/* 🌟 SLEEK EXPANDABLE SIDEBAR */
+.sidebar { width: 80px; height: 100vh; background: rgba(15,15,19,0.8); backdrop-filter: blur(20px); border-right: 1px solid rgba(255,255,255,0.05); position: fixed; display: flex; flex-direction: column; align-items: center; padding-top: 30px; transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 1000; overflow: hidden; white-space: nowrap; }
+.sidebar:hover { width: 280px; align-items: flex-start; padding-left: 20px; }
+.logo-box { font-family: 'Space Grotesk'; font-size: 1.8rem; font-weight: 900; color: #fff; margin-bottom: 50px; cursor: pointer; display: flex; align-items: center; gap: 15px; width: 100%; }
+.logo-box span { color: var(--primary); }
+.logo-text { opacity: 0; transition: 0.3s; }
+.sidebar:hover .logo-text { opacity: 1; }
+.menu-item { display: flex; align-items: center; gap: 20px; color: var(--text-muted); text-decoration: none; font-size: 1.1rem; font-weight: 600; padding: 15px; border-radius: 12px; transition: 0.3s; width: calc(100% - 40px); margin-bottom: 10px; cursor: pointer; }
+.menu-item:hover, .menu-item.active { background: rgba(0, 102, 255, 0.1); color: var(--primary); }
+.menu-icon { width: 24px; height: 24px; fill: currentColor; flex-shrink: 0; }
+.menu-label { opacity: 0; transition: 0.3s; transform: translateX(-10px); }
+.sidebar:hover .menu-label { opacity: 1; transform: translateX(0); }
+
+/* MAIN CONTENT AREA */
+.main-content { margin-left: 80px; width: calc(100% - 80px); transition: margin-left 0.4s; }
+
+/* 🌟 CINEMATIC HERO SECTION */
+.hero { height: 80vh; position: relative; display: flex; align-items: flex-end; padding: 5vw; background-image: linear-gradient(to top, var(--bg) 0%, rgba(3,3,3,0) 100%), url('https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg'); background-size: cover; background-position: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.hero-content { max-width: 800px; position: relative; z-index: 10; }
+.hero-tag { background: var(--primary); color: #fff; padding: 5px 12px; border-radius: 4px; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; display: inline-block; margin-bottom: 15px; }
+.hero-title { font-family: 'Space Grotesk'; font-size: clamp(3rem, 6vw, 5rem); font-weight: 900; line-height: 1.1; margin: 0 0 20px 0; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+.hero-btn { background: #fff; color: #000; text-decoration: none; font-family: 'Space Grotesk'; font-weight: 700; font-size: 1.1rem; padding: 15px 35px; border-radius: 50px; display: inline-block; transition: 0.3s; border: 2px solid transparent; }
+.hero-btn:hover { background: transparent; color: #fff; border-color: #fff; backdrop-filter: blur(10px); }
+
+/* 🌟 BENTO GRID */
+.section-title { padding: 0 5vw; font-family: 'Space Grotesk'; font-size: 2rem; margin-top: 40px; color: #fff; }
+.bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; padding: 20px 5vw 100px 5vw; }
+.glass-card { background: var(--surface); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; transition: 0.4s; text-decoration: none; color: inherit; position: relative; }
+.glass-card:hover { transform: translateY(-10px); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+.card-img { width: 100%; height: 350px; object-fit: cover; opacity: 0.8; transition: 0.5s; }
+.glass-card:hover .card-img { opacity: 1; scale: 1.05; }
+.card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 40px 20px 20px 20px; box-sizing: border-box; }
+.card-title { font-family: 'Space Grotesk'; font-size: 1.4rem; font-weight: 700; margin: 0 0 5px 0; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+.card-year { color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+
+/* 🌟 COMMAND CENTER SEARCH (GOD LEVEL) */
+.search-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); z-index: 9999; display: none; justify-content: center; align-items: flex-start; padding-top: 15vh; opacity: 0; transition: 0.3s; }
+.search-overlay.active { display: flex; opacity: 1; }
+.search-box { width: 80%; max-width: 800px; position: relative; }
+.search-input { width: 100%; background: transparent; border: none; border-bottom: 2px solid rgba(255,255,255,0.2); color: #fff; font-size: 3rem; font-family: 'Space Grotesk'; font-weight: 700; padding: 20px 0; outline: none; transition: 0.3s; }
+.search-input:focus { border-color: var(--primary); }
+.search-close { position: absolute; top: -40px; right: 0; color: #fff; font-size: 1.5rem; cursor: pointer; font-family: 'Space Grotesk'; }
+.no-results { display: none; color: #888; font-size: 1.5rem; margin-top: 40px; text-align: center; font-family: 'Space Grotesk'; }
+
+@media (max-width: 800px) { .sidebar { width: 60px; } .main-content { margin-left: 60px; width: calc(100% - 60px); } .sidebar:hover { width: 60px; padding-left: 0; align-items: center; } .sidebar:hover .logo-text, .sidebar:hover .menu-label { display: none; } .hero-title { font-size: 2.5rem; } .search-input { font-size: 2rem; } }
 </style></head><body>
 
-<nav class="god-nav">
-    <a href="index.html" class="logo">N7<span>_HUB</span></a>
-    <input type="text" id="searchInput" class="search-input" placeholder="Initiate Search Sequence...">
-</nav>
+<div class="sidebar">
+    <div class="logo-box">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="var(--primary)"><path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13.5h-13L12 6.5z"/></svg>
+        <span class="logo-text">N7<span style="color:#fff;">HUB</span></span>
+    </div>
+    <a href="#" class="menu-item active">
+        <svg class="menu-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span class="menu-label">Home</span>
+    </a>
+    <div class="menu-item" onclick="openSearch()">
+        <svg class="menu-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        <span class="menu-label">Command Search</span>
+    </div>
+    <a href="#" class="menu-item">
+        <svg class="menu-icon" viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+        <span class="menu-label">Categories</span>
+    </a>
+</div>
 
-<div class="bento-grid" id="movieGrid">
+<div class="search-overlay" id="searchOverlay">
+    <div class="search-box">
+        <div class="search-close" onclick="closeSearch()">[ ESC ] TO CLOSE</div>
+        <input type="text" id="searchInput" class="search-input" placeholder="Initiate Protocol...">
+        <div class="no-results" id="noResults">NO ARCHIVES FOUND.</div>
+    </div>
+</div>
 
-        <a href="movies/remarkably-bright-creatures.html" class="glass-card gs-reveal" data-title="remarkably bright creatures">
-            <img src="https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
-                <h2 class="card-title">Remarkably Bright Creatures</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
-            </div>
-        </a>
+<div class="main-content">
+    <div class="hero gs-reveal">
+        <div class="hero-content">
+            <div class="hero-tag">FEATURED INTELLIGENCE</div>
+            <h1 class="hero-title">Remarkably Bright Creatures</h1>
+            <a href="movies/remarkably-bright-creatures.html" class="hero-btn">Access Database</a>
+        </div>
+    </div>
+
+    <h2 class="section-title gs-reveal">Classified Archives</h2>
+    <div class="bento-grid" id="movieGrid">
+
         <a href="movies/no-place-to-be-single.html" class="glass-card gs-reveal" data-title="no place to be single">
             <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">No Place to Be Single</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
         <a href="movies/mortal-kombat-ii.html" class="glass-card gs-reveal" data-title="mortal kombat ii">
             <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">Mortal Kombat II</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
         <a href="movies/swapped.html" class="glass-card gs-reveal" data-title="swapped">
             <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">Swapped</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
         <a href="movies/ready-or-not-2-here-i-come.html" class="glass-card gs-reveal" data-title="ready or not 2: here i come">
             <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">Ready or Not 2: Here I Come</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
         <a href="movies/my-dearest-assassin.html" class="glass-card gs-reveal" data-title="my dearest assassin">
             <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">My Dearest Assassin</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
         <a href="movies/the-super-mario-galaxy-movie.html" class="glass-card gs-reveal" data-title="the super mario galaxy movie">
             <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">The Super Mario Galaxy Movie</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
         <a href="movies/hoppers.html" class="glass-card gs-reveal" data-title="hoppers">
             <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">Hoppers</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
         <a href="movies/the-drama.html" class="glass-card gs-reveal" data-title="the drama">
             <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">The Drama</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
         <a href="movies/beast.html" class="glass-card gs-reveal" data-title="beast">
             <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">Beast</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
         <a href="movies/project-hail-mary.html" class="glass-card gs-reveal" data-title="project hail mary">
             <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">Project Hail Mary</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
         <a href="movies/michael.html" class="glass-card gs-reveal" data-title="michael">
             <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" class="card-img" loading="lazy">
-            <div class="card-content">
+            <div class="card-overlay">
                 <h2 class="card-title">Michael</h2>
-                <span class="hud-tag">ARCHIVE: 2026</span>
+                <div class="card-year">2026</div>
             </div>
         </a>
+        <a href="movies/send-help.html" class="glass-card gs-reveal" data-title="send help">
+            <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" class="card-img" loading="lazy">
+            <div class="card-overlay">
+                <h2 class="card-title">Send Help</h2>
+                <div class="card-year">2026</div>
+            </div>
+        </a>
+    </div>
 </div>
+
 <script>
-    // Live Search
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        document.querySelectorAll('.glass-card').forEach(card => {
-            card.style.display = card.getAttribute('data-title').includes(query) ? 'block' : 'none';
+    // Reveal Animations
+    gsap.from(".gs-reveal", {y: 60, opacity: 0, duration: 1.2, stagger: 0.1, ease: "power4.out"});
+
+    // Command Search Logic
+    const overlay = document.getElementById('searchOverlay');
+    const input = document.getElementById('searchInput');
+    const cards = document.querySelectorAll('.glass-card');
+    const noResults = document.getElementById('noResults');
+
+    function openSearch() { overlay.classList.add('active'); input.focus(); document.body.style.overflow = 'hidden'; }
+    function closeSearch() { overlay.classList.remove('active'); input.value = ''; filterCards(''); document.body.style.overflow = 'auto'; }
+    
+    // Close on ESC key
+    document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeSearch(); });
+
+    input.addEventListener('input', (e) => filterCards(e.target.value.toLowerCase()));
+
+    function filterCards(query) {
+        let visibleCount = 0;
+        cards.forEach(card => {
+            if(card.getAttribute('data-title').includes(query)) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
         });
-    });
-    // GSAP Reveal Animation
-    gsap.from(".gs-reveal", {y: 50, opacity: 0, duration: 1, stagger: 0.1, ease: "power3.out"});
+        
+        // Hide Hero section if searching, show if query is empty
+        document.querySelector('.hero').style.display = query.length > 0 ? 'none' : 'flex';
+        document.querySelector('.section-title').style.display = query.length > 0 ? 'none' : 'block';
+        
+        noResults.style.display = (visibleCount === 0 && query.length > 0) ? 'block' : 'none';
+        
+        // Close search overlay automatically if clicking a result happens
+        if (query.length > 0) {
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    }
 </script>
 </body></html>

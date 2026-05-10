@@ -1,24 +1,28 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Swapped</title>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Swapped | N7 Base</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400&display=swap');
-        body { margin: 0; background: #000; color: #fff; font-family: 'Inter', sans-serif; }
-        .hero-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0.2; object-fit: cover; z-index: -1; filter: blur(5px); }
-        .nav { padding: 30px 5vw; display: flex; justify-content: space-between; }
-        .back-btn { color: #0f5ad1; text-decoration: none; font-weight: bold; border: 1px solid #0f5ad1; padding: 10px 20px; border-radius: 50px; }
-        .container { max-width: 1000px; margin: auto; padding: 0 5vw 100px 5vw; }
-        h1 { font-family: 'Space Grotesk'; font-size: 4rem; margin-bottom: 50px; }
-        .video-box { border-radius: 20px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@400;600&display=swap');
+        body { margin: 0; background: #030303; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .hero-bg { position: absolute; top: 0; left: 0; width: 100vw; height: 80vh; object-fit: cover; z-index: -1; opacity: 0.4; mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%); }
+        .nav { padding: 30px 5vw; display: flex; justify-content: space-between; position: relative; z-index: 10; }
+        .back-btn { color: #fff; text-decoration: none; font-family: 'Space Grotesk'; font-weight: 700; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
+        .back-btn:hover { color: #0066ff; transform: translateX(-5px); }
+        .container { max-width: 1200px; margin: auto; padding: 50px 5vw 100px 5vw; position: relative; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+        .title-box h1 { font-family: 'Space Grotesk'; font-size: clamp(3rem, 6vw, 6rem); margin: 0; line-height: 1; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .video-box { border-radius: 24px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); width: 100%; }
         iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .data-box { margin-top: 50px; line-height: 1.8; font-size: 1.2rem; color: #ccc; background: rgba(10,10,10,0.8); padding: 40px; border-radius: 20px; border: 1px solid #222; }
-        .data-box h1, .data-box h2 { color: #fff; font-size: 2rem; font-family: 'Space Grotesk'; }
+        .data-box { grid-column: 1 / -1; margin-top: 20px; line-height: 1.8; font-size: 1.15rem; color: #bbb; background: rgba(15,15,19,0.8); backdrop-filter: blur(20px); padding: 50px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); }
+        .data-box h1, .data-box h2 { color: #fff; font-size: 2.5rem; font-family: 'Space Grotesk'; margin-top: 0; }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
         </style></head><body>
         
         <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="hero-bg">
-        <div class="nav"><a href="../index.html" class="back-btn">← TERMINATE FEED</a></div>
+        <div class="nav"><a href="../index.html" class="back-btn">← Return to Base</a></div>
         
         <div class="container gs-reveal">
-            <h1>Swapped</h1>
+            <div class="title-box">
+                <h1>Swapped</h1>
+            </div>
             <div class="video-box"><iframe src="https://www.youtube.com/embed/"></iframe></div>
             <div class="data-box"><h1>'Swapped': A Soaring Tale of Feathers, Fur, and Unlikely Friendship That Redefines the Animated Epic</h1>
 
@@ -38,5 +42,5 @@
 
 <p>Beyond its narrative brilliance, 'Swapped' is laden with fascinating trivia that deepens its allure. Director Elara Vance revealed in a post-screening Q&A that the initial concept for the film involved a human child swapping places with an alien, a much grander but ultimately less intimate idea. The decision to scale it down to two natural enemies in a confined ecosystem proved to be a stroke of genius. The animation team at Everwood Studios pioneered new fur and feather rendering techniques, allowing for unprecedented detail and realistic movement, particularly evident in Skye’s majestic flights and Pip’s frantic scurrying. Reportedly, Jaxson Bellwether spent weeks observing squirrels in their natural habitat, even attempting to climb trees with weights strapped to his body to better understand Pip's physical comedy and challenges. Seraphina Thorne, conversely, spent time at a raptor rehabilitation center, studying eagle calls and wing movements to inform her performance and understand the 'spirit' of Skye. The film's score, composed by the prodigious Lira Nightingale, incorporates traditional folk instruments alongside a full orchestra, creating a unique soundscape that perfectly balances the humor, tension, and wonder of the valley. Keen-eyed viewers might spot an Easter egg: a fleeting glimpse of a carved totem pole that resembles a previous Everwood Studios character, a subtle nod to their animated legacy. 'Swapped' is not just a film; it's a testament to the power of animation to tell stories that are both universally appealing and deeply personal.</p></div>
         </div>
-        <script>gsap.from(".gs-reveal", {y: 50, opacity: 0, duration: 1});</script>
+        <script>gsap.from(".gs-reveal", {y: 60, opacity: 0, duration: 1.2, ease: "power4.out"});</script>
         </body></html>
