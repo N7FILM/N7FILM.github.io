@@ -1,66 +1,45 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>STREAMIT | Elite VOD</title>
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STREAMIT | Elite Cinema Hub</title>
+<link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
-<link rel="stylesheet" href="assets/css/style.css">
 </head><body>
 
-    <div class="custom-cursor"></div>
+    <div class="custom-cursor-dot"></div><div class="custom-cursor-ring"></div>
 
-    <header class="command-navbar">
-        <a href="index.html" class="brand-text">STREAM<span>IT</span></a>
+    <header class="command-navbar" id="main-nav">
+        <a href="index.html" class="navbar-brand">STREAM<span>IT</span></a>
         <ul class="menu-list">
             <li><a href="#" class="menu-link">Home</a></li>
-            <li><a href="#" class="menu-link">Features</a></li>
-            <li><a href="#" class="menu-link">Database</a></li>
+            <li class="has-mega-menu">
+                <a href="#" class="menu-link">Blog ▾</a>
+                <div class="mega-menu">
+                    <a href="#" class="menu-link" style="display:block; margin-bottom:10px;">Blog Grid</a>
+                    <a href="#" class="menu-link" style="display:block;">Blog Sidebar</a>
+                </div>
+            </li>
+            <li><a href="#" class="menu-link">Live TV</a></li>
         </ul>
-        <button class="btn-login-neon">Sign In</button>
+        <button class="btn-primary-play" style="padding: 10px 20px; font-size:1rem;">Login</button>
     </header>
 
     <section class="hero-slider-wrapper">
         <div class="swiper hero-swiper">
             <div class="swiper-wrapper">
-
                 <div class="swiper-slide">
                     <div class="slide-bg" style="background-image: url('https://image.tmdb.org/t/p/w500/9HcEqn3D4J6b2Z0jK54id9nA0fr.jpg');"></div>
                     <div class="vignette-overlay"></div>
                     <div class="slide-content-container">
-                        <div style="max-width: 800px;">
-                            <h1 class="movie-title">Remarkably Bright Creatures</h1>
-                            <div class="metadata-row">
-                                <span class="imdb-badge">9.5 IMDB</span>
-                                <span>2026</span>
-                                <span style="color: var(--accent-blood-red); font-weight: 800;">4K ULTRA HD</span>
-                            </div>
-                            <a href="movies/remarkably-bright-creatures.html" class="btn-primary-play" style="display: inline-flex; text-decoration: none;">▶ Initiate Feed</a>
+                        <h1 class="movie-title">Remarkably Bright Creatures</h1>
+                        <div class="stagger-target" style="display:flex; gap: 15px; margin-bottom: 20px; font-weight:600;">
+                            <span style="background:var(--accent-star-yellow); color:#000; padding:2px 6px; border-radius:3px;">9.5 IMDB</span>
+                            <span style="border: 1px solid rgba(255,255,255,0.4); padding:2px 6px;">NC-17</span>
                         </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="slide-bg" style="background-image: url('https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg');"></div>
-                    <div class="vignette-overlay"></div>
-                    <div class="slide-content-container">
-                        <div style="max-width: 800px;">
-                            <h1 class="movie-title">No Place to Be Single</h1>
-                            <div class="metadata-row">
-                                <span class="imdb-badge">9.5 IMDB</span>
-                                <span>2026</span>
-                                <span style="color: var(--accent-blood-red); font-weight: 800;">4K ULTRA HD</span>
-                            </div>
-                            <a href="movies/no-place-to-be-single.html" class="btn-primary-play" style="display: inline-flex; text-decoration: none;">▶ Initiate Feed</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-slide">
-                    <div class="slide-bg" style="background-image: url('https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg');"></div>
-                    <div class="vignette-overlay"></div>
-                    <div class="slide-content-container">
-                        <div style="max-width: 800px;">
-                            <h1 class="movie-title">Mortal Kombat II</h1>
-                            <div class="metadata-row">
-                                <span class="imdb-badge">9.5 IMDB</span>
-                                <span>2026</span>
-                                <span style="color: var(--accent-blood-red); font-weight: 800;">4K ULTRA HD</span>
-                            </div>
-                            <a href="movies/mortal-kombat-ii.html" class="btn-primary-play" style="display: inline-flex; text-decoration: none;">▶ Initiate Feed</a>
+                        <p class="stagger-target" style="max-width: 600px; line-height: 1.6; color: var(--text-slate-grey);"><h1>Remarkably Bright Creatures: A Luminescent Dive into the Depths of the Human Heart</h1>
+
+<p>Every so often, a film emerges from the depths of the ...</p>
+                        <div class="stagger-target" style="margin-top: 30px;">
+                            <a href="movies/remarkably-bright-creatures.html" class="btn-primary-play">▶ Play Now</a>
                         </div>
                     </div>
                 </div>
@@ -68,76 +47,113 @@
         </div>
     </section>
 
-    <section class="archive-section">
-        <h2 class="section-title">Trending Intelligence</h2>
-        <div class="bento-grid">
+    <section class="bento-section">
+        <h2 class="section-title">Trending Archives</h2>
+        <div class="swiper bento-swiper">
+            <div class="swiper-wrapper">
 
-            <a href="movies/swapped.html" class="bento-card">
-                <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" class="bento-img" loading="lazy">
-                <div class="bento-overlay">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">Swapped</h3>
+                <div class="swiper-slide">
+                    <a href="movies/no-place-to-be-single.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w500/6n95Q0HGpFnA4rlnfAKknkoy6XV.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">No Place to Be Single</h3>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="movies/ready-or-not-2-here-i-come.html" class="bento-card">
-                <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" class="bento-img" loading="lazy">
-                <div class="bento-overlay">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">Ready or Not 2: Here I Come</h3>
+                <div class="swiper-slide">
+                    <a href="movies/mortal-kombat-ii.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w500/lIsMeDbwntNXSUVHmWMMRXEZOVc.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Mortal Kombat II</h3>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="movies/my-dearest-assassin.html" class="bento-card">
-                <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" class="bento-img" loading="lazy">
-                <div class="bento-overlay">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">My Dearest Assassin</h3>
+                <div class="swiper-slide">
+                    <a href="movies/swapped.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w500/tHhxWxge06goXU6ZQH1hj7vK8Hd.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Swapped</h3>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="movies/the-super-mario-galaxy-movie.html" class="bento-card">
-                <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" class="bento-img" loading="lazy">
-                <div class="bento-overlay">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">The Super Mario Galaxy Movie</h3>
+                <div class="swiper-slide">
+                    <a href="movies/ready-or-not-2-here-i-come.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w500/oR1oiQ3YnpWjRE42I0Rb8LBd8Dg.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Ready or Not 2: Here I Come</h3>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="movies/hoppers.html" class="bento-card">
-                <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" class="bento-img" loading="lazy">
-                <div class="bento-overlay">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">Hoppers</h3>
+                <div class="swiper-slide">
+                    <a href="movies/my-dearest-assassin.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w500/ul4dQcA68mtSx8J56N5gEcaCCtP.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">My Dearest Assassin</h3>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="movies/the-drama.html" class="bento-card">
-                <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" class="bento-img" loading="lazy">
-                <div class="bento-overlay">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">The Drama</h3>
+                <div class="swiper-slide">
+                    <a href="movies/the-super-mario-galaxy-movie.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w500/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">The Super Mario Galaxy Movie</h3>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="movies/beast.html" class="bento-card">
-                <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" class="bento-img" loading="lazy">
-                <div class="bento-overlay">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">Beast</h3>
+                <div class="swiper-slide">
+                    <a href="movies/hoppers.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w1280/u53UYu5XG2hNgWGvs3xGhAVzypl.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Hoppers</h3>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="movies/project-hail-mary.html" class="bento-card">
-                <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" class="bento-img" loading="lazy">
-                <div class="bento-overlay">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">Project Hail Mary</h3>
+                <div class="swiper-slide">
+                    <a href="movies/the-drama.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w1280/b8H1a89qmNxF8rqFGrG93Q9qn52.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">The Drama</h3>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="movies/michael.html" class="bento-card">
-                <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" class="bento-img" loading="lazy">
-                <div class="bento-overlay">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">Michael</h3>
+                <div class="swiper-slide">
+                    <a href="movies/beast.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w1280/hlZGaey4lR9hc4rGxZRAmIEsZOc.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Beast</h3>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a href="movies/send-help.html" class="bento-card">
-                <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" class="bento-img" loading="lazy">
-                <div class="bento-overlay">
-                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 5px;">Send Help</h3>
+                <div class="swiper-slide">
+                    <a href="movies/project-hail-mary.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w1280/8Tfys3mDZVp4tNoH2ktm06a0Tau.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Project Hail Mary</h3>
+                        </div>
+                    </a>
                 </div>
-            </a>
+                <div class="swiper-slide">
+                    <a href="movies/michael.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w1280/xBT0oNq6rsTFv4SxG5uGRIEOrq6.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Michael</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="swiper-slide">
+                    <a href="movies/send-help.html" class="bento-card">
+                        <img src="https://image.tmdb.org/t/p/w1280/gCmfeKmEAZBP5gcXpiqb0gii9rS.jpg" loading="lazy">
+                        <div class="card-overlay">
+                            <h3 class="card-title">Send Help</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="assets/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script src="js/app.js"></script>
 </body></html>

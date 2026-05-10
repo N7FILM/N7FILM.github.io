@@ -1,0 +1,69 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@700;900&display=swap');
+
+:root {
+    --bg-space-black: #0a0a0f;
+    --bg-surface-elevated: #1a1a2e;
+    --accent-blood-red: #e50914;
+    --accent-hover-red: #ff2b2b;
+    --text-absolute-white: #ffffff;
+    --text-slate-grey: #a3a8b4;
+    --accent-star-yellow: #faca2b;
+    --glass-base-dark: rgba(10, 10, 15, 0.75);
+}
+
+body, html { margin: 0; padding: 0; background: var(--bg-space-black); color: var(--text-absolute-white); font-family: 'Inter', sans-serif; overflow-x: hidden; cursor: none; }
+
+/* CUSTOM CURSOR */
+@media (pointer: fine) {
+    .custom-cursor-dot { position: fixed; width: 8px; height: 8px; background: var(--text-absolute-white); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); }
+    .custom-cursor-ring { position: fixed; width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: width 0.3s, height 0.3s, border-color 0.3s; }
+    .magnetic-active { width: 60px; height: 60px; border-color: var(--accent-blood-red); background: rgba(229, 9, 20, 0.1); }
+}
+@media (pointer: coarse) { body, html { cursor: auto; } .custom-cursor-dot, .custom-cursor-ring { display: none !important; } }
+
+/* GLASSMORPHIC COMMAND NAVBAR */
+.command-navbar { position: fixed; top: 0; width: 100%; z-index: 9000; background: transparent; transition: 0.4s ease; padding: 20px 5%; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; }
+.command-navbar.scrolled { background: var(--glass-base-dark); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 15px 5%; }
+.navbar-brand { font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 900; color: var(--text-absolute-white); text-decoration: none; letter-spacing: 1px; }
+.navbar-brand span { color: var(--accent-blood-red); }
+.menu-list { display: flex; gap: 30px; list-style: none; margin: 0; padding: 0; }
+.menu-link { color: var(--text-absolute-white); text-decoration: none; font-weight: 600; transition: 0.3s; }
+.menu-link:hover { color: var(--accent-blood-red); }
+
+/* MEGA MENU (Hover Intent) */
+.has-mega-menu { position: relative; }
+.mega-menu { position: absolute; top: 40px; left: 0; background: var(--bg-surface-elevated); border-radius: 12px; padding: 20px; width: 250px; opacity: 0; visibility: hidden; transform: translateY(15px); box-shadow: 0 20px 40px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.05); }
+
+/* HERO SWIPER */
+.hero-slider-wrapper { width: 100vw; height: 100vh; position: relative; }
+.swiper { width: 100%; height: 100%; }
+.slide-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; filter: brightness(0.6); }
+.vignette-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; background: linear-gradient(90deg, rgba(10,10,15,0.9) 0%, rgba(10,10,15,0) 60%), linear-gradient(to top, rgba(10,10,15,1) 0%, rgba(10,10,15,0) 30%); }
+.slide-content-container { position: relative; z-index: 10; display: flex; flex-direction: column; justify-content: center; height: 100%; padding: 0 5%; max-width: 1400px; }
+.movie-title { font-family: 'Space Grotesk'; font-size: clamp(3rem, 8vw, 6rem); font-weight: 900; line-height: 1; margin: 0 0 20px 0; text-transform: uppercase; clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
+.btn-primary-play { background: var(--accent-blood-red); color: white; padding: 15px 35px; font-size: 1.1rem; font-weight: 800; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; transition: 0.3s; }
+.btn-primary-play:hover { background: var(--accent-hover-red); box-shadow: 0 0 30px rgba(229, 9, 20, 0.6); transform: scale(1.05); }
+
+/* BENTO CAROUSELS */
+.bento-section { padding: 60px 5%; background: var(--bg-space-black); position: relative; z-index: 5; }
+.section-title { font-family: 'Space Grotesk'; font-size: 2rem; margin-bottom: 30px; }
+.bento-card { display: block; border-radius: 12px; aspect-ratio: 16/9; overflow: hidden; position: relative; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.bento-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+.bento-card:hover { transform: scale(1.05); z-index: 100; box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+.bento-card:hover img { transform: scale(1.1); }
+.card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 20px; box-sizing: border-box; opacity: 0; transition: 0.3s; }
+.bento-card:hover .card-overlay { opacity: 1; }
+.card-title { font-family: 'Space Grotesk'; font-size: 1.2rem; margin: 0; color: white; }
+
+/* MOVIE DETAIL PAGE */
+.detail-content { max-width: 1400px; margin: auto; padding: 0 5%; position: relative; z-index: 10; margin-top: -100px; }
+.video-wrapper { border-radius: 16px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.05); }
+.video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .menu-list { display: none; } /* Hide menu on mobile for now */
+    .slide-content-container { padding-top: 100px; }
+    .detail-content { margin-top: 20px; }
+}
