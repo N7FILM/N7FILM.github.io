@@ -1,0 +1,168 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>The Sheep Detectives | N7HUB</title>
+        
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@400;600&display=swap');
+    
+    :root {
+        --bg-deep: #000000;
+        --surface: rgba(10, 10, 12, 0.85);
+        --neon-purple: #bc13fe;
+        --neon-blue: #00f3ff;
+        --text-main: #FFFFFF;
+        --text-sub: #D1D5DB;
+    }
+    
+    body, html {
+        margin: 0; padding: 0; background: var(--bg-deep); color: var(--text-main);
+        font-family: 'Inter', sans-serif; overflow-x: hidden;
+    }
+
+    /* 🌟 N7 MEGA NAVBAR */
+    .n7-navbar { position: fixed; top: 0; width: 100%; height: 90px; display: flex; align-items: center; justify-content: space-between; padding: 0 4vw; z-index: 1000; transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1); box-sizing: border-box; background: transparent; border-bottom: 1px solid transparent; }
+    .n7-navbar.scrolled { background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 30px rgba(0,0,0,0.5); height: 80px; }
+    
+    .logo { font-family: 'Space Grotesk'; font-size: 2.5rem; font-weight: 900; text-decoration: none; letter-spacing: -2px; background: linear-gradient(to right, var(--neon-purple), var(--neon-blue)); -webkit-background-clip: text; color: transparent; transition: 0.5s; }
+    .logo:hover { filter: drop-shadow(0 0 15px rgba(0,243,255,0.8)); }
+    
+    .nav-center { display: flex; gap: 40px; align-items: center; }
+    .nav-link { color: #d1d5db; text-decoration: none; font-weight: 600; font-size: 1.1rem; transition: 0.3s; }
+    .nav-link:hover { color: #fff; }
+    
+    /* Search Trigger */
+    .search-btn { background: transparent; border: none; color: #fff; cursor: pointer; transition: 0.3s; padding: 10px; border-radius: 50%; }
+    .search-btn:hover { background: rgba(255,255,255,0.1); color: var(--neon-blue); }
+
+    /* 🌟 CINEMATIC HERO SLIDER */
+    .hero-container { height: 100vh; width: 100vw; position: relative; overflow: hidden; display: flex; align-items: center; }
+    .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 120%; background-size: cover; background-position: center; filter: brightness(0.5); z-index: -1; transform: translateY(-10%); }
+    .hero-overlay { position: absolute; bottom: 0; width: 100%; height: 70%; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%); z-index: 1; }
+    .hero-content { padding-left: 6vw; max-width: 1000px; z-index: 2; }
+    .kinematic-text { font-family: 'Space Grotesk'; font-size: clamp(4rem, 8vw, 8rem); font-weight: 900; margin-bottom: 10px; letter-spacing: -3px; text-transform: uppercase; line-height: 1; text-shadow: 0 10px 40px rgba(0,0,0,0.9); clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
+    
+    .n7-btn { background: #fff; color: #000; font-family: 'Space Grotesk'; font-weight: 900; font-size: 1.2rem; padding: 18px 40px; border-radius: 50px; text-decoration: none; display: inline-block; transition: 0.3s; border: 2px solid #fff; }
+    .n7-btn:hover { background: transparent; color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+
+    /* 🌟 COMMAND PALETTE (CTRL+K) */
+    .command-palette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); z-index: 9999; display: flex; justify-content: center; align-items: flex-start; padding-top: 15vh; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+    .command-palette.active { opacity: 1; pointer-events: all; }
+    .cmd-box { width: 90%; max-width: 800px; background: rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; box-shadow: 0 0 80px rgba(0,243,255,0.15); overflow: hidden; transform: translateY(-20px); transition: 0.4s; }
+    .command-palette.active .cmd-box { transform: translateY(0); }
+    .command-input { width: 100%; padding: 30px; font-size: 1.8rem; font-family: 'Space Grotesk'; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text-main); outline: none; }
+    .command-input:focus { border-color: var(--neon-blue); }
+    
+    /* 🌟 BENTO ARCHIVES */
+    .archive-section { padding: 80px 4vw; position: relative; z-index: 5; background: var(--bg-deep); }
+    .bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+    .bento-card { background: var(--surface); border-radius: 20px; height: 400px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); text-decoration: none; color: inherit; display: block; transition: 0.4s; }
+    .bento-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 0.7s; }
+    .bento-card:hover { transform: translateY(-10px); border-color: rgba(0,243,255,0.3); box-shadow: 0 15px 40px rgba(0,243,255,0.1); }
+    .bento-card:hover .bento-img { opacity: 1; transform: scale(1.1); }
+    .bento-info { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 20px; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); }
+    .bento-title { font-family: 'Space Grotesk'; font-size: 1.6rem; margin: 0 0 8px 0; font-weight: 900; }
+    .n7-tag { background: rgba(0,0,0,0.5); color: var(--neon-purple); border: 1px solid rgba(188,19,254,0.3); padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 900; letter-spacing: 1px; backdrop-filter: blur(10px); }
+
+    @media (max-width: 768px) {
+        .n7-navbar { padding: 0 20px; height: 70px; }
+        .nav-center { display: none; }
+        .hero-content { padding-left: 20px; }
+        .command-input { font-size: 1.4rem; padding: 20px; }
+    }
+</style>
+
+        <style>
+        .page-container { max-width: 1400px; margin: 120px auto 0 auto; padding: 50px 4vw; position: relative; z-index: 10; }
+        .title-huge { font-family: 'Space Grotesk'; font-size: clamp(3rem, 7vw, 7rem); margin: 0 0 30px 0; line-height: 1; text-shadow: 0 10px 40px rgba(0,0,0,0.9); }
+        .video-wrapper { border-radius: 24px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 80px rgba(0,243,255,0.15); border: 1px solid rgba(255,255,255,0.1); width: 100%; margin-bottom: 50px; background: #000; }
+        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .article-box { line-height: 1.9; font-size: 1.25rem; color: var(--text-sub); background: rgba(10,10,12,0.8); backdrop-filter: blur(20px); padding: 60px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); }
+        .article-box h1, .article-box h2 { color: var(--text-main); font-size: 2.5rem; font-family: 'Space Grotesk'; margin-top: 0; }
+        </style></head><body>
+
+        <nav class="n7-navbar" id="navbar">
+            <a href="../index.html" class="logo">N7HUB</a>
+            <div class="nav-center"><a href="../index.html" class="n7-btn" style="padding: 10px 25px; font-size:1rem;">← Return</a></div>
+        </nav>
+        
+        <div class="hero-bg" id="hero-bg" style="background-image: url('https://image.tmdb.org/t/p/w1280/t6O6XWelu27BD0OmIDCCufZZT6d.jpg'); height: 80vh;"></div>
+        <div class="hero-overlay" style="height: 100vh;"></div>
+        
+        <div class="page-container">
+            <span class="n7-tag" style="margin-bottom: 20px; display: inline-block;">N7 DEEP ANALYSIS</span>
+            <h1 class="kinematic-text title-huge">The Sheep Detectives</h1>
+            <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            <div class="article-box"><h1>The Sheep Detectives: A Baa-rilliant Revelation of Overlooked Intellect</h1>
+
+<p>In an age saturated with cinematic spectacles vying for attention, it is a rare and profound pleasure to encounter a film that, with seemingly modest intentions, peels back layers of our collective human arrogance to reveal a shimmering core of universal truth. 'The Sheep Detectives' is not merely a film; it is a gentle, yet potent, philosophical fable disguised as a charming pastoral mystery, daring us to reconsider the very nature of intelligence, communication, and the unseen worlds that unfold around us every day.</p>
+
+<h2>The Humility of Unknowing: George Hardy's Unwitting Catalyst</h2>
+
+<p>At the heart of this deceptively simple narrative lies George Hardy, portrayed with a beautifully understated gravitas that speaks volumes without a single word of exposition. His nightly ritual of reading classic detective novels to his beloved flock is initially presented as an act of affectionate absurdity, a testament to the shepherd's solitary tenderness. We, like George, are complicit in the assumption that these creatures are passive recipients of sound, their minds unburdened by narrative complexity. This initial premise, however, is a masterful sleight of hand, setting the stage for the film's most striking revelation: the profound intelligence bubbling beneath the placid surface of the ovine collective.</p>
+
+<h2>A Flock of Brilliant Minds: The True Detectives</h2>
+
+<p>When an unspecified, yet keenly felt, "mysterious incident" disrupts the tranquil rhythm of the farm, the film pivots from an observational character study to a genuinely ingenious whodunit. It is here that 'The Sheep Detectives' transcends its whimsical premise, demonstrating an extraordinary narrative sophistication. The sheep, initially silent observers, transform into a cohesive investigative unit, their collective deductive reasoning proving sharper than any human could anticipate. The brilliance lies not just in their eventual success, but in the meticulous depiction of their methodology: their heightened senses, their unique perspective on the human world, and the emergent communication system they employ to process clues. The film cleverly employs subtle visual language – a darting glance, a knowing bleat, a collective shift in posture – to convey their internal deliberations, making their mental processes palpable and utterly convincing. They do not merely mimic human detection; they redefine it through an entirely different sensory and social paradigm.</p>
+
+<h2>Beyond the Pasture: Themes of Underestimation and Perception</h2>
+
+<p>Director [Fictional Director's Name, if applicable, otherwise omit] masterfully weaves a tapestry of themes that resonate long after the credits roll. At its core, 'The Sheep Detectives' is a searing indictment of anthropocentric hubris. It forces us to confront our ingrained tendency to underestimate non-human intelligence, to dismiss as instinct that which might be sophisticated thought. The film also explores the profound silence between species, suggesting that understanding often exists without the crutch of shared language. The sheep's investigation of human suspects becomes a poignant mirror, reflecting back our own follies, our petty jealousies, and the sometimes-fragile nature of our social contracts. The "clues" they follow are often human oversights, details dismissed by the very species that deems itself superior.</p>
+
+<p>Moreover, the film is a meditation on observation itself. The sheep, living in close proximity to their human counterparts, notice what humans take for granted, their perspective unclouded by ego or preconception. Their 'outsider' status grants them an objectivity that a human detective might struggle to achieve, allowing them to piece together a mosaic of truth from seemingly disparate fragments.</p>
+
+<h2>A Cinematic Masterpiece of Gentle Subversion</h2>
+
+<p>Stylistically, the film marries the bucolic charm of its setting with the taut suspense of a classic mystery. The cinematography captures both the serene beauty of rural life and the quiet tension of an unfolding investigation, often employing low-angle shots that immerse the audience in the sheep's-eye view of the world. The score, subtle and evocative, underscores the film's emotional beats without ever becoming saccharine. 'The Sheep Detectives' is a rare cinematic gem: it is heartwarming without being sentimental, humorous without being farcical, and thought-provoking without being didactic.</p>
+
+<p>It stands as a testament to the power of original storytelling, reminding us that profundity can be found in the most unexpected places, and that brilliance often bleats from the most unassuming creatures. This film is an essential watch, a delightful, multi-dimensional experience that will forever alter your perception of a gentle flock and perhaps, of humanity itself.</p></div>
+        </div>
+
+        
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+    // 1. PERFORMANCE SCROLLING
+    const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time)=>{ lenis.raf(time * 1000) });
+    gsap.ticker.lagSmoothing(0);
+
+    // 2. NAVBAR SCROLL EFFECT
+    window.addEventListener('scroll', () => {
+        const nav = document.getElementById('navbar');
+        if(window.scrollY > 100) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+    });
+
+    // 3. COMMAND PALETTE SEARCH
+    const cmdPalette = document.getElementById('cmd-palette');
+    const cmdInput = document.querySelector('.command-input');
+    const cards = document.querySelectorAll('.bento-card');
+
+    const togglePalette = () => {
+        cmdPalette.classList.toggle('active');
+        if(cmdPalette.classList.contains('active')) { setTimeout(() => cmdInput.focus(), 100); } 
+        else { cmdInput.blur(); cmdInput.value = ''; filterCards(''); }
+    };
+
+    window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); togglePalette(); }
+        if (e.key === 'Escape' && cmdPalette.classList.contains('active')) togglePalette();
+    });
+    document.getElementById('search-trigger').addEventListener('click', togglePalette);
+
+    function filterCards(query) {
+        cards.forEach(card => {
+            card.style.display = card.getAttribute('data-title').includes(query.toLowerCase()) ? 'block' : 'none';
+        });
+        document.getElementById('hero-trigger').style.display = query.length > 0 ? 'none' : 'flex';
+    }
+    cmdInput.addEventListener('input', (e) => filterCards(e.target.value));
+
+    // 4. KINEMATIC REVEAL
+    gsap.from(".kinematic-text", { y: 150, opacity: 0, duration: 1.5, ease: "power4.out", delay: 0.2, clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)" });
+    gsap.to("#hero-bg", { yPercent: 30, ease: "none", scrollTrigger: { trigger: "#hero-trigger", start: "top top", end: "bottom top", scrub: true } });
+</script>
+
+        </body></html>
