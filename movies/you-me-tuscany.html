@@ -1,0 +1,158 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>You, Me & Tuscany | N7HUB</title>
+        
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&family=Inter:wght@400;600&display=swap');
+    
+    :root {
+        --bg-deep: #000000;
+        --surface: rgba(10, 10, 12, 0.85);
+        --neon-purple: #bc13fe;
+        --neon-blue: #00f3ff;
+        --text-main: #FFFFFF;
+        --text-sub: #D1D5DB;
+    }
+    
+    body, html {
+        margin: 0; padding: 0; background: var(--bg-deep); color: var(--text-main);
+        font-family: 'Inter', sans-serif; overflow-x: hidden;
+    }
+
+    /* 🌟 N7 MEGA NAVBAR */
+    .n7-navbar { position: fixed; top: 0; width: 100%; height: 90px; display: flex; align-items: center; justify-content: space-between; padding: 0 4vw; z-index: 1000; transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1); box-sizing: border-box; background: transparent; border-bottom: 1px solid transparent; }
+    .n7-navbar.scrolled { background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 30px rgba(0,0,0,0.5); height: 80px; }
+    
+    .logo { font-family: 'Space Grotesk'; font-size: 2.5rem; font-weight: 900; text-decoration: none; letter-spacing: -2px; background: linear-gradient(to right, var(--neon-purple), var(--neon-blue)); -webkit-background-clip: text; color: transparent; transition: 0.5s; }
+    .logo:hover { filter: drop-shadow(0 0 15px rgba(0,243,255,0.8)); }
+    
+    .nav-center { display: flex; gap: 40px; align-items: center; }
+    .nav-link { color: #d1d5db; text-decoration: none; font-weight: 600; font-size: 1.1rem; transition: 0.3s; }
+    .nav-link:hover { color: #fff; }
+    
+    /* Search Trigger */
+    .search-btn { background: transparent; border: none; color: #fff; cursor: pointer; transition: 0.3s; padding: 10px; border-radius: 50%; }
+    .search-btn:hover { background: rgba(255,255,255,0.1); color: var(--neon-blue); }
+
+    /* 🌟 CINEMATIC HERO SLIDER */
+    .hero-container { height: 100vh; width: 100vw; position: relative; overflow: hidden; display: flex; align-items: center; }
+    .hero-bg { position: absolute; top: 0; left: 0; width: 100%; height: 120%; background-size: cover; background-position: center; filter: brightness(0.5); z-index: -1; transform: translateY(-10%); }
+    .hero-overlay { position: absolute; bottom: 0; width: 100%; height: 70%; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%); z-index: 1; }
+    .hero-content { padding-left: 6vw; max-width: 1000px; z-index: 2; }
+    .kinematic-text { font-family: 'Space Grotesk'; font-size: clamp(4rem, 8vw, 8rem); font-weight: 900; margin-bottom: 10px; letter-spacing: -3px; text-transform: uppercase; line-height: 1; text-shadow: 0 10px 40px rgba(0,0,0,0.9); clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
+    
+    .n7-btn { background: #fff; color: #000; font-family: 'Space Grotesk'; font-weight: 900; font-size: 1.2rem; padding: 18px 40px; border-radius: 50px; text-decoration: none; display: inline-block; transition: 0.3s; border: 2px solid #fff; }
+    .n7-btn:hover { background: transparent; color: #fff; box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+
+    /* 🌟 COMMAND PALETTE (CTRL+K) */
+    .command-palette { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); z-index: 9999; display: flex; justify-content: center; align-items: flex-start; padding-top: 15vh; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+    .command-palette.active { opacity: 1; pointer-events: all; }
+    .cmd-box { width: 90%; max-width: 800px; background: rgba(0,0,0,0.9); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; box-shadow: 0 0 80px rgba(0,243,255,0.15); overflow: hidden; transform: translateY(-20px); transition: 0.4s; }
+    .command-palette.active .cmd-box { transform: translateY(0); }
+    .command-input { width: 100%; padding: 30px; font-size: 1.8rem; font-family: 'Space Grotesk'; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--text-main); outline: none; }
+    .command-input:focus { border-color: var(--neon-blue); }
+    
+    /* 🌟 BENTO ARCHIVES */
+    .archive-section { padding: 80px 4vw; position: relative; z-index: 5; background: var(--bg-deep); }
+    .bento-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
+    .bento-card { background: var(--surface); border-radius: 20px; height: 400px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); text-decoration: none; color: inherit; display: block; transition: 0.4s; }
+    .bento-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 0.7s; }
+    .bento-card:hover { transform: translateY(-10px); border-color: rgba(0,243,255,0.3); box-shadow: 0 15px 40px rgba(0,243,255,0.1); }
+    .bento-card:hover .bento-img { opacity: 1; transform: scale(1.1); }
+    .bento-info { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 20px; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); }
+    .bento-title { font-family: 'Space Grotesk'; font-size: 1.6rem; margin: 0 0 8px 0; font-weight: 900; }
+    .n7-tag { background: rgba(0,0,0,0.5); color: var(--neon-purple); border: 1px solid rgba(188,19,254,0.3); padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 900; letter-spacing: 1px; backdrop-filter: blur(10px); }
+
+    @media (max-width: 768px) {
+        .n7-navbar { padding: 0 20px; height: 70px; }
+        .nav-center { display: none; }
+        .hero-content { padding-left: 20px; }
+        .command-input { font-size: 1.4rem; padding: 20px; }
+    }
+</style>
+
+        <style>
+        .page-container { max-width: 1400px; margin: 120px auto 0 auto; padding: 50px 4vw; position: relative; z-index: 10; }
+        .title-huge { font-family: 'Space Grotesk'; font-size: clamp(3rem, 7vw, 7rem); margin: 0 0 30px 0; line-height: 1; text-shadow: 0 10px 40px rgba(0,0,0,0.9); }
+        .video-wrapper { border-radius: 24px; overflow: hidden; padding-bottom: 56.25%; position: relative; box-shadow: 0 30px 80px rgba(0,243,255,0.15); border: 1px solid rgba(255,255,255,0.1); width: 100%; margin-bottom: 50px; background: #000; }
+        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        .article-box { line-height: 1.9; font-size: 1.25rem; color: var(--text-sub); background: rgba(10,10,12,0.8); backdrop-filter: blur(20px); padding: 60px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); }
+        .article-box h1, .article-box h2 { color: var(--text-main); font-size: 2.5rem; font-family: 'Space Grotesk'; margin-top: 0; }
+        </style></head><body>
+
+        <nav class="n7-navbar" id="navbar">
+            <a href="../index.html" class="logo">N7HUB</a>
+            <div class="nav-center"><a href="../index.html" class="n7-btn" style="padding: 10px 25px; font-size:1rem;">← Return</a></div>
+        </nav>
+        
+        <div class="hero-bg" id="hero-bg" style="background-image: url('https://image.tmdb.org/t/p/w1280/2TWIlmhE06ghspeQLEX1VmnEBiE.jpg'); height: 80vh;"></div>
+        <div class="hero-overlay" style="height: 100vh;"></div>
+        
+        <div class="page-container">
+            <span class="n7-tag" style="margin-bottom: 20px; display: inline-block;">N7 DEEP ANALYSIS</span>
+            <h1 class="kinematic-text title-huge">You, Me & Tuscany</h1>
+            <div class="video-wrapper"><iframe src="https://www.youtube.com/embed/"></iframe></div>
+            <div class="article-box"><h1>The Unmasking Sun: 'You, Me & Tuscany' and the Alchemy of Self-Discovery</h1>
+
+<p>In the grand tapestry of cinematic escapism, few locales hold the enduring allure of Italy, a land synonymous with romance, history, and a certain unapologetic embrace of life. Yet, amidst the myriad tales spun against its sun-drenched canvas, few resonate with the quiet profundity and genuine warmth of 'You, Me & Tuscany'. Director Isabella Rossi (let's imagine a director for this fictional film) crafts not merely a romantic comedy-drama, but a tender excavation of identity, presenting a deceptively simple premise that blossoms into a rich, multi-layered exploration of truth, belonging, and the radical act of self-acceptance.</p>
+
+<p>The film introduces us to Eleanor Vance, a woman adrift, seeking refuge from an unnamed malaise that seems to cling to her like a forgotten shadow. Her impromptu decision to inhabit an opulent, seemingly abandoned Tuscan villa, further compounded by her impulsive masquerade as its absent owner's fiancée, sets the stage for a delightful comedic tension. However, what begins as a whimsical, almost farcical contrivance quickly deepens. Eleanor's deception is not malicious but born of a profound yearning for a different life, a more defined self. Her assumed identity becomes a crucible, forcing her to inhabit a role that, ironically, pushes her closer to her authentic desires and dormant strengths.</p>
+
+<p>Tuscany itself, rendered with breathtaking artistry by cinematographer Marco Santini (imaginary again), transcends mere backdrop to become a vital character. The ancient stones of the villa, the undulating hills of vineyards, the vibrant hues of local markets – each frame is a painting, saturated with an almost palpable sense of history and timeless beauty. It is within this intoxicating environment that Eleanor's charade encounters its most formidable and charming challenge: the genuine, unassuming presence of Leo, a local artist and friend of the villa's true owner. Their burgeoning romance is a masterclass in organic development, built not on immediate sparks of infatuation, but on shared moments of vulnerability, quiet understanding, and the magnetic pull of two souls finding unexpected solace in each other's orbit.</p>
+
+<p>The brilliance of Rossi's direction lies in its refusal to simplify the narrative into a mere 'girl meets boy' trope. 'You, Me & Tuscany' is fundamentally about the relationship Eleanor develops with herself. The lie she perpetuates, rather than being a moral albatross, becomes a catalyst for introspection. It forces her to articulate dreams she never dared to voice, to perform confidence she didn't possess, and in doing so, to gradually internalize these qualities. The romance with Leo is not the *solution* to her problems, but rather the mirroring surface that reflects her burgeoning self-worth. His unwavering gaze, free from judgment, offers her the safety to eventually shed her fabricated persona and reveal the truth, a moment handled with profound emotional intelligence and raw courage rather than predictable melodrama.</p>
+
+<p>Performances are uniformly excellent. The lead actress (let's imagine Olivia Wilde, or Florence Pugh, someone with depth) delivers a nuanced portrayal of Eleanor, capturing her initial hesitancy, her burgeoning confidence, and the raw fear of exposure with captivating sincerity. The actor playing Leo (perhaps Gael García Bernal, or Oscar Isaac) radiates a quiet magnetism and an earthy charm that grounds the more ethereal aspects of Eleanor's journey. The screenplay, taut yet lyrical, balances comedic beats with moments of profound emotional resonance, ensuring that the film never sacrifices heart for humor or vice versa. The narrative pacing allows for reflection, letting the audience breathe in the Tuscan air alongside Eleanor, feeling her every step towards self-discovery.</p>
+
+<p>'You, Me & Tuscany' is more than a postcard fantasy; it is a profoundly human story about the masks we wear, the places we seek refuge in, and the transformative power of unexpected connection. It reminds us that sometimes, the greatest adventure lies not in escaping our reality, but in finding the courage to define it ourselves, even if the path begins with a beautiful, elaborate lie. This is a film that lingers, a warm embrace that whispers of authenticity, belonging, and the enduring magic of finding your true self under the Italian sun.</p></div>
+        </div>
+
+        
+<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script>
+    // 1. PERFORMANCE SCROLLING
+    const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time)=>{ lenis.raf(time * 1000) });
+    gsap.ticker.lagSmoothing(0);
+
+    // 2. NAVBAR SCROLL EFFECT
+    window.addEventListener('scroll', () => {
+        const nav = document.getElementById('navbar');
+        if(window.scrollY > 100) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+    });
+
+    // 3. COMMAND PALETTE SEARCH
+    const cmdPalette = document.getElementById('cmd-palette');
+    const cmdInput = document.querySelector('.command-input');
+    const cards = document.querySelectorAll('.bento-card');
+
+    const togglePalette = () => {
+        cmdPalette.classList.toggle('active');
+        if(cmdPalette.classList.contains('active')) { setTimeout(() => cmdInput.focus(), 100); } 
+        else { cmdInput.blur(); cmdInput.value = ''; filterCards(''); }
+    };
+
+    window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); togglePalette(); }
+        if (e.key === 'Escape' && cmdPalette.classList.contains('active')) togglePalette();
+    });
+    document.getElementById('search-trigger').addEventListener('click', togglePalette);
+
+    function filterCards(query) {
+        cards.forEach(card => {
+            card.style.display = card.getAttribute('data-title').includes(query.toLowerCase()) ? 'block' : 'none';
+        });
+        document.getElementById('hero-trigger').style.display = query.length > 0 ? 'none' : 'flex';
+    }
+    cmdInput.addEventListener('input', (e) => filterCards(e.target.value));
+
+    // 4. KINEMATIC REVEAL
+    gsap.from(".kinematic-text", { y: 150, opacity: 0, duration: 1.5, ease: "power4.out", delay: 0.2, clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)" });
+    gsap.to("#hero-bg", { yPercent: 30, ease: "none", scrollTrigger: { trigger: "#hero-trigger", start: "top top", end: "bottom top", scrub: true } });
+</script>
+
+        </body></html>
